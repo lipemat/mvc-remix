@@ -1,0 +1,236 @@
+    
+img{
+    max-width: 100% !important;
+    height: auto !important;
+}    
+    
+
+/** Mobile Menu
+-------------------------------------------------------------- */
+#nav-button{
+    width: 100%;
+    text-align: left;
+    background: #333333;
+    -webkit-box-shadow: inset 0 0 5px 5px #222222;
+    -moz-box-shadow: inset 0 0 5px 5px #222222;
+    box-shadow: inset 0 0 5px 5px #222222;
+    padding: 3px 0;
+}
+
+#nav-button img{
+    -webkit-box-shadow: 0 0 0px 5px #222222;
+    -moz-box-shadow:  0 0 0px 5px #222222;
+    box-shadow: 0 0 0px 5px #222222;
+    cursor: pointer;
+    margin-left: 15px;
+}
+
+#nav-button img:hover{
+    -webkit-box-shadow: 0 0 2px 5px #eeeeee;
+    -moz-box-shadow:  0 0 2px 5px #eeeeee;
+    box-shadow: 0 0 2px 5px #eeeeee;
+}
+
+#nav-button{
+    display: none;
+}
+
+
+
+/* Header
+------------------------------------------------------------ */
+#header {
+    width: 100%;
+}
+
+
+/* Navigation Menus
+------------------------------------------------------------ */
+
+.menu-primary,
+.menu-secondary {
+    width: 100%;
+}
+
+
+/* Content
+------------------------------------------------------------ */
+
+#content,
+#content-sidebar-wrap {
+    float: left;
+    width: 100%;
+}
+
+
+
+
+/* Post Navigation
+------------------------------------------------------------ */
+
+.navigation {
+    font-size: 14px;
+    width: 100%;
+}
+
+
+
+
+/* Footer Widgets
+------------------------------------------------------------ */
+
+#footer-widgets {
+    width: 100%;
+}
+
+
+/* Footer
+------------------------------------------------------------ */
+
+#footer {
+     width: 100%;
+}
+
+
+
+/* Comments
+------------------------------------------------------------ */
+
+#author,
+#comment,
+#email,
+#url {
+
+    width: 50%;
+}
+
+#comment {
+    width: 100%;
+}
+
+label {
+    margin: 0 0 0 10px;
+}
+
+.ping-list {
+    margin: 0 0 40px;
+}
+
+
+
+
+
+
+
+/* Responsive Design
+------------------------------------------------------------ */
+
+@media only screen and (max-width: 960px) {
+
+    body {
+        margin: 0 auto;
+        width: 100%;
+    }
+
+    #wrap,
+    .menu-primary,
+    .menu-secondary,
+    .wrap,
+    #content,
+    #content-sidebar-wrap,
+    #footer .creds,
+    #footer .gototop,
+    #footer-widgets .wrap{
+        width: 100%;
+    }
+
+    .menu-primary,
+    .menu-secondary,
+    #description,
+    #header ul.menu,
+    #header .searchform,
+    #title,
+    #title-area {
+        float: none;
+        text-align: center;
+    }
+
+    #title-area {
+        margin: 0;
+        padding: 20px 0 0;
+    }
+
+    #header .menu a {
+        padding: 15px 20px;
+    }
+
+    #header .widget-area {
+        padding: 0 0 20px;
+    }
+
+
+    .menu-primary li,
+    .menu-secondary li,
+    #header ul.menu li {
+        display: inline-block;
+        float: none;
+    }
+
+    .menu-primary a,
+    .menu-secondary a,
+    #header .menu a {
+        border: none;
+    }
+
+    .menu li.right {
+        display: none;
+    }
+
+    .menu li li {
+        text-align: left;
+     }
+}
+
+@media only screen and (max-width: 768px) {
+
+    h1,
+    h2,
+    h2 a,
+    h2 a:visited {
+        clear: both;
+    }
+
+    .even img.alignleft,
+    img.alignright,
+    img.alignleft {
+        display: block;
+        float: none;
+        margin: 0 auto 30px;
+    }
+
+    .archive-page,
+    .five-sixths,
+    .four-fifths,
+    .four-sixths,
+    .one-fifth,
+    .one-fourth,
+    .one-half,
+    .one-sixth,
+    .one-third,
+    .three-fifths,
+    .three-fourths,
+    .three-sixths,
+    .two-fifths,
+    .two-fourths,
+    .two-sixths,
+    .two-thirds {
+        padding: 0;
+        width: 100%;
+    }
+
+
+}
+
+@media only screen and (max-width: 600px) {
+ 
+}

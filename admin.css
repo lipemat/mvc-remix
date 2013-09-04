@@ -1,0 +1,67 @@
+/**  Custom Post Type icon Changing Example
+
+#icon-edit.icon32-posts-supplier{
+	background-image: url( ../images/supplier-icon32.png) !important;
+	background-position: 0px 0px !important;
+}
+
+#icon-edit.icon32-posts-product{
+    background-image: url( ../images/product-icon32.png) !important;
+    background-position: 0px 0px !important;
+}
+
+*/
+
+.repeater-item li{
+    display: inline;
+}
+
+.another{
+    float: left;
+}
+
+.colored-list h4{
+    background: #F1F1F1;
+    padding: 8px 6px;
+    margin: 0;
+}
+
+.colored-list ul > li{
+    background-color: #F9F9F9;
+    border-color: #DFDFDF;
+    border-radius: 3px;
+    border-spacing: 0;
+    border-style: solid;
+    border-width: 1px;
+    width: 100%;   
+    padding: 0 0;
+    margin: 0 0 15px 0;
+
+}
+
+.colored-list ul li li{
+    border-top: 1px solid #DFDFDF;
+    padding: 7px 20px;
+    margin: 0;
+}
+
+
+.message{
+    background-color: #ffffe0;
+    border: 1px solid #e6db55;
+    padding: 5px;
+}
+
+#wp-admin-bar-responsive_check * {
+	background: yellow;
+	color: #000;
+	text-shadow: none;
+	padding: 0px 60px !important;
+	
+}
+
+#wp-admin-bar-responsive_check .ab-item:hover {
+	background: red !important;
+	color: #000 !important;
+	
+}
