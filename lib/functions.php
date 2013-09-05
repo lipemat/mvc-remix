@@ -3,7 +3,7 @@
                         /**
                          * Misc Functions for MVC
                          * @author Mat Lipe
-                         * @since 6.21.13
+                         * @since 9.5.13
                          */
 
                          
@@ -62,7 +62,8 @@ if( !function_exists('_p') ){
             echo '</pre>';
         
             echo '<pre>';
-              $args = array_shift(debug_backtrace(false));
+              $debug = debug_backtrace(false);
+              $args = array_shift($debug);
               unset( $args['args'] );    
               print_r( $args );
             echo '</pre>';
