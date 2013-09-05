@@ -11,22 +11,17 @@ WordPress sites. It is being made public in hopes of helping other developers ou
 
 #TODO for transfer to plugin
 
-#create an install script to generat the proper MVC folders and some starting
-Files like Post.php and Page.php
+##create an install script to generat the proper MVC folders and some starting Files like Post.php and Page.php
 
-#Check for existing MVC folders and do not overwrite any files during the plugin install
+##Check for existing MVC folders and do not overwrite any files during the plugin install
 
-#Check for write access to theme folder and display a warning with a manual generation
-link
+##Check for write access to theme folder and display a warning with a manual generation link
 
-#Allow for turning off auto MVC and auto Widgets etc by using a define in the config
-file
+##Allow for turning off auto MVC and auto Widgets etc by using a define in the config file
 
-#Check for existing widgets folder and automatically ad the define to the config to 
-turn off auto widgets
+##Check for existing widgets folder and automatically ad the define to the config to turn off auto widgets
 
-#remove unneeded formating options like content wrap
+##remove unneeded formating options like content wrap
 
-#Move things like slideshows and carousels into their own plugin perhaps for later use 
-one day
+##Move things like slideshows and carousels into their own plugin perhaps for later use one day
 
