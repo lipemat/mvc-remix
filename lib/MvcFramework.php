@@ -9,7 +9,7 @@
  * 
  * 
  * @TODO create an auto shortcode registering class
- * @TODO create a way to server up all js or css files from one php file like mvc_add_style() and mvc_add_js() to prevent all the requests
+ * @TODO create a way to server up all js or css files from one php file like mvc_add_style() and mvc_add_js() to prevent all the requests - maybe grunt.js
  * @TODO enable revision support for post meta
  * @TODO Switch everything over the new media uploader - Or at least one common object - see evernote Use Built In Media Uploader
  * @TODO Switch the tabs over to the MvcForm instead of Advanced Custom Fields
