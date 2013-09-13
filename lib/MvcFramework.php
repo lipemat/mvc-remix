@@ -114,6 +114,71 @@ class MvcFramework extends MvcPostTypeTax{
     }
     
     
+    
+    /* 
+     * Get thumbnail from an Embeded youtube video
+     * 
+     * @since 9.13.13
+     */
+    public function getYoutubeImage($embed) {
+    
+        $video_thumb = '';
+
+        // YouTube - get the video code if this is an embed code (old embed)
+        preg_match( '/youtube\.com\/v\/([\w\-]+)/', $embed, $match);
+
+        // YouTube - if old embed returned an empty ID, try capuring the ID from the new iframe embed
+        if( !isset($match[1]) )
+            preg_match( '/youtube\.com\/embed\/([\w\-]+)/', $embed, $match);
+
+        // YouTube - if it is not an embed code, get the video code from the youtube URL
+        if( !isset($match[1]) )
+            preg_match( '/v\=(.+)&/',$embed ,$match);
+
+        // YouTube - get the corresponding thumbnail images
+        if( isset($match[1]) )
+            $video_thumb = "http://img.youtube.com/vi/".$match[1]."/0.jpg";
+
+        // return whichever thumbnail image you would like to retrieve
+        return $video_thumb;
+    }
+    
+    
+    
+    
+    /** 
+     * Get the first image of the post's content
+     * 
+     * @param int [$post_id] - defaults to global $post
+     * @since 9.13.13
+     * 
+     *      
+     * */
+    public function getFirstContentImage( $post_id = false ) {
+        global $post;
+        
+        if ( ! $post_id && ! isset( $post->ID ) ) return;
+        
+        if ( $post_id != false && $post_id == $post->ID ) {
+            $content = $post->post_content;
+        } else {
+            $content = get_post_field( 'post_content', $post_id );
+        }
+        
+        if ( is_wp_error( $content ) || empty( $content ) ) return;
+        
+        $first_img = '';
+        ob_start();
+        ob_end_clean();
+        $output = preg_match_all('/<img.+src=[\'"]([^\'"]+)[\'"].*>/i', $content, $matches);
+        if ( ! isset( $matches[1][0] ) ) return;
+        
+        $first_img = $matches[1][0];
+        
+        return $first_img;
+    }
+    
+    
     /**
      * Check if we are on a blog type page
      * 
@@ -1008,8 +1073,8 @@ class MvcFramework extends MvcPostTypeTax{
     /**
      * Returns the featured image or the first on uploaded if no feature exists
      * @since 5.5.0
-	 * 
-	 * @since 7.22.13
+     * 
+     * @since 7.22.13
      * @param string $size the size of the image defaults to 'thumbnail'
      * @param int [optional] $post_id the id of the post
      * @param bool $html or object format defaults html
