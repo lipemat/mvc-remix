@@ -2,7 +2,7 @@
             /**
              * These items can be altered, adjusted, commented in or out
              *  * This is where you can make changes to the framework when required
-             *  @since 8.30.13
+             *  @since 9.19.13
              *  @author Mat Lipe <mat@matlipe.com>
              *  
              */
@@ -32,6 +32,7 @@ define('SEARCH_TEXT','Search this website');
 //add_theme_support('mobile_menu','dark'); //light or dark
 //add_theme_support('category-images');
 //add_theme_support('genesis-footer-widgets', 4 ); 
+//add_theme_support('mvc_image_resize');
 
 //When using the Slideshow
 #add_image_size('slide-thumb','104','104',true);
