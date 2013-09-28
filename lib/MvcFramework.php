@@ -4,7 +4,7 @@
  * Adds Many enhancements to the Genesis Theme
  * @uses automatically extended into the Model Views and Controllers and Bootstrap
  * @see Bootstrap.php
- * @author Mat Lipe <mat@vimm.com>
+ * @author Mat Lipe <mat@matlipe.com>
  * @since 8.21.13
  * 
  * @TODO move all classes to run off an spl_autoload_register() to keep things super light
