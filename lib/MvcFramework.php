@@ -10,7 +10,7 @@
  * @TODO move all classes to run off an spl_autoload_register() to keep things super light
  * @TODO move the config to an  optional mvc-config file which may be placed in the theme root - also generated on install
  * @TODO Create a fragment caching class - run tests database vs files
- * @TODO create an auto shortcode registering class
+ * @TODO create an auto shortcode registering class - see NUSD theme
  * @TODO create a way to server up all js or css files from one php file like mvc_add_style() and mvc_add_js() to prevent all the requests - maybe grunt.js
  * @TODO enable revision support for post meta
  * @TODO Switch everything over the new media uploader - Or at least one common object - see evernote Use Built In Media Uploader
