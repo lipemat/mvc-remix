@@ -3,7 +3,8 @@
  * Manage Image resizing on the fly to prevent a bunch of uneeded image sizes for every image uploaded
  * 
  * @author Mat Lipe <mat@matlipe.com>
- * @uses Pretty much automatic just let it do it's thing otherwise there are a couple functions on the bottom
+ * @uses Pretty much automatic - use standard WP add_image_size() and this will pick it up
+ * @May be tapped in using the pulbic methods as well - however probably not neccessary
  * 
  * @since 9.13.13
  */
