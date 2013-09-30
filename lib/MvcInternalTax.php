@@ -9,12 +9,12 @@
  * 
  * @since 5.6.0
  * 
- * @since 8.21.13
+ * @since 9.25.13
  * 
  * @author Mat Lipe
  * 
  */
-class MvcInternalTax extends MvcFramework{
+class MvcInternalTax extends MvcPostTypeTax{
 
      public $terms = array(); //The previously retrieved terms
      
@@ -33,35 +33,55 @@ class MvcInternalTax extends MvcFramework{
     /**
      * Assigns an Internal Term to a Post
      * 
-     * @since 8.21.13
+     * @since 9.25.13
      * 
      * @param mixed int|obj|string $term - the term pretty much any way you want it
      * @param int|obj [$post] - defaults to current global $post;
-     * @param array [$possibleTerms] - terms to remove if the $term is empty
+     * @param array [$removeTerms] - terms to remove if post should be assigned to only one term in a group 
+     *      will accept all terms including to one to be set due to event order
      * 
      */
-    function assignTerm($term, $post = false, $possibleTerms= array() ){
+    function assignTerm($term, $post = false, $removeTerms = array() ){
          
         $post_id = $this->getPostId($post);
 
-        if( empty( $term ) ){
-           if( !empty($possibleTerms) ) {
-                if( $terms = wp_get_post_terms($post_id, 'internal' ) ){
-                    foreach( $terms as $term ){
-                        if( in_array( $term->name, $possibleTerms ) ){
-                            $removed[] = $this->removeTerm($term->term_id, $post_id);
-                        }
-                    }   
-                    
-                    return $removed;
-                }
-           }
-           return false;
+         if( !empty($removeTerms) ) {
+            if( $terms = wp_get_post_terms($post_id, 'internal' ) ){
+                foreach( $terms as $t ){
+                    if( in_array( $t->name, $removeTerms ) ){
+                         $this->removeTerm($t->term_id, $post_id);
+                    }
+                }   
+            }
         }
-        
+        if( empty( $term ) ) return false;
+
         $term_id = $this->getTermId($term);
-        
         return wp_set_post_terms($post_id, $term_id, 'internal', true);
+    }
+    
+    
+    
+    /**
+     * Extract the post id from an object or string
+     * 
+     * @param int|obj [$post] - (defaults to global $post );
+     * 
+     * @since 8.21.13
+     */
+    function getPostId($post = false){
+        if( !$post ){
+            global $post;
+            if( !isset( $post->ID ) ) return false;
+            $post_id = $post->ID;            
+        } else {
+            if( isset( $post->ID ) ){
+                $post_id = $post->ID;
+            } else {
+                $post_id = $post;
+            }
+        }
+        return $post_id; 
     }
     
     

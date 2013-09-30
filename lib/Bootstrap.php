@@ -2,7 +2,7 @@
 
                             /**
                              * Pull the Whole Framework Together
-                             * @since 8.6.13
+                             * @since 9.19.13
                              * @author Mat Lipe
                              */
 
@@ -27,8 +27,6 @@ require( 'MvcFramework.php' ); //The main Class
 require( 'MvcInternalTax.php' ); //Internal Taxonomy Interaction
 require( 'MvcLogin.php' ); //Wordpress login enhancements
 require( 'MvcMetaBox.php' ); //Easy Meta Box Generator
-
-
 
 require('helpers/init.php');
 require('widgets/init.php');
@@ -62,10 +60,15 @@ if( current_theme_supports('mobile_menu', 'color') ){
     $MvcMobileMenu = new MvcMobileMenu(); 
 }
 
+//For On the Fly Image Resize
+if( current_theme_supports('mvc_image_resize') ){
+    $MvcImageResize = new MvcImageResize();
+    require( 'MvcImageResize.php' ); //On the fly image resizer
+}
+
 
 /** The functions that can be used **/
 $MvcFramework = new MvcFramework();
-
 
 /** Extra wraps for styling **/
 add_theme_support( 'genesis-structural-wraps', array( 'header', 'nav', 'subnav', 'inner', 'footer-widgets', 'footer' ) );
