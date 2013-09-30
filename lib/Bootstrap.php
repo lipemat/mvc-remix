@@ -35,14 +35,20 @@ if( file_exists(THEME_FILE_DIR.'Config/theme-config.php') ){
 }
 
 
-define( 'IS_MOBILE_THEME', current_theme_supports('mobile_responsive') );  
+define( 'IS_MOBILE_THEME', current_theme_supports('mvc_mobile_responsive') );  
+
+
+//For Secure Themes
+if( current_theme_supports('mvc_secure') ){
+    $MvcLogin = new MvcLogin;   
+}
 
 //For the Category Icons
-if( current_theme_supports('category-images') ){
+if( current_theme_supports('mvc_category_images') ){
     $MvcCategoryIcons = new MvcCategoryImage;   
 }
 //For the Colapsible Mobile Menu
-if( current_theme_supports('mobile_menu', 'color') ){
+if( current_theme_supports('mvc_mobile_menu', 'color') ){
     $MvcMobileMenu = new MvcMobileMenu(); 
 }
 
@@ -127,7 +133,7 @@ foreach ($classes as $controller => $class) {
 
 /**
  * Put all the default stuff in motion
- * @since 7.19.13
+ * @since 9.30.13
  */
 class Bootstrap extends MvcFramework{
     
@@ -145,8 +151,17 @@ class Bootstrap extends MvcFramework{
         add_action( 'do_meta_boxes', 'genesis_add_inpost_seo_box' );  
              
         //Add Different Browser Stylesheet support
-        if( current_theme_supports('mvc_browsers') ){
+        if( current_theme_supports('mvc_stylesheets') ){
             add_action( 'init', array( $this, 'browser_support' ) );
+             //Add the IE only Stylesheets
+            add_action('wp_head', array( $this, 'ie_only'), 99 );
+            //Add Javascript to Site
+            add_action('wp_enqueue_scripts', array( $this, 'add_js_css' ) );
+            //Add Js and CSS to Admin
+            add_action( 'admin_print_scripts', array( $this, 'admin_js' ) );
+            //Add stylesheet to editor
+            add_filter('mce_css',array( $this, 'editor_style' ) );
+        
         }
         
         //Register Widgets from the theme's widget folder
@@ -164,25 +179,9 @@ class Bootstrap extends MvcFramework{
         
         
         //Add the class 'first-class' to the first post
-        add_filter( 'post_class',array( $this, 'first_post_class'), 0, 2);
-
-        //Add the IE only Stylesheets
-        add_action('wp_head', array( $this, 'ie_only'), 99 );
-        
-        //Add Wraps the body for extra background
-        add_action('genesis_before', array( $this, 'start_outabody') );
-        add_action('genesis_after', array( $this, 'end_outabody' ) );
-        
-        //Add stylesheet to editor
-        add_filter('mce_css',array( $this, 'editor_style' ) );
-        
-        //Add Javascript to Site
-        add_action('wp_enqueue_scripts', array( $this, 'add_js_css' ) );
+        add_filter( 'post_class',array( $this, 'first_post_class'), 0, 2);   
         
 
-        //Add Js and CSS to Admin
-        add_action( 'admin_print_scripts', array( $this, 'admin_js' ) );
-        
         //Add the special classes to the nav
         add_filter('wp_nav_menu_objects', array( $this, 'menu_classes') );
         
@@ -492,10 +491,6 @@ class Bootstrap extends MvcFramework{
   
     }
 
-
-
-    
-
     
     
     /**
@@ -509,29 +504,6 @@ class Bootstrap extends MvcFramework{
         $wp .= ',' . get_bloginfo('stylesheet_url');
         return $wp;
     }
-    
-    
-    
-    /**
-     * Opens divs which wrap the body for extra backgrounds
-     * @uses called by __construct()
-     * @since 9/21/12
-     * @see end_outabody()
-     */
-    function start_outabody(){
-        echo '<div id="outabody"><div id="outabody2"><div id="outabody3">';
-    }
-    
-    /**
-     * Closes divs which wrap the body for extra backgrounds
-     * @uses called by __construct()
-     * @since 9/21/12
-     * @see start_outabody()
-     */
-    function end_outabody(){
-        echo '</div></div></div>'; 
-    }
-    
 
     
     /**
