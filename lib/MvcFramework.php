@@ -5,7 +5,7 @@
  * @uses automatically extended into the Model Views and Controllers and Bootstrap
  * @see Bootstrap.php
  * @author Mat Lipe <mat@matlipe.com>
- * @since 8.21.13
+ * @since 9.30.13
  * 
  * @TODO move the config to an  optional mvc-config file which may be placed in the theme root - also generated on install
  * @TODO Create a fragment caching class - run tests database vs files
@@ -20,7 +20,7 @@
  * 
  *
  */
-class MvcFramework extends MvcPostTypeTax{
+class MvcFramework{
     public $browser     = false; //Keep track to the views browser
     private $mobile     = false; //Allows for constructing mobile detect class only once
     protected $controller; //Keep track of what controller is controlling to call stuff dynamically
