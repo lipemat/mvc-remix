@@ -2,24 +2,25 @@
 
                             /**
                              * Pull the Whole Framework Together
-                             * @since 9.19.13
+                             * @since 9.30.13
                              * @author Mat Lipe
                              */
 
-//Set some constants                             
-define( 'THEME_DIR', get_bloginfo( 'stylesheet_directory' ). '/' );
-define( 'IMAGE_DIR', THEME_DIR.'images/');
-define( 'SCRIPT_DIR', THEME_DIR.'includes/');
-define( 'JS_DIR', THEME_DIR.'js/' );
-define( 'THEME_FILE_DIR', get_stylesheet_directory() . '/');
-define( 'MOBILE_DIR', THEME_DIR.'mobile/');       
-define( 'CSS_DIR', THEME_DIR.'lib/css' ); 
-define( 'IS_ADMIN', is_admin() );
+
 
 //Require the proper files                      
 require('functions.php');
-require_once(get_template_directory().'/lib/init.php');
+
+
+//TODO Find a better way to do this
 include_once( ABSPATH . 'wp-admin/includes/plugin.php' ); //Bring in the admin plugin functions
+
+//Allow for autoloading framework Classes
+spl_autoload_register('_mvc_autoload()');
+
+
+
+
 require( 'MvcPostTypeTax.php' );  //bring in the custom post type maker
 require( 'MvcMenuIcons.php'); //add ability for menu icons
 require( 'MvcMobileDetect.php' );  //bring in mobile detect ability

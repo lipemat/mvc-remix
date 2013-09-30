@@ -3,9 +3,28 @@
                         /**
                          * Misc Functions for MVC
                          * @author Mat Lipe
-                         * @since 9.5.13
+                         * @since 9.30.13
                          */
 
+                 
+/**        
+ * Loads classes on the fly per needs only
+ * 
+ * @uses added ot the spl_autoload_register() function by bootstrap.php
+ * @uses will load a class from the main lib folder or the helpers folder
+ * 
+ * @since 9.30.13
+ * 
+ */
+function _mvc_autoload($class){
+    if( file_exists($class.'.php') ){
+        require( $class.'.php');
+    } elseif( file_exists('helpers/'.$class.'.php') ){
+        require( 'helpers/'.$class.'.php');
+    }
+}
+                         
+                         
                          
                          
 /**
