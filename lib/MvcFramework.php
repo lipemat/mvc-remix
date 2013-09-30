@@ -93,7 +93,7 @@ class MvcFramework{
      * @uses call any helper or whatever using $this->%helperClass%->%method%
      * @since 3.5.0
      * 
-     * @since 6.3.13
+     * @since 9.30.13
      */
     function __get($object){
         
@@ -106,7 +106,7 @@ class MvcFramework{
                 echo '<pre>';
                         debug_print_backtrace();
                 echo '</pre>';
-                trigger_error($func. ' Does Not Exist as a Class ', E_USER_ERROR);
+                trigger_error($object. ' Does Not Exist as a Class ', E_USER_ERROR);
             }
         }
         
