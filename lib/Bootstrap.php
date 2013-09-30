@@ -19,21 +19,6 @@ include_once( ABSPATH . 'wp-admin/includes/plugin.php' ); //Bring in the admin p
 spl_autoload_register('_mvc_autoload()');
 
 
-
-
-require( 'MvcPostTypeTax.php' );  //bring in the custom post type maker
-require( 'MvcMenuIcons.php'); //add ability for menu icons
-require( 'MvcMobileDetect.php' );  //bring in mobile detect ability
-require( 'MvcFramework.php' ); //The main Class
-require( 'MvcInternalTax.php' ); //Internal Taxonomy Interaction
-require( 'MvcLogin.php' ); //Wordpress login enhancements
-require( 'MvcMetaBox.php' ); //Easy Meta Box Generator
-
-require('helpers/init.php');
-require('widgets/init.php');
-require('SimpleEdits.php');
-require('MvcGallery.php');
-
 if( file_exists(THEME_FILE_DIR.'Controller/Controller.php') ){
     //for portability
     define( 'IS_MVC', true );
@@ -48,36 +33,25 @@ if( file_exists(THEME_FILE_DIR.'Controller/Controller.php') ){
 if( file_exists(THEME_FILE_DIR.'Config/theme-config.php') ){
     include(THEME_FILE_DIR.'Config/theme-config.php');
 }
+
+
 define( 'IS_MOBILE_THEME', current_theme_supports('mobile_responsive') );  
 
 //For the Category Icons
 if( current_theme_supports('category-images') ){
-    require( 'MvcCategoryImage.php' );
     $MvcCategoryIcons = new MvcCategoryImage;   
 }
 //For the Colapsible Mobile Menu
 if( current_theme_supports('mobile_menu', 'color') ){
-    require('MvcMobileMenu.php');
     $MvcMobileMenu = new MvcMobileMenu(); 
 }
 
 //For On the Fly Image Resize
 if( current_theme_supports('mvc_image_resize') ){
     $MvcImageResize = new MvcImageResize();
-    require( 'MvcImageResize.php' ); //On the fly image resizer
 }
 
 
-/** The functions that can be used **/
-$MvcFramework = new MvcFramework();
-
-/** Extra wraps for styling **/
-add_theme_support( 'genesis-structural-wraps', array( 'header', 'nav', 'subnav', 'inner', 'footer-widgets', 'footer' ) );
-
-
-/** Add Template Files **/
-//TODO Make this independent of the Advanced Custom Fields Plugin
-require_if_theme_supports( 'tabs',THEME_FILE_DIR.'lib/tabs.php' ); //Add the tabbed template
 
 if( IS_MVC ){
 $classes = array();
@@ -171,28 +145,27 @@ class Bootstrap extends MvcFramework{
         add_action( 'do_meta_boxes', 'genesis_add_inpost_seo_box' );  
              
         //Add Different Browser Stylesheet support
-        add_action( 'init', array( $this, 'browser_support' ) );
+        if( current_theme_supports('mvc_browsers') ){
+            add_action( 'init', array( $this, 'browser_support' ) );
+        }
         
         //Register Widgets from the theme's widget folder
-        add_action('widgets_init', array( $this,'registerWidgets' ) );
+        if( current_theme_support('mvc_widgets') ){
+            add_action('widgets_init', array( $this,'registerWidgets' ) );
+        }
         
         //Filter the Search Form
-        add_filter('genesis_search_text', array( $this, 'return_'.SEARCH_TEXT) );
-        add_filter('genesis_search_button_text', array( $this, 'return_'.SEARCH_BUTTON_TEXT) );
+        if( defined( 'SEARCH_TEXT' ) ){
+            add_filter('genesis_search_text', array( $this, 'return_'.SEARCH_TEXT) );
+        }
+        if( defined( 'SEARCH_BUTTON_TEXT' ) ){
+            add_filter('genesis_search_button_text', array( $this, 'return_'.SEARCH_BUTTON_TEXT) );
+        }
         
-        
-        //Wrap the content
-        add_action( 'genesis_before_content', array( $this, 'wrap_topper') );
-        add_action( 'genesis_after_content', array( $this, 'wrap_footer'), 1 );
         
         //Add the class 'first-class' to the first post
         add_filter( 'post_class',array( $this, 'first_post_class'), 0, 2);
-        
-        //Create the Vimm LInk Shortcode
-        add_shortcode('vimm_link', array( $this, 'vimm_link_shortcode') );
-        //Create the Vimm Sitemap Shortcode
-        add_shortcode('vimm_sitemap_link', array( $this, 'vimmSitemapShortcode') );
-        
+
         //Add the IE only Stylesheets
         add_action('wp_head', array( $this, 'ie_only'), 99 );
         
@@ -204,7 +177,7 @@ class Bootstrap extends MvcFramework{
         add_filter('mce_css',array( $this, 'editor_style' ) );
         
         //Add Javascript to Site
-        add_action( 'wp_enqueue_scripts', array( $this, 'add_js_css' ) );
+        add_action('wp_enqueue_scripts', array( $this, 'add_js_css' ) );
         
 
         //Add Js and CSS to Admin
@@ -215,10 +188,7 @@ class Bootstrap extends MvcFramework{
         
         //Changes the Sidebar for the Blog Pages
         add_action( 'wp', array( $this, 'blog_sidebar') );
-        
-        //Sets some defaults for Genesis Simple Edits
-        self::simple_edits_settings();
-        
+
         //Add a class matching the page name for styling - nice :)
         add_filter('body_class', array( $this, 'body_class' ) );
 
@@ -228,12 +198,6 @@ class Bootstrap extends MvcFramework{
                 add_action('genesis_meta', array( $this, 'metaViewPoint') );   
             }
         }
-        
-        //Add Dial Ability to Image Links
-        add_filter( 'image_widget_image_link', array( $this, 'imageWidgetTelAllowed'),99,3 );
-        
-        // Tells you in the admin bar if mobile responive is tturned on
-        add_action( 'admin_bar_menu', array( $this, 'adminBarResponsiveCheck'), 80 );  
         
     }
 
@@ -277,44 +241,6 @@ class Bootstrap extends MvcFramework{
     }
 
 
-    /**
-     * Adds notifications to the admin Bar if we are using Mobile Responsive
-     * 
-     * @since 7.2.13
-     * 
-     * @author Tyler Steinhaus
-     */
-    function adminBarResponsiveCheck() {
-        global $wp_admin_bar;
-    
-        if( !is_user_logged_in() || !is_super_admin() || !is_admin_bar_showing() ) {
-            return;
-        }
-    
-        if( current_theme_supports( 'mobile_responsive' ) ) {
-            $wp_admin_bar->add_menu( array( 
-                'id'            =>  'responsive_check',
-                'title'         =>  __( 'Responsive' ),
-                'href'          => ''
-            ) );
-        }
-    }
-
-
-
-
-    /**
-     * Allow tel: links in the Image widget
-     * 
-     * @since 5.11.1
-     */
-    function imageWidgetTelAllowed($link, $args, $instance){
-       $prot = array('tel','http', 'https', 'ftp', 'ftps', 'mailto', 'news', 'irc', 'gopher', 'nntp', 'feed', 'telnet', 'mms', 'rtsp', 'svn' );
-        
-       $link = esc_url( $instance['link'], $prot ); 
-        
-       return $link;
-    }
 
     /**
      * Registers the Widgets from the themes widgets folder
@@ -375,41 +301,7 @@ class Bootstrap extends MvcFramework{
                        );
         }
     }
-    
-     
-     
-        /**
-     * Creates an activation hook to change the default simple Links settings
-     * @since 9/21/12
-     * @uses called by __construct()
-     */
-    function simple_edits_settings(){
-        $simple_edits_file = WP_PLUGIN_DIR . '/genesis-simple-edits/plugin.php';
-        if( file_exists( $simple_edits_file ) && !is_plugin_active($simple_edits_file) ){
-            register_activation_hook($simple_edits_file, array( $this, 'simple_edits_change') );
-        }
-        
-    } 
-     
-     
-     
-   /**
-     * Changes the default simple links settings
-     * @since 9/21/12
-     * @see simple_links_settings()
-     * @uses called by simple_links_settings():
-     * @example outputs the [vimm_link] shortcode so don't have to find it
-     */
-    function simple_edits_change(){
-        $simple_edits_options = get_option( GSE_SETTINGS_FIELD );
-        $simple_edits_options['footer_output_on'] = 1;
-        $simple_edits_options['footer_output'] = '[vimm_link]';
-        $simple_edits_options['footer_creds_text'] = '';
-        $simple_edits_options['footer_backtotop_text'] = '';
-        $simple_edits_options['post_meta'] ='[post_categories] [post_tags]';
-        $simple_edits_options['post_info']='[post_date] By [post_author_posts_link] [post_comments] [post_edit]';
-        update_option( GSE_SETTINGS_FIELD, $simple_edits_options );
-    }
+
     
     
     /**
@@ -519,10 +411,6 @@ class Bootstrap extends MvcFramework{
      */
     function add_js_css(){
         
-        //Cue some scripts
-        wp_register_script( 'slides', THEME_DIR.'lib/js/registered/slides.js', array('jquery'));
-        wp_register_script( 'jcarousel', THEME_DIR.'lib/js/registered/jcarousel.js', array('jquery'));
-        
         if( file_exists(THEME_FILE_DIR.'js/child.js') ){
             wp_enqueue_script(
                 'mvc-child-js',
@@ -530,7 +418,8 @@ class Bootstrap extends MvcFramework{
                 array('jquery' )
             );
          
-            $dirs = array( 'IMG'      => IMAGE_DIR,
+            $dirs = array( 
+                        'IMG'     => IMAGE_DIR,
                        'THEME'    => THEME_DIR,
                        'INCLUDES' => SCRIPT_DIR,
                        'LOADING_ICON' => IMAGE_DIR.'loading.gif' );
@@ -686,70 +575,8 @@ class Bootstrap extends MvcFramework{
     }
     
     
-    /**
-     * Ouputs a Shortcode Linking to the Sitemap Page
-     * * @param array $atts the arguments for the shortcode
-       * @uses Supported shortcode attributes are:
-      * *  url (The links url ),
-      * *  link (The text of the link
-      *   @example [vimm_sitemap_link link="sitemap"]
-     * 
-     * 
-      * @filters  apply_filters( 'vimm_sitemap_link', $output, $atts );
-     * 
-     * @since 4.2.0
-     */
-    function vimmSitemapShortcode($atts){
-        $defaults = array(
-                'url' => '/sitemap',
-                'link' => 'Sitemap'
-        
-        );
-        $atts = shortcode_atts( $defaults, $atts );
-        
-        if( $atts['url'] == '/sitemap' && !get_option('vimm-sitemap-shortcode', false) ){
-            if( !get_page_by_title('Sitemap') ){
-                wp_insert_post( array(
-                    'post_name'      => 'sitemap',
-                    'post_status'    => 'publish',
-                    'post_title'     => 'Sitemap',
-                    'post_type'      => 'page'
-                ) ); 
-            }
-            
-            add_option('vimm-sitemap-shortcode', 1, null, 'yes' );
-        }
-        
-        
-        $output = '<a href="' . $atts['url'].'" />'. $atts['link'] . '</a>';
-        return apply_filters( 'vimm_sitemap_link', $output, $atts );
-    }
+
     
-    
-    /**
-     * Creates a shortcode which links to vivid Image's Site
-     * @param array $atts the arguments for the shortcode
-     * @since 9/21/12
-      * @uses Supported shortcode attributes are:
-      * *  by (The Developed by 0,
-      * *  url (The links url ),
-      * *  link (The text of the link
-      *   @example [vimm_link by="Designed by"]
-      * @uses all support filtering of output using 'vimm_shortcode_link' filter with 2 args
-     */
-    function vimm_link_shortcode( $atts ){
-        $defaults = array(
-                'by' => 'Developed By',
-                'url' => 'http://www.vimm.com',
-                'link' => 'Vivid Image'
-        
-        );
-        $atts = shortcode_atts( $defaults, $atts );
-        
-        
-        $output = $atts['by'] . ' <a href="' . $atts['url'].'" target="blank" />'. $atts['link'] . '</a>';
-        return apply_filters( 'vimm_shortcode_link', $output, $atts );
-    }
     
     /**
      * Add the 'first-post' class to the first post on any page
@@ -771,34 +598,6 @@ class Bootstrap extends MvcFramework{
         
         $classes[] = sprintf('item-count-%s', array_search($post, $posts)+1 );
         return $classes;
-    }
-    
-    
-    
-    /**
-     * Opens the divs that wrap the post content
-     * @uses called by __construct()
-     * @since 9/21/12
-     */
-    function wrap_topper(){
-        ?><div id="content-wrap"><div id="content-wrap2"><?php
-    }
-    
-    /**
-     * Closes the divs that wrap the content\
-     * @uses contains a hook called 'mat_after_content' for executing functions after these wraps
-     * @uses calle by __contruct()
-     * @since 7.2.13
-     */
-    function wrap_footer(){
-        ?></div></div><!-- End #content-wrap --><?php
-        //An extra hook just in case
-        //Left here simply for deprectation
-        do_action('mat_after_content');
-        
-        //Proper Hook to use
-        do_action('mvc_after_content');
-        
     }
     
     

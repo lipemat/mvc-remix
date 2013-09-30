@@ -27,7 +27,9 @@ define('SEARCH_BUTTON_TEXT','Search');
 define('SEARCH_TEXT','Search this website');
 
 
-//add_theme_support('tabs');
+add_theme_support( 'mvc_browsers' );
+add_theme_support( 'mvc_widgets' );
+
 //add_theme_support('mobile_responsive');
 //add_theme_support('mobile_menu','dark'); //light or dark
 //add_theme_support('category-images');
