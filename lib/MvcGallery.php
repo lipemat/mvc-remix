@@ -5,15 +5,12 @@
  * 
  * @uses new MvcGallery($postTypes);
  * @param array $postTypes - The post types to use this on
+
+ * @since 10.1.13
  * 
- * @since 4.5.0
- * 
- * @since 7.22.13
- * 
- * @TODO Get the Add to Gallery Buttons to Work on the Upload Screen
  */
 class MvcGallery extends MvcFramework{
-       private $post_types = array();
+       public $post_types = array();
        private $groups = array();
        
        /**
@@ -24,7 +21,7 @@ class MvcGallery extends MvcFramework{
         * @uses __construct($postTypes)
         * @since 4.5.0
         * 
-        * @since 6.18.13
+        * @since 10.1.13
         */
        function __construct($postTypes = array('post','page'), $groups = array('gallery')){
            
@@ -37,9 +34,6 @@ class MvcGallery extends MvcFramework{
            
              add_action('admin_print_scripts', array( $this, 'js' ), 999 );  
              wp_enqueue_script('jquery-ui-sortable');  
-             wp_enqueue_script('media-upload');
-             wp_enqueue_script('thickbox');
-             wp_enqueue_style('thickbox');
              
              add_action('admin_menu', array($this, 'metaBoxSetup'), 99 );
 
@@ -52,11 +46,13 @@ class MvcGallery extends MvcFramework{
  
        /**
        * Register Meta Boxes
+        * 
+        * @since 10.1.13
        **/   
        function metaBoxSetup(){
               foreach( $this->post_types as $pt ){
                    foreach($this->groups as $group){
-                           add_meta_box($group, $this->MvcString->human_format_slug($group), array($this, 'metaBoxOutput'), $pt, 'advanced', 'high' );
+                           add_meta_box($group, ucwords( str_replace( '_', ' ', $group)), array($this, 'metaBoxOutput'), $pt, 'advanced', 'high' );
                      }
                }
                   
@@ -66,7 +62,7 @@ class MvcGallery extends MvcFramework{
               /**
         * Returns and an array of the groups with slugs as keys
         * 
-        * @since 5.15.0
+        * @since 10.1.13
         * @uses $this->groups;
         */
        function cleanGroups(){
@@ -75,7 +71,7 @@ class MvcGallery extends MvcFramework{
            
            $clean = array();
            foreach( $this->groups as $group ){
-               $clean[$this->MvcString->human_format_slug($group)] = $group;
+               $clean[ucwords( str_replace( '_', ' ', $group))] = $group;
            }
            
            return $clean;
@@ -86,10 +82,13 @@ class MvcGallery extends MvcFramework{
        /**
         * Add the "Add to" section of the image editing box
         * 
-        * @since 5.9.13
+        * @since 10.1.13
         * @uses added to the 'attachment_fields_to_edit' filter by self::construct
         */
        function addAttachmentField($form_fields, $post ){
+           
+             if( !in_array(get_post_type($_REQUEST['post_id']), $this->post_types )) return $form_fields;
+           
               $calling_post_id = 0 ;
               if( isset( $_GET['post_id' ] )){
                      $calling_post_id = absint($_GET['post_id']);
@@ -98,14 +97,18 @@ class MvcGallery extends MvcFramework{
               }
               
               if(!$calling_post_id) return $form_fields;  
-              if( !isset( $_REQUEST['mvc_gallery']) ) return $form_fields; 
-                 
-    
-              $form_fields["{$post->post_type}-{$post->ID}-mvc-gallery"] = array(
+              
+              $url = $this->getAttachmentUrl( $post );
+             
+             
+              foreach( $this->groups as $group ){
+                  $form_fields["{$post->post_type}-{$post->ID}-$group-mvc-gallery"] = array(
                      'label' => 'Add To',
                      'input' => 'html',
-                     'html'  => '<a href="#" class="mvc-gallery button-primary">Attach</a>'
-              );
+                     'html'  => '<a href="#" group="'.$group.'" url="'.$url.'" title="'.basename($post->guid).'" id="'.$post->ID.'" class="mvc-gallery button-primary" onclick="MvcGallery.AddImage(this)">'.ucwords(str_replace('_',' ',$group) ).'</a>'
+                );
+              }
+             
 
               return $form_fields;      
        }      
@@ -131,8 +134,6 @@ class MvcGallery extends MvcFramework{
                      case !current_user_can('edit_post', $post_id):
                            return $post_id;
               }
-
-    
 
               foreach($this->groups as $group){
                      if( isset( $_POST['mvc-gallery-'.$group] ) ){
@@ -179,7 +180,7 @@ class MvcGallery extends MvcFramework{
         * Output of the Gallery Meta Box
         * * Displays the existing Gallery Images and has links to add more
         * 
-        * @since 6.18.13
+        * @since 10.1.13
         * @uses called by self::metaBoxSetup
         * 
         * @param obj $post - the current post
@@ -193,7 +194,8 @@ class MvcGallery extends MvcFramework{
              ?>
                <div class="mvc-gallery">
                     <p>
-                     <a class="thickbox button-secondary" href="media-upload.php?post_id=<?php echo $post->ID; ?> &amp;mvc_gallery=1&amp;tab=library&amp;TB_iframe=1&amp;width=640&amp;height=299" title="Add Attachment">Add Image from Library</a>
+
+                      <input class="button" id="<?php echo $group['id']; ?>" value="Add Media" style="text-align: center"/>
                    </p>
                    <?php if(empty ($images)){
                             ?><p id="uncheck-message" style="display:none">Uncheck an image to remove it.</p><?php
@@ -202,13 +204,13 @@ class MvcGallery extends MvcFramework{
                         }
                   ?>
                   <div class="scroll">
-                      <ol><?php 
+                      <ol rel="<?php echo 'mvc-gallery-'.$group['id']; ?>"><?php 
                           if(!empty ($images)){
                                foreach($images as $image){
                                     $image = get_post($image);
                                     ?>
                                     <li>
-                                       <img src="<?php echo wp_get_attachment_thumb_url($image->ID); ?>" />
+                                       <img src="<?php echo $this->getAttachmentUrl($image); ?>" />
                                         <input 
                                               type="checkbox" 
                                               checked="checked" 
@@ -218,7 +220,7 @@ class MvcGallery extends MvcFramework{
                                             
                                           />
                                          <label for="c<?php echo $image->ID; ?>">           
-                                             <span> </span><?php echo $image->post_title; ?>
+                                             <span> </span><?php echo basename($image->guid); ?>
                                         </label>
                                      </li>             
                                         <?php
@@ -243,88 +245,94 @@ class MvcGallery extends MvcFramework{
                            .mvc-gallery.scroll{max-height:300px; height:auto !important; height:300px; overflow: auto;}
                            .mvc-gallery li{border-bottom: 1px solid #ccc;}
                            .mvc-gallery img{width: 75px; margin: 0 10px 10px 0; vertical-align: top;}
-                           
-                    
-                      <?php global $is_IE; 
-                       if( !$is_IE ){
-                         /*(*
-                          * @TODO  get the checkbox to work consitently when using javascript
-                          *  ?>   
-                         .mvc-gallery input[type="checkbox"] {
-                                display:none;
-                            }
-                         .mvc-gallery input[type="checkbox"] + label span {
-                                   display:inline-block;
-                                    width:19px;
-                                    height:19px;
-                                    margin:-1px 4px 0 0;
-                                    vertical-align:middle;
-                                    background:url(<?php echo THEME_DIR; ?>lib/img/check_radio_sheet.png) left top no-repeat;
-                                    cursor:pointer;
-                            }
-                            .mvc-gallery input[type="checkbox"]:checked + label span {
-                                 background:url(<?php echo THEME_DIR; ?>lib/img/check_radio_sheet.png) -19px top no-repeat;  
-                            }
-                       <?php
-                          * **/ } ?>
                      </style>
              <?php
        }
+
+
+
+       /**
+        * Retreive either the thumb for an image or placeholder for docs
+        * 
+        * @since 10.1.13
+        * 
+        * @param WP_Post $img
+        */
+       function getAttachmentUrl( WP_Post $img){
+
+            $type = get_post_mime_type($img);
+            
+            $base = apply_filters( 'icon_dir_uri', includes_url('images/crystal') );
+            
+            switch ($type) {
+                case 'image/jpeg':
+                case 'image/png':
+                case 'image/gif':
+                   return wp_get_attachment_thumb_url($img->ID);
+                break;
+                 case 'video/mpeg':
+                 case 'video/mp4': 
+                 case 'video/quicktime':
+                    return $base . "/video.png"; 
+                break;
+                 case 'text/csv':
+                 case 'text/plain': 
+                 case 'text/xml':
+                    return $base . "/text.png"; 
+                 break;
+                default:
+                   return $base . "/document.png"; 
+               break;
+            }
+
+       }
+
        
        /**
         * The Js required for the Image uploading and attaching
         * 
-        * @since 5.9.13
+        * @since 9.30.13
         * @uses added to 'admin_print_scripts' hook by self::__construct
         */
        function js(){
            ?><script type="text/javascript">
-                var mvcGallery = false;
+                var GalleryBox = true;
+                    var MvcGallery = {
+                        AddImage : function(e){
+                           var e = jQuery(e);
+                           var attachment = {};
+                                  
+                           attachment.url = e.attr('url');
+                           attachment.id = e.attr('id');
+                           attachment.filename = e.attr('title');
+                           
+                           GalleryBox = jQuery('#'+e.attr('group')+'.postbox');
+                           
+                           GalleryBox.find('#uncheck-message').show();
+                           GalleryBox.find('ol').append('<li><img src="'+attachment.url+'"/>' +
+                                    '<input type="checkbox" name="mvc-gallery-' +e.attr('group')+'[]" value="'+attachment.id+'" checked="checked" />'+
+                                    '<label><span>'+attachment.filename+'</span></label>'+
+                                    '</li>'
+                                    );
+                       }    
+                    }
 
+     
                 jQuery(function($){
-                    $('.mvc-gallery a').click (function(){
-                        mvcGallery = $(this);
-                    });
-                    
-                    $('input[type="checkbox"]:checked + label span').addClass('checked');
-                    
+
                     $('.mvc-gallery ol').sortable({placeholder: 'sortable-placeholder'});
                     
-                    $('a.mvc-gallery').each(function(){
-                        //check for opener of attachPro
-                         win = window.dialogArguments || opener || parent || top;
-
-                        if(!win.mvcGallery) return;
-             
-                        //Change the link text to the title of the meta box
-                        $(this).text(win.mvcGallery.closest('.postbox').find('h3').text());
-
-                        $(this).click(function(){
-                            t = $(this).closest('.media-item' );
-                            win.mvcGalleryAdd (
-                                t.attr('id').replace(/\D/g,''),
-                                t.find ('img.pinkynail:first').attr('src' ),
-                                t.find ('tr.post_title input').val()
-                            );
-                            t.find ('.describe-toggle-off').click();
-                        });
+                    $('.mvc-gallery .button').click(function(e) {
+                          wp.media.editor.open(e);
                     });
                 });
-                
-
-                //Add the new images to the meta box
-                function mvcGalleryAdd(id, tn , l ){
-                    g = mvcGallery.closest('.postbox' );
-                    g.find('#uncheck-message').show();
-                    g.find ('ol') .append(
-                        '<li><img src="'+tn+'"/> ' +
-                        '<input type="checkbox" name="mvc-gallery-' +g.attr('id')+'[]" value="'+id+'" checked="checked" />'+
-                        '<label><span></span>'+l+'</label>'+
-                        '</li>'
-                    );
-                };
-       
+                    
            </script>
+           <style type="text/css">
+                .mvc-gallery ol li{
+                    cursor: move;
+                }    
+           </style> 
            <?php
        }
 
@@ -335,8 +343,8 @@ class MvcGallery extends MvcFramework{
      * @param int [optional] $post_id the id of the post
      * @param string $size the size of the image defaults to 'thumbnail'
      * @param bool $html or object format defaults html
-	 * @param bool $useFeatured - if true a set featured image will override the the first gallery image
-	 * @param string $galleryName the name of the gallery defaults to 'image-gallery'
+     * @param bool $useFeatured - if true a set featured image will override the the first gallery image
+     * @param string $galleryName the name of the gallery defaults to 'image-gallery'
      */
     function getFirstImage( $postId = false, $size = 'thumbnail', $html = true, $useFeatured = false, $galleryName = 'image-gallery' ){
 
@@ -347,44 +355,44 @@ class MvcGallery extends MvcFramework{
             $postId = $post->ID;
         }
     
-		//Check if the featured image should be used, then check if the post has a thumbnail
-		if($useFeatured){
-	        if( has_post_thumbnail($postId) ){
-	            if( $html ){
-	                return get_the_post_thumbnail( $postId, $size );
-	            } else {
-	            	$image['ID']  = get_post_thumbnail_id( $postId );  
-					$imageData = $this->get_image_data($image['ID'], $size);
-					return $imageData;        
-	            }
-	        }
-		}
-		  
-		  
-		$img_args = array(
+        //Check if the featured image should be used, then check if the post has a thumbnail
+        if($useFeatured){
+            if( has_post_thumbnail($postId) ){
+                if( $html ){
+                    return get_the_post_thumbnail( $postId, $size );
+                } else {
+                    $image['ID']  = get_post_thumbnail_id( $postId );  
+                    $imageData = $this->get_image_data($image['ID'], $size);
+                    return $imageData;        
+                }
+            }
+        }
+          
+          
+        $img_args = array(
             'post_status'    => 'inherit',
             'post_type'      => 'attachment',
             'post_mime_type' => 'image',
             'order'          => 'ASC',
             'orderby'        => 'menu_order ID',
             'numberposts'    => 1,
-            'orderby'		 => 'post__in',
-            'post__in'		 => get_post_meta( $postId, 'mvc-gallery-'.$galleryName, true ),
-		    'fields'         => 'ids'
+            'orderby'        => 'post__in',
+            'post__in'       => get_post_meta( $postId, 'mvc-gallery-'.$galleryName, true ),
+            'fields'         => 'ids'
             );  
-		  
-		 
+          
+         
         $gallery_images = get_posts( $img_args );
-	
+    
         if( empty( $gallery_images ) ){
             return false;
         }
 
         //If just needs an html image return the image
         if( $html ){
-            return wp_get_attachment_image($gallery_images[0], $size );			
+            return wp_get_attachment_image($gallery_images[0], $size );         
         } else {
-        	$imageData = $this->get_image_data($gallery_images[0], $size );
+            $imageData = $this->get_image_data($gallery_images[0], $size );
             return $imageData;
         }
     }
