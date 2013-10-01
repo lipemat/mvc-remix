@@ -5,15 +5,12 @@
  * 
  * @uses new MvcGallery($postTypes);
  * @param array $postTypes - The post types to use this on
+
+ * @since 9.30.13
  * 
- * @since 4.5.0
- * 
- * @since 7.22.13
- * 
- * @TODO Get the Add to Gallery Buttons to Work on the Upload Screen
  */
 class MvcGallery extends MvcFramework{
-       private $post_types = array();
+       public $post_types = array();
        private $groups = array();
        
        /**
@@ -37,9 +34,6 @@ class MvcGallery extends MvcFramework{
            
              add_action('admin_print_scripts', array( $this, 'js' ), 999 );  
              wp_enqueue_script('jquery-ui-sortable');  
-             wp_enqueue_script('media-upload');
-             wp_enqueue_script('thickbox');
-             wp_enqueue_style('thickbox');
              
              add_action('admin_menu', array($this, 'metaBoxSetup'), 99 );
 
@@ -86,10 +80,13 @@ class MvcGallery extends MvcFramework{
        /**
         * Add the "Add to" section of the image editing box
         * 
-        * @since 5.9.13
+        * @since 9.30.13
         * @uses added to the 'attachment_fields_to_edit' filter by self::construct
         */
        function addAttachmentField($form_fields, $post ){
+           
+             if( !in_array(get_post_type($_REQUEST['post_id']), $this->post_types )) return $form_fields;
+           
               $calling_post_id = 0 ;
               if( isset( $_GET['post_id' ] )){
                      $calling_post_id = absint($_GET['post_id']);
@@ -98,14 +95,16 @@ class MvcGallery extends MvcFramework{
               }
               
               if(!$calling_post_id) return $form_fields;  
-              if( !isset( $_REQUEST['mvc_gallery']) ) return $form_fields; 
-                 
-    
-              $form_fields["{$post->post_type}-{$post->ID}-mvc-gallery"] = array(
+              
+             
+              foreach( $this->groups as $group ){
+                  $form_fields["{$post->post_type}-{$post->ID}-$group-mvc-gallery"] = array(
                      'label' => 'Add To',
                      'input' => 'html',
-                     'html'  => '<a href="#" class="mvc-gallery button-primary">Attach</a>'
-              );
+                     'html'  => '<a href="#" group="'.$group.'" url="'.$post->guid.'" title="'.$post->post_title.'" id="'.$post->ID.'" class="mvc-gallery button-primary" onclick="MvcGallery.AddImage(this)">'.$group.'</a>'
+                );
+              }
+             
 
               return $form_fields;      
        }      
@@ -131,8 +130,6 @@ class MvcGallery extends MvcFramework{
                      case !current_user_can('edit_post', $post_id):
                            return $post_id;
               }
-
-    
 
               foreach($this->groups as $group){
                      if( isset( $_POST['mvc-gallery-'.$group] ) ){
@@ -193,7 +190,8 @@ class MvcGallery extends MvcFramework{
              ?>
                <div class="mvc-gallery">
                     <p>
-                     <a class="thickbox button-secondary" href="media-upload.php?post_id=<?php echo $post->ID; ?> &amp;mvc_gallery=1&amp;tab=library&amp;TB_iframe=1&amp;width=640&amp;height=299" title="Add Attachment">Add Image from Library</a>
+
+                      <input class="button"  id="<?php echo $group['id']; ?>" value="Add Image" />
                    </p>
                    <?php if(empty ($images)){
                             ?><p id="uncheck-message" style="display:none">Uncheck an image to remove it.</p><?php
@@ -202,7 +200,7 @@ class MvcGallery extends MvcFramework{
                         }
                   ?>
                   <div class="scroll">
-                      <ol><?php 
+                      <ol rel="<?php echo 'mvc-gallery-'.$group['id']; ?>"><?php 
                           if(!empty ($images)){
                                foreach($images as $image){
                                     $image = get_post($image);
@@ -243,30 +241,6 @@ class MvcGallery extends MvcFramework{
                            .mvc-gallery.scroll{max-height:300px; height:auto !important; height:300px; overflow: auto;}
                            .mvc-gallery li{border-bottom: 1px solid #ccc;}
                            .mvc-gallery img{width: 75px; margin: 0 10px 10px 0; vertical-align: top;}
-                           
-                    
-                      <?php global $is_IE; 
-                       if( !$is_IE ){
-                         /*(*
-                          * @TODO  get the checkbox to work consitently when using javascript
-                          *  ?>   
-                         .mvc-gallery input[type="checkbox"] {
-                                display:none;
-                            }
-                         .mvc-gallery input[type="checkbox"] + label span {
-                                   display:inline-block;
-                                    width:19px;
-                                    height:19px;
-                                    margin:-1px 4px 0 0;
-                                    vertical-align:middle;
-                                    background:url(<?php echo THEME_DIR; ?>lib/img/check_radio_sheet.png) left top no-repeat;
-                                    cursor:pointer;
-                            }
-                            .mvc-gallery input[type="checkbox"]:checked + label span {
-                                 background:url(<?php echo THEME_DIR; ?>lib/img/check_radio_sheet.png) -19px top no-repeat;  
-                            }
-                       <?php
-                          * **/ } ?>
                      </style>
              <?php
        }
@@ -274,56 +248,40 @@ class MvcGallery extends MvcFramework{
        /**
         * The Js required for the Image uploading and attaching
         * 
-        * @since 5.9.13
+        * @since 9.30.13
         * @uses added to 'admin_print_scripts' hook by self::__construct
         */
        function js(){
            ?><script type="text/javascript">
-                var mvcGallery = false;
+                var GalleryBox = true;
+                    var MvcGallery = {
+                        AddImage : function(e){
+                           var e = jQuery(e);
+                           var attachment = {};
+                                  
+                           attachment.url = e.attr('url');
+                           attachment.id = e.attr('id');
+                           attachment.filename = e.attr('title');
+                           
+                           GalleryBox = jQuery('#'+e.attr('group')+'.postbox');
+                           
+                           GalleryBox.find('#uncheck-message').show();
+                           GalleryBox.find('ol').append('<li><img src="'+attachment.url+'"/>' +
+                                    '<input type="checkbox" name="mvc-gallery-' +e.attr('group')+'[]" value="'+attachment.id+'" checked="checked" />'+
+                                    '<label><span>'+attachment.filename+'</span></label>'+
+                                    '</li>'
+                                    );
+                       }    
+                    }
+
 
                 jQuery(function($){
-                    $('.mvc-gallery a').click (function(){
-                        mvcGallery = $(this);
-                    });
-                    
-                    $('input[type="checkbox"]:checked + label span').addClass('checked');
-                    
-                    $('.mvc-gallery ol').sortable({placeholder: 'sortable-placeholder'});
-                    
-                    $('a.mvc-gallery').each(function(){
-                        //check for opener of attachPro
-                         win = window.dialogArguments || opener || parent || top;
 
-                        if(!win.mvcGallery) return;
-             
-                        //Change the link text to the title of the meta box
-                        $(this).text(win.mvcGallery.closest('.postbox').find('h3').text());
-
-                        $(this).click(function(){
-                            t = $(this).closest('.media-item' );
-                            win.mvcGalleryAdd (
-                                t.attr('id').replace(/\D/g,''),
-                                t.find ('img.pinkynail:first').attr('src' ),
-                                t.find ('tr.post_title input').val()
-                            );
-                            t.find ('.describe-toggle-off').click();
-                        });
+                    $('.mvc-gallery .button').click(function(e) {
+                          wp.media.editor.open(button);
                     });
                 });
-                
-
-                //Add the new images to the meta box
-                function mvcGalleryAdd(id, tn , l ){
-                    g = mvcGallery.closest('.postbox' );
-                    g.find('#uncheck-message').show();
-                    g.find ('ol') .append(
-                        '<li><img src="'+tn+'"/> ' +
-                        '<input type="checkbox" name="mvc-gallery-' +g.attr('id')+'[]" value="'+id+'" checked="checked" />'+
-                        '<label><span></span>'+l+'</label>'+
-                        '</li>'
-                    );
-                };
-       
+                    
            </script>
            <?php
        }
