@@ -11,8 +11,8 @@ class WordpressPassword extends PHPUnit_Extensions_SeleniumTestCase {
     protected $screenshotUrl = 'http://test.loc/screenshots/password';
     
     
-    private $old_pass = '$Bricesi8974';
-    private $new_pass = '5Wtcmv!';
+    private $old_pass = 'old-pass';
+    private $new_pass = 'new-pass';
     
 
     protected function setUp() {
