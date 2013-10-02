@@ -27,6 +27,7 @@ add_theme_support( 'mvc_styles' );
 add_theme_support( 'mvc_widgets' );
 add_theme_support( 'mvc_secure' );
 add_theme_support( 'mvc_format' );
+add_theme_support( 'mvc_ajax' );
 
 //add_theme_support('mvc_mobile_responsive');
 //add_theme_support('mvc_mobile_menu','dark'); //light or dark

@@ -5,14 +5,12 @@
  * @uses automatically extended into the Model Views and Controllers and Bootstrap
  * @see Bootstrap.php
  * @author Mat Lipe <mat@matlipe.com>
- * @since 9.30.13
- * 
- * @TODO move the config to an  optional mvc-config file which may be placed in the theme root - also generated on install
+ * @since 10.2.13
+
  * @TODO Create a fragment caching class - run tests database vs files
  * @TODO create an auto shortcode registering class - see NUSD theme
  * @TODO create a way to server up all js or css files from one php file like mvc_add_style() and mvc_add_js() to prevent all the requests - maybe grunt.js
  * @TODO enable revision support for post meta
- * @TODO Switch everything over the new media uploader - Or at least one common object - see evernote Use Built In Media Uploader
  * @TODO Add the Custom Image Sizes to the Media Uploader. Ponder a way to decided which ones are requires so the user won't see like a billion of them
  * 
  *
@@ -44,6 +42,12 @@ class MvcFramework{
                 $this->MvcFormat->{$func}($args);       
             }
         }
+        
+        //For CPT stuff
+        if( method_exists($this->MvcPostTypeTax, $func) ){
+           $this->MvcPostTypeTax->{$func}($args);       
+        }
+
         
         
         //For Special Views
@@ -610,6 +614,19 @@ class MvcFramework{
         if( $this->controller ) return $this->controller;
         $this->controller = str_replace('Controller', '', get_class($this));
         return $this->controller;
+    }
+    
+    /**
+     * Get a complete Controller Object
+     * @since 1.0.1
+     * 
+     * @param string $controller - name of controller
+     */
+    function getControllerObject($controller){
+        global $mvc_theme;
+
+        return $mvc_theme['controllers'][$controller];
+        
     }
     
 

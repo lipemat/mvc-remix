@@ -17,12 +17,13 @@
  * 
  */
 function _mvc_autoload($class){
-    if( file_exists($class.'.php') ){
-        require( $class.'.php');
-    } elseif( file_exists('helpers/'.$class.'.php') ){
-        require( 'helpers/'.$class.'.php');
-    } elseif( file_exists('optional/'.$class.'.php') ){
-        require( 'optional/'.$class.'.php');
+
+    if( file_exists(MVC_DIR.'lib/'.$class.'.php') ){
+        require( MVC_DIR.'lib/'.$class.'.php');
+    } elseif( file_exists(MVC_DIR.'lib/helpers/'.$class.'.php') ){
+        require( MVC_DIR.'lib/helpers/'.$class.'.php');
+    } elseif( file_exists(MVC_DIR.'lib/optional/'.$class.'.php') ){
+        require( MVC_DIR.'lib/optional/'.$class.'.php');
     }
 }
                          

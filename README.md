@@ -1,4 +1,4 @@
-WordPress MVC
+MVC Theme - WordPress Plugin
 =============
 
 MVC Framework written to work on top of WordPress theme

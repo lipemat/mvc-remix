@@ -70,89 +70,30 @@ if( current_theme_supports('mvc_format') ){
     $MvcImageResize = new MvcFormat();
 }
 
-
-
-
-if( IS_MVC ){
-$classes = array();
-#-- Bring in the Files and Construct The Classes
-foreach( scandir(MVC_THEME_DIR.'Controller') as $file ){
-    if( !in_array( $file, array('.','..','Controller.php')) ){
-          //Add the Controller
-          require(MVC_THEME_DIR.'Controller/'.$file);
-          $name = str_replace(array('Controller','.php'), array('',''), $file);
-
-          if( in_array($name, array('Admin','admin') ) && !MVC_IS_ADMIN ) continue;
-          
-          $class = str_replace('.php', '', $file);
-          ${$class} = new $class;
-          
-          //Add the Model
-          require(MVC_THEME_DIR.'Model/'.$name.'.php');
-          ${$class}->{$name} = new $name;
-
-          //For the custom Post types
-          ${$class}->initMetaSave(); 
-          
-          //Keep track of all of the controllers and models
-          $classes[$class] = $name;          
-          
-          //Check if the new child class has a before and runs it if it does
-          //has to be done this way to prevent recalling the Controller->before() over and over
-          $reflect = new ReflectionClass($class);
-          if( $reflect->getMethod('before')->getDeclaringClass()->getName() == $class ){
-               add_action('wp', array( ${$class}, 'before' ) );
-          }
-
-         if( method_exists($class, 'single') ){
-             $GLOBALS['MvcClassesWithSingle'][$name] = $class;
-         }
-         
-         if( method_exists($class, 'archive') ){
-             $GLOBALS['MvcClassesWithArchive'][$name] = $class;
-         }
-    }
+//For Output Formatting
+if( current_theme_supports('mvc_ajax') ){
+    $MvcImageResize = new MvcAjax();
 }
 
 
-#-- Setup and run the Global, Controller, Model, and View
-//Had to do it this way because of requirements by the rest
-$Controller = new Controller();
-$Controller->Model = new Model();
-if( method_exists($Controller, 'before') ){
-    add_action('wp', array( $Controller, 'before' ) );
-}
-
-$classes['Controller'] = 'Controller';
-
-
-/**
- * Setup model inheritance through
- * @uses set controller var "uses" to array() for the Models to make available
- */
-foreach ($classes as $controller => $class) {
-    if (isset(${$controller}->uses)) {
-        foreach (${$controller}->uses as $model) {
-            if( !in_array($model,$classes) ){
-                require_once(MVC_THEME_DIR.'Model/'.$model.'.php');
-            }
-            ${$controller}->{$model} = new $model;
-        }
-    }
-    //Run the init
-    ${$controller}->init();
-}
-
-} //End if is MVC
 
 /**
  * Put all the default stuff in motion
- * @since 9.30.13
+ * @since 10.2.13
  */
 class MvcBootstrap extends MvcFramework{
     
     
+    /**
+     * @since 10.2.13
+     * 
+     * @uses constructed at the bottom of this file
+     */
     function __construct(){
+        
+       if( IS_MVC ){
+         $this->setupMvc();   
+       }
         
        //Allow for achive and single methods to work at the correct time
        add_action('wp', array( $this, 'singleAndArchiveMethods') );
@@ -164,7 +105,7 @@ class MvcBootstrap extends MvcFramework{
         add_action( 'do_meta_boxes', 'genesis_add_inpost_seo_box' );  
              
         //Register Widgets from the theme's widget folder
-        if( current_theme_support('mvc_widgets') ){
+        if( current_theme_supports('mvc_widgets') ){
             add_action('widgets_init', array( $this,'registerWidgets' ) );
         }
         
@@ -215,8 +156,13 @@ class MvcBootstrap extends MvcFramework{
      * Registers the Widgets from the themes widgets folder
      * 
      * @since 3.0
+     * 
+     * @since 10.2.13
      */
     function registerWidgets(){
+        
+        if( !is_dir( MVC_THEME_DIR.'widgets' ) ) return;
+        
         foreach( scandir(MVC_THEME_DIR.'widgets') as $widget ){
             if( $widget == '.' || $widget == '..') continue;
             require(MVC_THEME_DIR.'widgets/'.$widget);
@@ -227,6 +173,91 @@ class MvcBootstrap extends MvcFramework{
             register_widget($widget);
         }
     }
+
+
+    
+    /**
+     * Includes and sets up inheritance on all MVC Files
+     * 
+     * @since 0.1.0
+     * @uses if the theme has a Controllers/Controller.php file this will run automatically
+     */
+    function setupMvc(){
+        global $mvc_theme;
+            
+        $classes = array();
+        #-- Bring in the Files and Construct The Classes
+        foreach( scandir(MVC_THEME_DIR.'Controller') as $file ){
+            if( !in_array( $file, array('.','..','Controller.php')) ){
+                //Add the Controller
+                require(MVC_THEME_DIR.'Controller/'.$file);
+                $name = str_replace(array('Controller','.php'), array('',''), $file);
+
+                if( in_array($name, array('Admin','admin') ) && !MVC_IS_ADMIN ) continue;
+          
+                $class = str_replace('.php', '', $file);
+                ${$class} = new $class;
+                
+          
+                //Add the Model
+                require(MVC_THEME_DIR.'Model/'.$name.'.php');
+                ${$class}->{$name} = new $name;
+                
+                //add to global var for later use
+                $mvc_theme['controllers'][$class] = ${$class};
+                
+
+                //For the custom Post types
+                ${$class}->MvcPostTypeTax->initMetaSave(); 
+          
+                //Keep track of all of the controllers and models
+                $classes[$class] = $name;          
+          
+                //Check if the new child class has a before and runs it if it does
+                //has to be done this way to prevent recalling the Controller->before() over and over
+                $reflect = new ReflectionClass($class);
+                if( $reflect->getMethod('before')->getDeclaringClass()->getName() == $class ){
+                    add_action('wp', array( ${$class}, 'before' ) );
+                }
+
+                if( method_exists($class, 'single') ){
+                    $GLOBALS['MvcClassesWithSingle'][$name] = $class;
+                }
+         
+                if( method_exists($class, 'archive') ){
+                    $GLOBALS['MvcClassesWithArchive'][$name] = $class;
+                }
+            }
+        }
+
+
+        #-- Setup and run the Global, Controller, Model, and View
+        //Had to do it this way because of requirements by the rest
+        $Controller = new Controller();
+        $Controller->Model = new Model();
+        if( method_exists($Controller, 'before') ){
+            add_action('wp', array( $Controller, 'before' ) );
+        }
+
+        $classes['Controller'] = 'Controller';
+
+
+        // Setup model inheritance through
+        foreach ($classes as $controller => $class) {
+            if (isset(${$controller}->uses)) {
+                foreach (${$controller}->uses as $model) {
+                    if( !in_array($model,$classes) ){
+                        require_once(MVC_THEME_DIR.'Model/'.$model.'.php');
+                    }
+                    ${$controller}->{$model} = new $model;
+                }
+            }
+            //Run the init
+            ${$controller}->init();
+        }
+    }
+
+
     
 }
 
