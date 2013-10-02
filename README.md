@@ -1,27 +1,16 @@
-wordpress-mvc
+WordPress MVC
 =============
 
-MVC Framework written to work on top of WordPress and Genesis
+MVC Framework written to work on top of WordPress theme
 
-##Currently works as a Genesis Child them but in progress of being converted to a plugin which works on any WordPress theme.
+## IMPORTANT
+### This is currently in beta and being tested on real sites. The code is subject to change at anytime. Consider Tags as the only stable version of this code. Once there is a tag for a version > 1.0 this will then become updatable and may be considered stable.
+
+To Turn features on and off, add file mvc-config.php to your theme, copy the code from the mvc-config located in the plugins root and make your changes to the theme file.
+
 
 More useful readme and documentation coming soon. Up until 9/4/13 this was a private project used on many live 
 WordPress sites. It is being made public in hopes of helping other developers out there who love MVC.
 
 
-#TODO for transfer to plugin
-
-##create an install script to generat the proper MVC folders and some starting Files like Post.php and Page.php
-
-##Check for existing MVC folders and do not overwrite any files during the plugin install
-
-##Check for write access to theme folder and display a warning with a manual generation link
-
-##Allow for turning off auto MVC and auto Widgets etc by using a define in the config file
-
-##Check for existing widgets folder and automatically ad the define to the config to turn off auto widgets
-
-##remove unneeded formating options like content wrap
-
-##Move things like slideshows and carousels into their own plugin perhaps for later use one day
 

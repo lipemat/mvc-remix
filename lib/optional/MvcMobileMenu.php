@@ -59,7 +59,7 @@ class MvcMobileMenu extends MvcFramework{
      function menuButton(){
         ?>
         <div id="nav-button">
-            <img src="<?php echo IMAGE_DIR; ?>menu-button.png" />
+            <img src="<?php echo MVC_IMAGE_URL; ?>menu-button.png" />
         </div>
        <?php
            
@@ -78,13 +78,13 @@ class MvcMobileMenu extends MvcFramework{
          
         wp_enqueue_script(
                 'jquery-sidr',
-                 THEME_DIR.'lib/js/mobile_menu.js',
+                 MVC_THEME_URL.'lib/js/mobile_menu.js',
                  array('jquery'),
                  null,
                  true
         );
 
-        $css = THEME_DIR.'lib/css/mobile_menu_'.$this->theme_color.'.css';
+        $css = MVC_THEME_URL.'lib/css/mobile_menu_'.$this->theme_color.'.css';
 
         wp_enqueue_style(
                 'mvc-mobile-menu-css',

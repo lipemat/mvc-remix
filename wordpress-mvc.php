@@ -10,16 +10,14 @@ Author URI: http://matlipe.com
 
 
 //Set some constants                             
-define( 'THEME_DIR', get_bloginfo( 'stylesheet_directory' ). '/' );
-define( 'IMAGE_DIR', THEME_DIR.'images/');
-define( 'SCRIPT_DIR', THEME_DIR.'includes/');
-define( 'JS_DIR', THEME_DIR.'js/' );
-define( 'THEME_FILE_DIR', get_stylesheet_directory() . '/');
-define( 'MOBILE_DIR', THEME_DIR.'mobile/');       
-define( 'CSS_DIR', THEME_DIR.'lib/css' ); 
-define( 'IS_ADMIN', is_admin() );
+define( 'MVC_THEME_URL', get_bloginfo( 'stylesheet_directory' ). '/' );
+define( 'MVC_IMAGE_URL', MVC_THEME_URL.'images/');
+define( 'MVC_JS_URL', MVC_THEME_URL.'js/' );
+define( 'MVC_THEME_DIR', get_stylesheet_directory() . '/');
+define( 'MVC_MOBILE_URL', MVC_THEME_URL.'mobile/');       
+define( 'MVC_IS_ADMIN', MVC_IS_ADMIN() );
 
-
+define( 'MVC_DIR', plugin_dir_path(__FILE__).'/' );
 
 
 #-- Bring in the Framework

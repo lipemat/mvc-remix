@@ -35,31 +35,31 @@ class MvcStyles extends MvcFramework{
         
         //ie 10 only
         if( strpos( $_SERVER['HTTP_USER_AGENT'], 'MSIE 10' ) ){
-            if( file_exists(THEME_FILE_DIR . 'ie10.css') ){
+            if( file_exists(MVC_THEME_DIR . 'ie10.css') ){
                 do_action('ie-head');
-                printf( '<link rel="stylesheet" type="text/css" href="%sie10.css" /><![endif]-->', THEME_DIR );
+                printf( '<link rel="stylesheet" type="text/css" href="%sie10.css" /><![endif]-->', MVC_THEME_URL );
             }
         } 
                 
         //ie 9 only
-        if( file_exists(THEME_FILE_DIR . 'ie9.css') ){
+        if( file_exists(MVC_THEME_DIR . 'ie9.css') ){
             echo '<!--[if IE 9]>';
             do_action('ie9-head');
-            printf( '<link rel="stylesheet" type="text/css" href="%sie9.css" /><![endif]-->', THEME_DIR );
+            printf( '<link rel="stylesheet" type="text/css" href="%sie9.css" /><![endif]-->', MVC_THEME_URL );
         }
         
         //ie 8 only
-        if( file_exists(THEME_FILE_DIR . 'ie8.css') ){
+        if( file_exists(MVC_THEME_DIR . 'ie8.css') ){
             echo '<!--[if IE 8]>';
             do_action('ie8-head');
-            printf('<link rel="stylesheet" type="text/css" href="%sie8.css" /><![endif]-->', THEME_DIR );
+            printf('<link rel="stylesheet" type="text/css" href="%sie8.css" /><![endif]-->', MVC_THEME_URL );
         }
         
         //ie 7 only
-        if( file_exists(THEME_FILE_DIR . 'ie7.css') ){
+        if( file_exists(MVC_THEME_DIR . 'ie7.css') ){
             echo '<!--[if IE 7]>';
             do_action('ie7-head');            
-            printf( '<link rel="stylesheet" type="text/css" href="%sie7.css" /><![endif]-->', THEME_DIR );
+            printf( '<link rel="stylesheet" type="text/css" href="%sie7.css" /><![endif]-->', MVC_THEME_URL );
         }
         
     }
@@ -104,10 +104,10 @@ class MvcStyles extends MvcFramework{
      * @uses called by browser_support() and used the class var $browser
      */
     function browser_style(){
-        if( file_exists(THEME_FILE_DIR . $this->browser . '.css') ){
+        if( file_exists(MVC_THEME_DIR . $this->browser . '.css') ){
            wp_enqueue_style(
                $this->browser . '-child-css',
-               THEME_DIR . $this->browser . '.css'
+               MVC_THEME_URL . $this->browser . '.css'
                        );
         }
     }
@@ -133,16 +133,16 @@ class MvcStyles extends MvcFramework{
            echo apply_filters('mvc-local-admin-css', ob_get_clean() );
        }
         
-        if( file_exists(THEME_FILE_DIR.'js/admin.js') ){
+        if( file_exists(MVC_THEME_DIR.'js/admin.js') ){
              wp_enqueue_script(
                     'mvc-admin-js',
-                    JS_DIR. 'admin.js',
+                    MVC_JS_URL. 'admin.js',
                     array('jquery' )
              );
-             $dirs = array( 'IMG'      => IMAGE_DIR,
-                       'THEME'    => THEME_DIR,
+             $dirs = array( 'IMG'      => MVC_IMAGE_URL,
+                       'THEME'    => MVC_THEME_URL,
                        'INCLUDES' => SCRIPT_DIR,
-                       'LOADING_ICON' => IMAGE_DIR.'loading.gif' );
+                       'LOADING_ICON' => MVC_IMAGE_URL.'loading.gif' );
          
              wp_localize_script('mvc-admin-js', 'DIRS', $dirs);
         
@@ -151,10 +151,10 @@ class MvcStyles extends MvcFramework{
              
         }
         
-        if( file_exists(THEME_FILE_DIR.'admin.css') ){
+        if( file_exists(MVC_THEME_DIR.'admin.css') ){
             wp_enqueue_style(
                 'mvc-admin-styles',
-                THEME_DIR . 'admin.css' //The location of the style
+                MVC_THEME_URL . 'admin.css' //The location of the style
             );
         }
         
@@ -173,18 +173,18 @@ class MvcStyles extends MvcFramework{
      */
     function add_js_css(){
         
-        if( file_exists(THEME_FILE_DIR.'js/child.js') ){
+        if( file_exists(MVC_THEME_DIR.'js/child.js') ){
             wp_enqueue_script(
                 'mvc-child-js',
-                JS_DIR. 'child.js',
+                MVC_JS_URL. 'child.js',
                 array('jquery' )
             );
          
             $dirs = array( 
-                        'IMG'     => IMAGE_DIR,
-                       'THEME'    => THEME_DIR,
+                        'IMG'     => MVC_IMAGE_URL,
+                       'THEME'    => MVC_THEME_URL,
                        'INCLUDES' => SCRIPT_DIR,
-                       'LOADING_ICON' => IMAGE_DIR.'loading.gif' );
+                       'LOADING_ICON' => MVC_IMAGE_URL.'loading.gif' );
          
             wp_localize_script('mvc-child-js', 'DIRS', $dirs);
         
@@ -195,20 +195,20 @@ class MvcStyles extends MvcFramework{
         
         //Add the mobile Style if required
         if( current_theme_supports('mobile_responsive') ){
-              if( file_exists(THEME_FILE_DIR.'mobile/mobile-responsive.css') ){
+              if( file_exists(MVC_THEME_DIR.'mobile/mobile-responsive.css') ){
                 wp_enqueue_style(
                     'mvc-mobile-styles',
-                    MOBILE_DIR . 'mobile-responsive.css' //The location of the style
+                    MVC_MOBILE_URL . 'mobile-responsive.css' //The location of the style
                 );
               }
 
 
             //Add the mobile script or the non mobile script based on device
             if( !self::is_mobile() ){
-               if( file_exists(THEME_FILE_DIR.'mobile/desktop.js') ){
+               if( file_exists(MVC_THEME_DIR.'mobile/desktop.js') ){
                     wp_enqueue_script(
                     'mvc-non-mobile-script',
-                    MOBILE_DIR. 'desktop.js',
+                    MVC_MOBILE_URL. 'desktop.js',
                     array('jquery')
                     );
 
@@ -219,14 +219,14 @@ class MvcStyles extends MvcFramework{
                 if( self::is_tablet() ){
                     wp_enqueue_style(
                         'mvc-tablet-styles',
-                        MOBILE_DIR . 'tablet.css' //The location of the style
+                        MVC_MOBILE_URL . 'tablet.css' //The location of the style
                     );
 
 
-                    if( file_exists(THEME_FILE_DIR.'mobile/tablet.js') ){
+                    if( file_exists(MVC_THEME_DIR.'mobile/tablet.js') ){
                         wp_enqueue_script(
                             'mvc-tablet-script',
-                            MOBILE_DIR. 'tablet.js',
+                            MVC_MOBILE_URL. 'tablet.js',
                             array('jquery')
                         );
                     }
@@ -236,14 +236,14 @@ class MvcStyles extends MvcFramework{
                 if( self::is_phone() ){
                     wp_enqueue_style(
                         'mvc-phone-styles',
-                        MOBILE_DIR . 'phone.css' //The location of the style
+                        MVC_MOBILE_URL . 'phone.css' //The location of the style
                     );
 
 
-                    if( file_exists(THEME_FILE_DIR.'mobile/phone.js') ){
+                    if( file_exists(MVC_THEME_DIR.'mobile/phone.js') ){
                         wp_enqueue_script(
                             'mvc-phone-script',
-                            MOBILE_DIR. 'phone.js',
+                            MVC_MOBILE_URL. 'phone.js',
                             array('jquery')
                         );
                     }

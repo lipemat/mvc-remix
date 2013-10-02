@@ -19,20 +19,21 @@ include_once( ABSPATH . 'wp-admin/includes/plugin.php' ); //Bring in the admin p
 spl_autoload_register('_mvc_autoload');
 
 
-if( file_exists(THEME_FILE_DIR.'Controller/Controller.php') ){
+if( file_exists(MVC_THEME_DIR.'Controller/Controller.php') ){
     //for portability
     define( 'IS_MVC', true );
-    require(THEME_FILE_DIR.'Controller/Controller.php' );
-    require(THEME_FILE_DIR.'Model/Model.php' );
+    require(MVC_THEME_DIR.'Controller/Controller.php' );
+    require(MVC_THEME_DIR.'Model/Model.php' );
 } else {
     define( 'IS_MVC', false );
 }
 
 
 /** The Config for this Theme **/
-if( file_exists(THEME_FILE_DIR.'Config/theme-config.php') ){
-    include(THEME_FILE_DIR.'Config/theme-config.php');
+if( !locate_template('mvc-config.php', true) ){
+   include( MVC_DIR.'mvc-config.php' );
 }
+
 
 
 define( 'IS_MOBILE_THEME', current_theme_supports('mvc_mobile_responsive') );  
@@ -75,19 +76,19 @@ if( current_theme_supports('mvc_format') ){
 if( IS_MVC ){
 $classes = array();
 #-- Bring in the Files and Construct The Classes
-foreach( scandir(THEME_FILE_DIR.'Controller') as $file ){
+foreach( scandir(MVC_THEME_DIR.'Controller') as $file ){
     if( !in_array( $file, array('.','..','Controller.php')) ){
           //Add the Controller
-          require(THEME_FILE_DIR.'Controller/'.$file);
+          require(MVC_THEME_DIR.'Controller/'.$file);
           $name = str_replace(array('Controller','.php'), array('',''), $file);
 
-          if( in_array($name, array('Admin','admin') ) && !IS_ADMIN ) continue;
+          if( in_array($name, array('Admin','admin') ) && !MVC_IS_ADMIN ) continue;
           
           $class = str_replace('.php', '', $file);
           ${$class} = new $class;
           
           //Add the Model
-          require(THEME_FILE_DIR.'Model/'.$name.'.php');
+          require(MVC_THEME_DIR.'Model/'.$name.'.php');
           ${$class}->{$name} = new $name;
 
           //For the custom Post types
@@ -133,7 +134,7 @@ foreach ($classes as $controller => $class) {
     if (isset(${$controller}->uses)) {
         foreach (${$controller}->uses as $model) {
             if( !in_array($model,$classes) ){
-                require_once(THEME_FILE_DIR.'Model/'.$model.'.php');
+                require_once(MVC_THEME_DIR.'Model/'.$model.'.php');
             }
             ${$controller}->{$model} = new $model;
         }
@@ -216,9 +217,9 @@ class MvcBootstrap extends MvcFramework{
      * @since 3.0
      */
     function registerWidgets(){
-        foreach( scandir(THEME_FILE_DIR.'widgets') as $widget ){
+        foreach( scandir(MVC_THEME_DIR.'widgets') as $widget ){
             if( $widget == '.' || $widget == '..') continue;
-            require(THEME_FILE_DIR.'widgets/'.$widget);
+            require(MVC_THEME_DIR.'widgets/'.$widget);
             $widgets[] = str_replace('.php', '', $widget);
         }
         if( !isset( $widgets ) ) return;

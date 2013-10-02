@@ -73,7 +73,7 @@ function mvc_register_sidebar($name, $description = false, $args = array()){
 if( !function_exists('_p') ){
    function _p($data, $hide = false, $adminOnly = false){
         
-        if( $adminOnly && !is_admin() ) return;
+        if( $adminOnly && !MVC_IS_ADMIN() ) return;
         
         if( $hide ){
             echo '<div style="display:none">';
@@ -188,7 +188,7 @@ function mvc_dynamic_sidebar($index = 1, $echo = true, $wrap = false) {
 function admin_bar_responsive_check() {
 	global $wp_admin_bar;
 	
-	if( !is_user_logged_in() || !is_super_admin() || !is_admin_bar_showing() ) {
+	if( !is_user_logged_in() || !is_super_admin() || !MVC_IS_ADMIN_bar_showing() ) {
 		return;
 	}
 	

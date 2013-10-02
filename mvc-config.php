@@ -1,7 +1,9 @@
 <?php    
             /**
              * These items can be altered, adjusted, commented in or out
-             *  * This is where you can make changes to the framework when required
+             * Add the file to your theme and make changes there
+             * 
+             * 
              *  @since 10.2.13
              *  @author Mat Lipe <mat@matlipe.com>
              *  
