@@ -24,26 +24,20 @@ var MvcAjax = {
      * 
      * @param string controller - controller to run
      * @param string method - method on the controller
-     * @param {Object} data - data to pass to the method
+     * @param Object data - data to pass to the method
+     * @param [function|method] - function to call using the ajax response
      */
-    Request : function(controller, method, data ){
-        
+    Request : function(controller, method, data, funcToCall){
+          
+          this.returnedData = false;
           
           data = this.MakeData( controller, method, data );
-        
-        
-           $.post(MVCAjaxData.URL, data, function(response) {
-                
-                alert( response );
-
-                var Data = $.parseJSON ( response );
-                // Go through each element in the object
-                for( prop in Data ){
-                 //   alert( Data [prop] );            
-                }
+          
+          return jQuery.post(EdSpireAjaxData.URL, data, function(response) {  
+              if( typeof( funcToCall ) !== 'undefined' ){
+                 funcToCall( response ); 
+              }
           });
-
-        
     },
     
     
