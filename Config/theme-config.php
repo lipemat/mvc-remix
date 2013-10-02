@@ -21,7 +21,7 @@ define('SEARCH_BUTTON_TEXT','Search');
 define('SEARCH_TEXT','Search this website');
 
 
-add_theme_support( 'mvc_stylesheets' );
+add_theme_support( 'mvc_styles' );
 add_theme_support( 'mvc_widgets' );
 add_theme_support( 'mvc_secure' );
 
