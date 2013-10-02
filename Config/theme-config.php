@@ -2,7 +2,7 @@
             /**
              * These items can be altered, adjusted, commented in or out
              *  * This is where you can make changes to the framework when required
-             *  @since 9.30.13
+             *  @since 10.2.13
              *  @author Mat Lipe <mat@matlipe.com>
              *  
              */
@@ -24,6 +24,7 @@ define('SEARCH_TEXT','Search this website');
 add_theme_support( 'mvc_styles' );
 add_theme_support( 'mvc_widgets' );
 add_theme_support( 'mvc_secure' );
+add_theme_support( 'mvc_format' );
 
 //add_theme_support('mvc_mobile_responsive');
 //add_theme_support('mvc_mobile_menu','dark'); //light or dark
