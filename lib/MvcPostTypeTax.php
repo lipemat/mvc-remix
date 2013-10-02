@@ -325,13 +325,20 @@ class MvcPostTypeTax{
      *
      * @param string $title
      * @return string
+     * 
+     * @since 9.30.13
      */
     function plural_title( $title ){
-    
-        return'y' == substr($title,-1) ? rtrim($title, 'y') . 'ies' : $title . 's';
-    
+       
+       $end = substr($title,-1);
+        if( $end == 's' ){
+            return $title.'es';
+        } elseif( $end == 'y' ){
+            return rtrim($title, 'y') . 'ies';
+        }
+        
+        return $title.'s';
     }
-    
     
     /**
      * Returns a human readable slug with the _ remove and words uppercase

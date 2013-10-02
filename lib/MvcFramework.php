@@ -5,23 +5,19 @@
  * @uses automatically extended into the Model Views and Controllers and Bootstrap
  * @see Bootstrap.php
  * @author Mat Lipe <mat@matlipe.com>
- * @since 8.21.13
+ * @since 9.30.13
  * 
- * @TODO move all classes to run off an spl_autoload_register() to keep things super light
  * @TODO move the config to an  optional mvc-config file which may be placed in the theme root - also generated on install
  * @TODO Create a fragment caching class - run tests database vs files
  * @TODO create an auto shortcode registering class - see NUSD theme
  * @TODO create a way to server up all js or css files from one php file like mvc_add_style() and mvc_add_js() to prevent all the requests - maybe grunt.js
  * @TODO enable revision support for post meta
  * @TODO Switch everything over the new media uploader - Or at least one common object - see evernote Use Built In Media Uploader
- * @TODO Switch the tabs over to the MvcForm instead of Advanced Custom Fields
- * @TODO Add the Gallery button to forms on newly uploaded images MvcGallery
  * @TODO Add the Custom Image Sizes to the Media Uploader. Ponder a way to decided which ones are requires so the user won't see like a billion of them
- * @TODO Move the Custom Post Type Class into it's own thing to allow for extending MvcDeprected into MvcFramework
  * 
  *
  */
-class MvcFramework extends MvcPostTypeTax{
+class MvcFramework{
     public $browser     = false; //Keep track to the views browser
     private $mobile     = false; //Allows for constructing mobile detect class only once
     protected $controller; //Keep track of what controller is controlling to call stuff dynamically
@@ -37,14 +33,18 @@ class MvcFramework extends MvcPostTypeTax{
      * @uses $this->view_%name% will call $this->view with $file set to %name%
      * @uses $this->fitler_%name% will return $this->view withe the $file set to %name%
      * @uses $this->return_%string% will return %string% for filters which require simple string arguments
-     * @since 7.18.13
+     * @since 10.2.13
      */
     function __call($func, $args){
         
-        //For Use with Deprecated Methods
-        if( method_exists($this->MvcDeprecated, $func) ){
-           return call_user_func_array(array( $this->MvcDeprecated, $func), $args);
+        
+        //For Formatting Methods
+        if( current_theme_supports('mvc_format') ){
+            if( method_exists('MvcFormat', $func) ){
+                $this->MvcFormat->{$func}($args);       
+            }
         }
+        
         
         //For Special Views
         if( (strpos($func,'view') !== false) || (strpos($func,'View') !== false) ){
@@ -79,6 +79,8 @@ class MvcFramework extends MvcPostTypeTax{
             $this->sidebar( self::human_format_slug(str_replace(array('Sidebar_','sidebar_'),array('',''), $func)) ); 
             return;  
         }
+        
+        
      
         echo '<pre>';
             debug_print_backtrace();
@@ -94,20 +96,22 @@ class MvcFramework extends MvcPostTypeTax{
      * @uses call any helper or whatever using $this->%helperClass%->%method%
      * @since 3.5.0
      * 
-     * @since 6.3.13
+     * @since 10.2.13
      */
     function __get($object){
         
         if( !class_exists($object) ){
-            if( file_exists(THEME_FILE_DIR.'lib/'.$object.'.php') ){
-                require_once( THEME_FILE_DIR.'lib/'.$object.'.php' );
-            } elseif( file_exists(THEME_FILE_DIR.'lib/helpers/'.$object.'.php') ){
-                require_once( THEME_FILE_DIR.'lib/helpers/'.$object.'.php' );  
+            if( file_exists(MVC_THEME_DIR.'lib/'.$object.'.php') ){
+                require_once( MVC_THEME_DIR.'lib/'.$object.'.php' );
+            } elseif( file_exists(MVC_THEME_DIR.'lib/helpers/'.$object.'.php') ){
+                require_once( MVC_THEME_DIR.'lib/helpers/'.$object.'.php' );
+            } elseif( file_exists(MVC_THEME_DIR.'lib/optional/'.$object.'.php') ){
+                require_once( MVC_THEME_DIR.'lib/optional/'.$object.'.php' );       
             } else {
                 echo '<pre>';
                         debug_print_backtrace();
                 echo '</pre>';
-                trigger_error($func. ' Does Not Exist as a Class ', E_USER_ERROR);
+                trigger_error($object. ' Does Not Exist as a Class ', E_USER_ERROR);
             }
         }
         
@@ -332,16 +336,16 @@ class MvcFramework extends MvcPostTypeTax{
      * @since 4.6.0
      */
     function addJs($file){
-        if( !is_admin() ){
+        if( !MVC_IS_ADMIN() ){
             wp_enqueue_script(
                 'mvc-'.$file,
-                JS_DIR. $file.'.js',
+                MVC_JS_URL. $file.'.js',
                 array('jquery', 'mvc-child-js' )
             );
         } else {
            wp_enqueue_script(
                 'mvc-'.$file,
-                JS_DIR. $file.'.js',
+                MVC_JS_URL. $file.'.js',
                 array('jquery', 'mvc-admin-js' )
             ); 
             
@@ -385,29 +389,6 @@ class MvcFramework extends MvcPostTypeTax{
         return $attachment_id;
     }
     
-    /**
-     * Wraps all of the read more on the site with a div for styling
-     * 
-     * @uses must call before section is rendered which needs wraps 
-     *
-     * @since 3.82.0
-     */
-    function readMoreWrap(){        
-        add_filter('the_content_more_link', array($this, 'readMoreWrapOutput') );
-        add_filter('get_the_content_more_link', array($this, 'readMoreWrapOutput') );
-    }
-    
-
-    /**
-     * The newly wrapped output of the read more links
-     * 
-     * @uses used by self::readMoreWrap()
-     * @param string $content
-     * @return string
-     */
-    function readMoreWrapOutput($content){
-        return '<div class="read-more-wrap">'.$content.'</div>';
-    }
 
 
    /**
@@ -544,51 +525,12 @@ class MvcFramework extends MvcPostTypeTax{
     function phpQuery($content){
         $required = false;
         if( !$required ){
-            require_once(THEME_FILE_DIR.'lib/helpers/phpQuery.php');
+            require_once(MVC_THEME_DIR.'lib/helpers/phpQuery.php');
             $required = true;
         }
         return $phpQuery = phpQuery::newDocument($content);  
     }
     
-    
-    /**
-     * Outputs a Sidebar for Page or Posts for Whatever
-     * Use widgetArea for a standard widget and this for a true sidebar
-     * 
-     * @param string $name of widget area
-     * @param bool $echo defaults to true
-     * @since 4.16.13
-     */
-    function sidebar($name, $echo = true){
-        $output = '<div id="sidebar" class="widget-area sidebar '.self::slug_format_human($name).'">';
-           $output .= mvc_dynamic_sidebar($name, false);
-        $output .= '</div>';
-        
-        if( !$echo ) return $output;
-        
-        echo $output;
-        
-    }
-    
-   /**
-     * Outputs a Widget Area By Name
-     * Use sidebar for a true sidebar and this for a standard widget area 
-    * 
-     * @param string $name of widget area
-     * @param bool $echo defaults to true
-     * @since 4.16.13
-     */
-     function widgetArea($name, $echo = true){
-        $output = '<div id="'.self::slug_format_human($name).'" class="widget-area">';
-           $output .= mvc_dynamic_sidebar($name, false);
-        $output .=  '</div>';
-        
-     
-        if( !$echo ) return $output;
-        
-        echo $output;
-        
-    }
     
     /**
      * Returns the output of the proper View File to a filter
@@ -641,7 +583,7 @@ class MvcFramework extends MvcPostTypeTax{
         extract( $this->get() );
         
         echo '<!-- View/'.$folder.'/'. $file . '.php -->';
-        include( THEME_FILE_DIR.'View/'.$folder.'/'. $file . '.php' );
+        include( MVC_THEME_DIR.'View/'.$folder.'/'. $file . '.php' );
     }
 
     
@@ -694,254 +636,7 @@ class MvcFramework extends MvcPostTypeTax{
         return false; //nothing set
     }
     
-     
-    
-    /**
-     * returns html post meta data list 
-     * 
-     * @param $fields the meta fields to output
-     * @param string $format - the format to use with each item via printf
-     *  * defaults to <li class="meta-item %s"><span>%s:</span>%s</li>
-     * 
-     * @uses defaults to the $meta_fields setup in the class
-     * @return string|HTML
-     * 
-     * @since 5.15.13
-     */
-    function getPostMetaDataList($fields = array(), $format = '<li class="meta-item %s"><span>%s:</span>%s</li>'){
-        global $post;
-        if( empty($fields) && isset($this->meta_fields) ){
-            $fields = $this->meta_fields;
-        }
-        ob_start();
-        ?><ul class="post-meta-list"><?php
-            foreach( $fields as $field ){
-                $data = get_post_meta( $post->ID, $field, true );
-                if( empty($data) ) continue;
-                printf($format,
-                            strtolower($field), $this->human_format_slug($field), $data );
-                               
-            }  
-        ?></ul><?php
-        
-        return ob_get_clean();
-    }
-    
-    /**
-     * Echos html post meta data list 
-     * 
-     * @param $fields the meta fields to output
-     * @param string $format - the format to use with each item via printf
-     *  * defaults to <li class="meta-item %s"><span>%s:</span>%s</li>
-     * 
-     * @uses defaults to the $meta_fields setup in the class
-     * @return string|HTML
-     * 
-     * @since 6.3.13
-     */
-    function postMetaDataList($fields = array(), $format = '<li class="meta-item %s"><span>%s:</span>%s</li>'){
-        echo $this->getPostMetaDataList($fields, $format);
-    }
-    
-    
-    
-    /**
-     * Outputes a Slideshow from an Array
-     * @uses registerd slides script
-     * @since 2.19.13
-     * @param array | $slides numeric array of content for each slide
-     * @param bool | $echo to return or echo defaults to true
-     */
-    function slideShow( array $slides = array(), $echo = true ){
-        wp_enqueue_script('slides');
-        if( !$echo ){
-            ob_start();
-        }
-        ?><div id="slides">
-            <div class="slides_container">
-                <?php 
-                foreach( $slides as $key => $content ){
-                    printf('<div>%s</div>', $content );
-                }
-                ?>
-            </div>
-        </div>
-        
-        <?php
-        
-        if( !$echo ){
-            return ob_get_clean();
-        }
-    }
-    
-    
-    
-     /**
-     * Outputs a slideshow of all the images uploaded to a post
-     * 
-     * @since 5.14.13
-     * 
-     * @uses add_image_size('slide-thumb', %, %) and add_image_size('main-slide',%,%)
-     * 
-     * @param string [$thumbSize] - size of slideshow thumbs - defaults to 'slide-thumb'
-     * @param string [$slideSize] - size of main slide - defaults to 'main-slide'
-     * @param array  [$args] - available args:
-     *                   'mvc_gallery' = A Gallery from MvcGallery
-     * 
-     * @see Config/theme-config for registering the image sizes
-     * @see js/child.js slideshow is called there
-     * 
-     * @TODO Switch the Slides Script to Use jQuery Cycle - Probably have to write a new method because old site's css may break - 
-      * This one can be moved to deprecated once the responsive one is completed
-     * @SEE How I did it on John R Woods. The Slider needs a Shim image to keep the height. 
-     *      Some CSS and some Special JS. Meteor Slides is also a good example. 
-     *      I used a bunch of phpQuery on John R Woods but should convert it over so this is not required.
-     * 
-     */
-    function slideShowWithThumbs($thumbSize = 'slide-thumb', $slideSize = 'main-slide', $args = array() ){
 
-        wp_enqueue_script('slides');
-        
-        $html_thumbs = '';
-        
-        //get thumbs
-        $image_args = array(
-                            'html' => false,
-                            'size' => $thumbSize
-                        );
-        if( isset( $args['mvc_gallery'] ) ){
-            $image_args['mvc_gallery'] = $args['mvc_gallery'];
-        }                
-        $thumbs = $this->getPostImages($image_args);
-
-        if( empty( $thumbs ) ) return false;
-        
-        //get full size images
-        $image_args = array(
-                            'html' => true,
-                            'size' => $slideSize,
-                            'wrap_end' => '</div>',
-                            'wrap_start' => '<div>',
-                        );
-                        
-        if( isset( $args['mvc_gallery'] ) ){
-            $image_args['mvc_gallery'] = $args['mvc_gallery'];
-        }   
-        
-        
-        $main_images = $this->getPostImages($image_args);
-
-
-        $count = 0;
-        foreach( $thumbs as $th ){
-                $html_thumbs .= '<li><a href="#'.$count.'"><img src="'.$th->{$thumbSize}[0].'" title="'.$th->post_title.'" /></a></li>';
-                $count++;
-        }
-        
-        ob_start();
-        
-        ?><div id="slides" >
-            <div class="slides_container">
-              <?php echo $main_images; ?>
-            </div>
-            <?php if( $count > 1 ){ ?>
-                <ul class="pagination">
-                    <?php echo $html_thumbs; ?>
-                </ul>
-            <?php } ?>
-        </div><!-- End #slides --><?php 
-        
-        return ob_get_clean();        
-    }
-
-
-    /**
-     * Removes the post meta and info from the output
-     * @since 3.5.13
-     * @uses can be called anywhere before the loop
-     */
-    function removePostData(){
-        add_action('genesis_before_loop', array( $this,'removePostDataHooks') );
-    }
-    
-    /**
-     * Unhooks the genesis_post_info and genesis_post_meta 
-     * @uses used by self::removePostData()
-     * @uses could be called wherever you like as well but used by removePostData
-     * @since 11.19.12
-     */
-    function removePostDataHooks(){
-        remove_action( 'genesis_before_post_content', 'genesis_post_info' );
-        remove_action('genesis_after_post_content', 'genesis_post_meta');
-    }
-    
-    
-    /**
-     * Outputs the Tabbed Section
-     * @uses used by Tabbed Template
-     * @since 12.3.12
-     * 
-     * //TODO Make independent of the js file by adding $(#tabs) etc here
-     */
-    function tabsOutput(){
-        global $printfriendly;
-        /**
-         * Remove the extras created by plugins we use
-         */
-        if( isset( $printfriendly ) ){
-            remove_filter( 'the_content', array( $printfriendly, 'show_link' ) );
-            remove_filter( 'the_excerpt', array( $printfriendly, 'show_link' ) );
-            remove_action( 'wp_head', array( $printfriendly, 'front_head' ) );
-        }
-        remove_filter( 'the_content', 'auto_sociable' );
-        
-        
-        //Filter for adding extra Tabs
-        $extra_tabs = apply_filters('mat_extra_tabs', array('labels' => array(), 'content'=> array()) );
-        
-        
-        echo '<div id="tabs">
-            <ul>';
-        
-        /**
-         * Echo all the labels for the tabs
-         */
-        $count = 0;
-        for( $i = 1; $i <8; $i ++ ){
-            if(get_field( 'tab_'. $i. '_content') != '' ){
-                printf( '<li><a href="#tab%s">%s</a></li>', $i , get_field("tab_". $i. "_label") );
-                $count++;
-            }
-        }
-        //extra labels
-        foreach( $extra_tabs['labels'] as $label ){
-            $count++;
-            printf( '<li><a href="#tab%s">%s</a></li>', $count , $label );
-        }
-        
-        echo '</ul>' ;
-        
-        
-        /**
-         * Echo all the tabs contents
-         */
-        $count = 0;
-        for( $i = 1; $i<8; $i++ ){
-            if(get_field( "tab_".$i ."_content" ) != '' ){
-                printf('<div id="tab%s">%s</div>' , $i, get_field( 'tab_'. $i. '_content') );
-                $count++;
-            }
-        }
-        //extra content
-        foreach( $extra_tabs['content'] as $content ){
-            $count++;
-            printf('<div id="tab%s">%s</div>' , $count, $content);
-        }
-        
-        echo  '</div><!-- end #tabs -->';
-    }
-    
-    
     
     /**
      * Checks to see if on a mobile device
@@ -1041,36 +736,7 @@ class MvcFramework extends MvcPostTypeTax{
     }
     
     
-    
-    
-     /**
-     * Changes the pages layout
-     * @uses call this anytime before the get_head() hook
-     * @uses - defaults to 'full-width-content'
-     * @param string $layout - desired layout
-     * @since 5.8.13
-     *   *  'full-width-content'
-     *   *  'content-sidebar' 
-     *   *  'sidebar-content' 
-     *   *  'content-sidebar-sidebar' 
-     *   *  'sidebar-sidebar-content' 
-     *   *  'sidebar-content-sidebar'
-     */
-    function change_layout( $layout = 'full-width-content' ){
-        $this->layout = $layout; 
-        add_filter( 'genesis_pre_get_option_site_layout' , array( $this, 'return_'.$layout) );
-    }
-    
-    
-    /**
-     * Returns the new page layout based on the arg sent to change_layout()
-     * @since 10.10.12
-     * @uses used by change_layout()
-     */
-    function return_layout(){
-        return $this->layout;
-    }
-    
+
 
     /**
      * Returns the featured image or the first on uploaded if no feature exists
@@ -1251,7 +917,7 @@ class MvcFramework extends MvcPostTypeTax{
     function getPageTemplateName(){
         global $post;    
         static $name = false;
-        if( IS_ADMIN ) return false;
+        if( MVC_IS_ADMIN ) return false;
         if( $name ) return $name;  
         
         return str_replace('.php', '', get_post_meta($post->ID, '_wp_page_template', true));
@@ -1310,76 +976,8 @@ class MvcFramework extends MvcPostTypeTax{
     public function slug_format_human( $human ){
         return $this->MvcString->slug_format_human($human);
     }
-    
-    /**
-     * Move the sociable icons below any changes to the content
-     * @since 11.2.12
-     * @uses call before the content is loaded
-     */
-    function move_sociable(){
-        if( function_exists( 'auto_sociable' ) ){
-            remove_action( 'the_content', 'auto_sociable' );
-            add_action( 'genesis_post_content', array( $this, 'sociable'), 99);
-        }
-    }
-    
-    /**
-     * Outputs sociable where called
-     * @since 11.2.12
-     * @uses can be called anywhere 
-     * * Used by move_sociable();
-     */
-    function sociable(){
-        if( function_exists( 'auto_sociable' ) ){
-            echo auto_sociable(null);
-        }
-    }
-    
-    
-    /**
-     * Creates the links for the calendar categories as images
-     * @since 9/12/12
-     * @uses call as is to display all categories as links that have matching images 
-     * @uses images should be titled 'cat_%slug%.png'
-     * @uses display and view all button if a 'view-all.png' exists
-     *  * Images go in the standard theme images dir
-     *  * Typically used in gridview.php file of the events calendar template
-     */
-    function events_category_display(){
-        $terms = get_terms( "tribe_events_cat");
-        $count = count( $terms);
-        if ( $count > 0 ){
-            echo '<ul id="events-category-icons">';
-            foreach ( $terms as $term ) {
-                echo "<li class=\"cat_". $term -> slug. "\"><a href='" .  get_site_url() . "/events/category/". $term-> slug. "'>
-                <img src='" . IMAGE_DIRECTORY . 'cat_' . $term->slug . ".png' class='events-cat-images'/></a></li>";
-    
-            }
-            //add the view all button
-            echo '<li class="cat_view_all"><a href="/events"><img src="' . IMAGE_DIRECTORY . 'view-all.png" class="events-cat-images"/></a></li>' ;
-    
-            echo "</ul>";
-        }
-    
-        ?>
-    
-        <!-- Make any categories that don't have pictures not show up. -->
-        <script type= "text/javascript">
-          jQuery(document).ready(function ($) {
-    
-              $( '.events-cat-images').each( function(){
-                  this.onerror = function(){
-                      this.style.display = "none" ;
-                      }
-                  });
-    
-              });
-          </script>
-    
-        <?php
-        
-    }
-    
+
+
     
     /**
      * Extract the post id from the global post or and object or int

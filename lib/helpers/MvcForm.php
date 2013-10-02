@@ -1,7 +1,7 @@
 <?php
         /**
          * Form Helpers only available in Views
-         * @since 7.18.13
+         * @since 10.1.13
          * @author Mat Lipe
          * @uses this will be available in all views via the $MvcString Variable
          * 
@@ -225,7 +225,7 @@ class MvcForm {
     /**
      * Image Upload Form complete with Jquery
      * 
-     * @since 7.18.13
+     * @since 10.1.13
      * 
      * @param string $name - the fields name if no specified in the args
      * @param string $value
@@ -239,14 +239,10 @@ class MvcForm {
      * 
      * @uses Be sure the ID does not already exist on the dom or this will break
      *
-     * @TODO Figure out why the thickbox is stacking when using multiple upload buttons
      */
     function imageUploadForm( $name, $value = '', $args = array(), $echo = true ){
         
-       wp_enqueue_script('media-upload');
-       wp_enqueue_script('thickbox');
-       wp_enqueue_style('thickbox');
-        
+       wp_enqueue_media();
         
        $defaults = array(
                 'value'        => $value,
@@ -279,35 +275,33 @@ class MvcForm {
         ?>
        
        <script type="text/javascript">
-       
-            var formfield = false;
-       
-            jQuery(function($) {
+           jQuery(document).ready(function($){
+                var _custom_media = true,
+                _orig_send_attachment = wp.media.editor.send.attachment;
 
-            $('.image_upload').click(function() {
-                formfield = $(this).attr('rel');
-                tb_show('', 'media-upload.php?type=image&TB_iframe=true');
-                return false;
-            });
+                $('.image_upload').click(function(e) {
+                        var send_attachment_bkp = wp.media.editor.send.attachment;
+                        var button = $(this);
+                        var id = button.attr('rel');
+                         _custom_media = true;
+                        wp.media.editor.send.attachment = function(props, attachment){
+                            if ( _custom_media ) {
+                                $("#"+id).val(attachment.url);
+                            } else {
+                                return _orig_send_attachment.apply( this, [props, attachment] );
+                            };
+                        }
 
-            window.original_send_to_editor = window.send_to_editor;
-            window.send_to_editor = function(html) {
-                if (formfield) {
-                    fileurl = $(html).find("img:first").attr('src');
-                    if (fileurl == undefined) {
-                        fileurl = $(html).attr('href');
-                    }
-                    
-                    $('#'+formfield).val(fileurl);
-                    tb_remove();
-                    formfield = false;
-                } else {
-                    window.original_send_to_editor(html);
-                }
-            };
-    });
+                        wp.media.editor.open(button);
+                        return false;
+                  });
 
-    </script>
+                $('.add_media').on('click', function(){
+                    _custom_media = false;
+                });
+           });
+
+      </script>
        
        <?php   
        

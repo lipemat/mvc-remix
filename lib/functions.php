@@ -3,9 +3,30 @@
                         /**
                          * Misc Functions for MVC
                          * @author Mat Lipe
-                         * @since 9.5.13
+                         * @since 10.2.13
                          */
 
+                 
+/**        
+ * Loads classes on the fly per needs only
+ * 
+ * @uses added ot the spl_autoload_register() function by bootstrap.php
+ * @uses will load a class from the main lib folder or the helpers folder
+ * 
+ * @since 10.2.13
+ * 
+ */
+function _mvc_autoload($class){
+    if( file_exists($class.'.php') ){
+        require( $class.'.php');
+    } elseif( file_exists('helpers/'.$class.'.php') ){
+        require( 'helpers/'.$class.'.php');
+    } elseif( file_exists('optional/'.$class.'.php') ){
+        require( 'optional/'.$class.'.php');
+    }
+}
+                         
+                         
                          
                          
 /**
@@ -52,7 +73,7 @@ function mvc_register_sidebar($name, $description = false, $args = array()){
 if( !function_exists('_p') ){
    function _p($data, $hide = false, $adminOnly = false){
         
-        if( $adminOnly && !is_admin() ) return;
+        if( $adminOnly && !MVC_IS_ADMIN() ) return;
         
         if( $hide ){
             echo '<div style="display:none">';
@@ -167,7 +188,7 @@ function mvc_dynamic_sidebar($index = 1, $echo = true, $wrap = false) {
 function admin_bar_responsive_check() {
 	global $wp_admin_bar;
 	
-	if( !is_user_logged_in() || !is_super_admin() || !is_admin_bar_showing() ) {
+	if( !is_user_logged_in() || !is_super_admin() || !MVC_IS_ADMIN_bar_showing() ) {
 		return;
 	}
 	
