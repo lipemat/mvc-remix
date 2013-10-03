@@ -33,7 +33,7 @@ var MvcAjax = {
           
           data = this.MakeData( controller, method, data );
 
-          return jQuery.post(MVCAjaxData.URL, data, function(response) {  
+          jQuery.post(MVCAjaxData.URL, data, function(response) {  
               if( typeof( funcToCall ) !== 'undefined' ){
                  funcToCall( response ); 
               }
