@@ -32,8 +32,8 @@ var MvcAjax = {
           this.returnedData = false;
           
           data = this.MakeData( controller, method, data );
-          
-          return jQuery.post(EdSpireAjaxData.URL, data, function(response) {  
+
+          return jQuery.post(MVCAjaxData.URL, data, function(response) {  
               if( typeof( funcToCall ) !== 'undefined' ){
                  funcToCall( response ); 
               }
