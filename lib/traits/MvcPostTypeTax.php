@@ -21,9 +21,9 @@
  * //TODO Ponder a way to add revision support to meta fields 
  * //TODO Consider switching this to use MvcMetaBox to only have one place to make updates
  * 
- */
-                      
-class MvcPostTypeTax{
+ */     
+              
+trait MvcPostTypeTax{
     
     /**
      * Setup the Saving of meta box data

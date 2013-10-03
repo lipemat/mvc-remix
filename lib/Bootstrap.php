@@ -6,8 +6,6 @@
                              * @author Mat Lipe
                              */
 
-
-
 //Require the proper files                      
 require('functions.php');
 
@@ -66,11 +64,6 @@ if( current_theme_supports('mvc_styles') ){
 
 
 //For Output Formatting
-if( current_theme_supports('mvc_format') ){
-    $MvcImageResize = new MvcFormat();
-}
-
-//For Output Formatting
 if( current_theme_supports('mvc_ajax') ){
     $MvcImageResize = new MvcAjax();
 }
@@ -94,6 +87,11 @@ class MvcBootstrap extends MvcFramework{
        if( IS_MVC ){
          $this->setupMvc();   
        }
+       
+       if( current_theme_supports('mvc_format') ){
+         $this->initFormats();   
+       }
+       
         
        //Allow for achive and single methods to work at the correct time
        add_action('wp', array( $this, 'singleAndArchiveMethods') );
@@ -110,7 +108,7 @@ class MvcBootstrap extends MvcFramework{
         }
         
     }
-
+   
 
     /**
      * Runs the single and archive methods for the classes
@@ -208,7 +206,7 @@ class MvcBootstrap extends MvcFramework{
                 
 
                 //For the custom Post types
-                ${$class}->MvcPostTypeTax->initMetaSave(); 
+                ${$class}->initMetaSave(); 
           
                 //Keep track of all of the controllers and models
                 $classes[$class] = $name;          

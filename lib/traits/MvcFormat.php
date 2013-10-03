@@ -9,17 +9,20 @@
  * @uses add_theme_support('mvc_format');
  */
  
-class MvcFormat extends MvcFramework{
+trait MvcFormat{
     
     //to tell the framework the sidebar has been specified elsewhere
     public $sidebar_changed = false; 
     
     
-    /**
+        /**
+     * Inits Formatting filters and hooks etc if currrent theme supports it
+     * 
      * @since 10.2.13
-     * @uses called at Bootstrap.php if theme supports it
+     * @uses called from Bootstrap if theme supports it
+     * 
      */
-    function __construct(){
+    function initFormats(){
              
          //Filter the Search Form
         if( defined( 'SEARCH_TEXT' ) ){
@@ -51,10 +54,9 @@ class MvcFormat extends MvcFramework{
         
         //Add Wraps the body for extra background
         add_action('genesis_before', array( $this, 'start_outabody') );
-        add_action('genesis_after', array( $this, 'end_outabody' ) );
-        
-        
+        add_action('genesis_after', array( $this, 'end_outabody' ) );  
     }
+    
 
         /**
      * Opens divs which wrap the body for extra backgrounds

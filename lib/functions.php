@@ -24,6 +24,8 @@ function _mvc_autoload($class){
         require( MVC_DIR.'lib/helpers/'.$class.'.php');
     } elseif( file_exists(MVC_DIR.'lib/optional/'.$class.'.php') ){
         require( MVC_DIR.'lib/optional/'.$class.'.php');
+    } elseif( file_exists(MVC_DIR.'lib/traits/'.$class.'.php') ){
+        require( MVC_DIR.'lib/traits/'.$class.'.php');
     }
 }
                          
