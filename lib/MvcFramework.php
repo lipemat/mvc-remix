@@ -15,11 +15,11 @@
  * 
  *
  */
- 
 class MvcFramework{
-    //Bring in the Traits
+    
+    //The traits
     use MvcPostTypeTax;
-    use MvcFormat;
+    
     
     public $browser     = false; //Keep track to the views browser
     private $mobile     = false; //Allows for constructing mobile detect class only once
@@ -39,14 +39,17 @@ class MvcFramework{
      * @since 10.2.13
      */
     function __call($func, $args){
-
-
+        
+        
         //For Formatting Methods
         if( current_theme_supports('mvc_format') ){
             if( method_exists('MvcFormat', $func) ){
                 $this->MvcFormat->{$func}($args);       
             }
         }
+        
+
+        
         
         //For Special Views
         if( (strpos($func,'view') !== false) || (strpos($func,'View') !== false) ){
@@ -101,7 +104,7 @@ class MvcFramework{
      * @since 10.2.13
      */
     function __get($object){
-
+        
         if( !class_exists($object) ){
             if( file_exists(MVC_THEME_DIR.'lib/'.$object.'.php') ){
                 require_once( MVC_THEME_DIR.'lib/'.$object.'.php' );

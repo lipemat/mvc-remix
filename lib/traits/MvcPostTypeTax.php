@@ -2,7 +2,7 @@
 /**
  * Creates a Meta Data box, Creates the fields and handles the saving
  * @author Mat Lipe <mat@vimm.com>
- * @since 8.27.13
+ * @since 10.3.13
  * @uses The Class's Methods are already available in controllers and Models etc
  * @uses Add class arrays named "meta_fields" = array();
  *      * if key has check in it this will output a checkbox
