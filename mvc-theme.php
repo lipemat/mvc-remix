@@ -8,7 +8,6 @@ Version: 0.1.0
 Author URI: http://matlipe.com
 */
 
-
 //Set some constants                             
 define( 'MVC_THEME_URL', get_bloginfo( 'stylesheet_directory' ). '/' );
 define( 'MVC_IMAGE_URL', MVC_THEME_URL.'images/');
