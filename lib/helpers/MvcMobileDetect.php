@@ -1,17 +1,17 @@
 <?php
 /**
  * Mobile Detect
- * $Id: Mobile_Detect.php 49 2012-06-06 20:46:30Z serbanghita@gmail.com $
  * 
- * @usage      require_once 'Mobile_Detect.php';
+ * @usage    
  *             $detect = new Mobile_Detect();
  *             $detect->isMobile() or $detect->isTablet()
  * 
  *             For more specific usage see the documentation navigate to:
  *             http://code.google.com/p/php-mobile-detect/wiki/Mobile_Detect
- * 
- * @license    http://www.opensource.org/licenses/mit-license.php The MIT License
+ * @version 2.7.1 
+ * @since 9/27/13
  */
+
 
 class MvcMobileDetect {
 
