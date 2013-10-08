@@ -4,18 +4,23 @@
              * Add the file to your theme and make changes there
              * 
              * 
-             *  @since 10.2.13
+             *  @since 10.8.13
              *  @author Mat Lipe <mat@matlipe.com>
              *  
              */
 
-/** Set the Width of your full width content **/
-
-//TODO Add an action on the 'template_redirect' hook to allow for changing per template
-//TODO Create an image size which matches this like 'max-width-image' and remove full size image ability from the media uploader for image larger than this
-//SEE http://core.trac.wordpress.org/ticket/21256
+             
 if ( ! isset( $content_width ) ){
-    $content_width = 920;
+    /** 
+     * 01 Set width of oEmbed
+     * genesis_content_width() will be applied; Filters the content width based on the user selected layout.
+     *
+     * @see genesis_content_width()
+     * @param integer $default Default width
+     * @param integer $small Small width
+     * @param integer $large Large width
+     */
+    $content_width = apply_filters( 'content_width', 600, 430, 920 );
 }
 
 /** Changes Search Form Values **/
