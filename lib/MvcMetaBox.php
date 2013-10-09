@@ -18,6 +18,7 @@ class MvcMetaBox extends MvcFramework{
       public $label; //The Label of the Meta Box\
       public $args; //Created at construct
       public $description = false; //The Meta Box Description
+
         
       /**
        * Sets everything in motion. Should construct for each meta box
@@ -29,22 +30,25 @@ class MvcMetaBox extends MvcFramework{
        *             'priority'     => 'high',
        *             'position'     => 'normal',
        *             'fields'       => array(),
-       *             'descriptions' => array()
+       *             'descriptions' => array(),
+       *             'auto_generate => true //Allows for manually outputing the content via $this->metaBoxOutput()
        *  
        * @since 6.3.13
        * 
        */
       function __construct($label, $postTypes = array(), $args = array()){
           $defaults = array(
-                 'priority' => 'high',
-                 'position' => 'normal',
-                 'descriptions' => array()
+                 'priority'      => 'high',
+                 'position'      => 'normal',
+                 'descriptions'  => array(),
+                 'auto_generate' => true
                  );
           $this->args = wp_parse_args($args, $defaults);
           
           if( isset( $this->args['fields'] ) ){
               $this->addFields( $this->args['fields'], $this->args['descriptions'] );
           }
+          
           
           $this->id = $this->slug_format_human($label);
           $this->label = $label;
@@ -81,11 +85,13 @@ class MvcMetaBox extends MvcFramework{
       /**
        * Init the meta boxes on all the specified Post Types
        * 
-       * @since 6.3.13
+       * @since 10.9.13
        * 
        * @uses a bunch of the stuff set on __construct()
        */
       function initMetaBox(){
+          if( !$this->args['auto_generate'] ) return;
+          
           foreach( $this->postTypes as $type ){
             add_meta_box( $this->id, $this->label, array( $this, 'metaBoxOutput' ), $type, $this->args['position'], $this->args['priority'] );
           }
