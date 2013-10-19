@@ -5,7 +5,7 @@
  * @uses automatically extended into the Model Views and Controllers and Bootstrap
  * @see Bootstrap.php
  * @author Mat Lipe <mat@matlipe.com>
- * @since 10.18.13
+ * @since 10.19.13
 
  * @TODO Create a fragment caching class - run tests database vs files
  * @TODO create an auto shortcode registering class - see NUSD theme
@@ -118,6 +118,38 @@ class MvcFramework{
         
         $this->{$object} = new $object;
         return $this->{$object};
+    }
+    
+    
+     /**
+     * Registers a post type with default values which can be overridden as needed.
+     * @param $title the name of the post type
+     * @param [$args] the arguments to overwrite
+     * @example register_post_type( 'newtest' , array() );
+     * @since 0.3.1
+     *
+     *  @uses MvcPostTypeTax::register_post_type()
+     *
+     **/
+    function registerPostType($title, $args = array()){
+        $this->MvcPostTypeTax->register_post_type($title, $args);
+        
+    }
+    
+    
+     /**
+     * Registers a taxonomy with default values which can be overridden as needed.
+     * @param $title is the name of the taxonomy
+     * @param $post_type the post type to link it to
+     * @param $args an array to overwrite the defaults
+     * @example register_taxonomy( 'post-cat', 'custom-post-type', array( 'pluralTitle' => 'lots of cats' ) );
+     * 
+     * @since 0.3.1
+     * 
+     * @uses MvcPostTypeTax::register_taxonomy
+     */
+    function registerTaxonomy( $title, $post_type = '', $args = array() ){
+        $this->MvcPostTypeTax->register_taxonomy($title, $post_type, $args );
     }
     
     

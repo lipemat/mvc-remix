@@ -11,9 +11,9 @@
 //Require the proper files                      
 require('functions.php');
 
-
+//Bring in the admin plugin functions
 //TODO Find a better way to do this
-include_once( ABSPATH . 'wp-admin/includes/plugin.php' ); //Bring in the admin plugin functions
+include_once( ABSPATH . 'wp-admin/includes/plugin.php' ); 
 
 //Allow for autoloading framework Classes
 spl_autoload_register('_mvc_autoload');
@@ -270,10 +270,6 @@ class MvcBootstrap extends MvcFramework{
                 }
             }
 
-
-           
-
-
             // Setup model inheritance through
             foreach ($classes as $controller => $class) {
                 if (isset(${$controller}->uses)) {
@@ -285,7 +281,9 @@ class MvcBootstrap extends MvcFramework{
                     }
                 }
                 //Run the init
-                ${$controller}->init();
+                if( method_exists(${$controller}, 'init') ){
+                    add_action('init', array( ${$controller}, 'init' ) );
+                }
             }
         } //End foreach dir
     }

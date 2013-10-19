@@ -2,11 +2,8 @@
 /**
  * Creates a Meta Data box, Creates the fields and handles the saving
  * @author Mat Lipe <mat@vimm.com>
- * @since 10.18.13
+ * @since 10.19.13
  * 
- * 
- * @uses Add this to your controller class 
-           use MvcPostTypeTax;
  * 
  * 
  * @uses Add class arrays named "meta_fields" = array();
@@ -28,7 +25,7 @@
  * 
  */     
               
-trait MvcPostTypeTax{
+class MvcPostTypeTax{
     
     /**
      * Registers a post type with default values which can be overridden as needed.
@@ -39,7 +36,7 @@ trait MvcPostTypeTax{
      *
      **/
     function register_post_type( $title, $args = array() ){
-    
+
         $sanitizedTitle = sanitize_title( $title );
     
         if( isset( $args['singleTitle'] ) ){
@@ -83,7 +80,7 @@ trait MvcPostTypeTax{
                 'query_var'         => $sanitizedTitle,
                 'rewrite'           => array( 'slug' => $sanitizedTitle ),
                 '_builtin'          => false,
-                'menu_icon' => get_bloginfo( 'stylesheet_directory' ) . '/images/'.$sanitizedTitle.'_icon.png',
+                'menu_icon'         => null,
                 'has_archive'       => true,
                 'show_in_menu'      => true, //Change this to a string for the menu to make this is submenu of
                 'supports'      => array( 'title', 'editor', 'thumbnail', 'author', 'comments' , 'genesis-seo' , 'genesis-layouts' ,
