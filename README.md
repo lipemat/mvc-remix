@@ -3,6 +3,8 @@ MVC Theme - WordPress Plugin
 
 MVC Framework written to work on top of WordPress theme
 
+~Current Version:0.2.0~
+
 ## IMPORTANT
 ### This is currently in beta and being tested on real sites. The code is subject to change at anytime. Consider Tags as the only stable version of this code. Once there is a tag for a version > 1.0 this will then become updatable and may be considered stable.
 
