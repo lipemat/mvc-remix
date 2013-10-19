@@ -170,9 +170,9 @@ class MvcBootstrap extends MvcFramework{
                 unset( $dirs[array_search( MVC_THEME_DIR, $dirs )] );   
             }
         }
-        
+
         //go through all files in all widget dirs
-        foreach( $dirs as $dir ){  
+        foreach( $dirs as $dir ){
             if( !is_dir( $dir.'widgets' ) ) continue;
         
             foreach( scandir($dir.'widgets') as $widget ){
@@ -180,7 +180,7 @@ class MvcBootstrap extends MvcFramework{
                 require($dir.'widgets/'.$widget);
                 $widgets[] = str_replace('.php', '', $widget);
             }
-            if( !isset( $widgets ) ) return;
+            if( !isset( $widgets ) ) continue;
             foreach ( $widgets as $widget ){
                 register_widget($widget);
             }
