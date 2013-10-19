@@ -10,6 +10,8 @@
  * 
  * @since 10.18.13
  * @author Mat Lipe <mat@matlipe.com>
+ * 
+ * @uses do not call this directly 
  */
 class MvcUpdate {
 
@@ -45,12 +47,12 @@ class MvcUpdate {
      */
     public function __construct( ) {
        $this->config = array(
-            'slug' => 'mvc-theme/mvc-theme.php', // this is the slug of your plugin e.g.  %folder%/%main-file%
-            'proper_folder_name' => 'mvc-theme', // this is the name of the folder your plugin lives in
-            'api_url' => 'https://api.github.com/repos/lipemat/wordpress-mvc', // the github API url of your github repo
-            'raw_url' => 'https://raw.github.com/lipemat/wordpress-mvc/master', // the github raw url of your github repo
-            'github_url' => 'https://github.com/lipemat/wordpress-mvc', // the github url of your github repo
-            'zip_url' => 'https://github.com/lipemat/wordpress-mvc/zipball/master', // the zip url of the github repo
+            'slug' => MVC_SLUG, // this is the slug of your plugin e.g.  %folder%/%main-file%
+            'proper_folder_name' => MVC_DIR_NAME, // this is the name of the folder your plugin lives in
+            'api_url' => 'https://api.github.com/repos/lipemat/mvc-theme', // the github API url of your github repo
+            'raw_url' => 'https://raw.github.com/lipemat/mvc-theme/master', // the github raw url of your github repo
+            'github_url' => 'https://github.com/lipemat/mvc-theme', // the github url of your github repo
+            'zip_url' => 'https://github.com/lipemat/mvc-theme/zipball/master', // the zip url of the github repo
             'sslverify' => false,
             'requires' => '3.3.1', // which version of WordPress does your plugin require?
             'tested' => '3.7.0', // which version of WordPress is your plugin tested up to?
