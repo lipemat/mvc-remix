@@ -926,14 +926,14 @@ class MvcFramework{
      * Returns the Current Templates Name
      * 
      * @since 2.3.0
+     * 
+     * @since 10.18.13
+     * 
      * @return string | false in in admin
      */
     function getPageTemplateName(){
         global $post;    
-        static $name = false;
-        if( MVC_IS_ADMIN ) return false;
-        if( $name ) return $name;  
-        
+        if( MVC_IS_ADMIN ) return false; 
         return str_replace('.php', '', get_post_meta($post->ID, '_wp_page_template', true));
     }
         
