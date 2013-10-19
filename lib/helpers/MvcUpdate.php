@@ -212,6 +212,9 @@ class MvcUpdate {
                 $version = false;
             else
                 $version = $matches[1];
+            
+            _p( $matches );
+            
 
             // back compat for older readme version handling
             $raw_response = $this->remote_get( trailingslashit( $this->config['raw_url'] ) . $this->config['readme'] );

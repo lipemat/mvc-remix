@@ -2,8 +2,8 @@
 
                             /**
                              * Pull the Whole Framework Together
-                             * @since 10.2.13
-                             * @author Mat Lipe
+                             * @since 10.18.13
+                             * @author Mat Lipe <mat@matlipe.com>
                              */
 
 
@@ -17,6 +17,10 @@ include_once( ABSPATH . 'wp-admin/includes/plugin.php' ); //Bring in the admin p
 
 //Allow for autoloading framework Classes
 spl_autoload_register('_mvc_autoload');
+
+if( is_admin() ){
+    new MvcUpdate();   
+}
 
 
 if( file_exists(MVC_THEME_DIR.'Controller/Controller.php') ){
