@@ -5,7 +5,7 @@
  * @uses automatically extended into the Model Views and Controllers and Bootstrap
  * @see Bootstrap.php
  * @author Mat Lipe <mat@matlipe.com>
- * @since 10.2.13
+ * @since 10.18.13
 
  * @TODO Create a fragment caching class - run tests database vs files
  * @TODO create an auto shortcode registering class - see NUSD theme
@@ -16,11 +16,7 @@
  *
  */
 class MvcFramework{
-    
-    //The traits
-    use MvcPostTypeTax;
-    
-    
+
     public $browser     = false; //Keep track to the views browser
     private $mobile     = false; //Allows for constructing mobile detect class only once
     protected $controller; //Keep track of what controller is controlling to call stuff dynamically

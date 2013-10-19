@@ -94,11 +94,10 @@ class MvcBootstrap extends MvcFramework{
         add_action( 'do_meta_boxes', 'genesis_add_inpost_layout_box' ); 
         remove_action( 'admin_menu', 'genesis_add_inpost_seo_box' );     
         add_action( 'do_meta_boxes', 'genesis_add_inpost_seo_box' );  
-             
-        //Register Widgets from the theme's widget folder
-        if( current_theme_supports('mvc_widgets') ){
-            add_action('widgets_init', array( $this,'registerWidgets' ) );
-        }
+  
+        //register widgets
+        add_action('widgets_init', array( $this,'registerWidgets' ) );
+
         
     }
 
@@ -156,20 +155,35 @@ class MvcBootstrap extends MvcFramework{
      * 
      * @since 3.0
      * 
-     * @since 10.2.13
+     * @since 10.18.13
+     * 
+     * @filters mvc_theme_dirs - allows for other themes or plugins to have a widgets folder
      */
     function registerWidgets(){
-        
-        if( !is_dir( MVC_THEME_DIR.'widgets' ) ) return;
-        
-        foreach( scandir(MVC_THEME_DIR.'widgets') as $widget ){
-            if( $widget == '.' || $widget == '..') continue;
-            require(MVC_THEME_DIR.'widgets/'.$widget);
-            $widgets[] = str_replace('.php', '', $widget);
+        $dirs = apply_filters( 'mvc_theme_dirs', array( MVC_THEME_DIR ) );
+                   
+        //Register Widgets from the theme's widget folder
+        if( !current_theme_supports('mvc_widgets') ){
+            if( count($dirs) === 1 ){
+                 return;
+            } else {
+                unset( $dirs[array_search( MVC_THEME_DIR, $dirs )] );   
+            }
         }
-        if( !isset( $widgets ) ) return;
-        foreach ( $widgets as $widget ){
-            register_widget($widget);
+        
+        //go through all files in all widget dirs
+        foreach( $dirs as $dir ){  
+            if( !is_dir( $dir.'widgets' ) ) continue;
+        
+            foreach( scandir($dir.'widgets') as $widget ){
+                if( $widget == '.' || $widget == '..') continue;
+                require($dir.'widgets/'.$widget);
+                $widgets[] = str_replace('.php', '', $widget);
+            }
+            if( !isset( $widgets ) ) return;
+            foreach ( $widgets as $widget ){
+                register_widget($widget);
+            }
         }
     }
 
@@ -234,18 +248,16 @@ class MvcBootstrap extends MvcFramework{
                     //add to global var for later use
                     $mvc_theme['controllers'][$class] = ${$class};
                 
-
-                    //For the custom Post types
-                    ${$class}->initMetaSave(); 
-          
                     //Keep track of all of the controllers and models
                     $classes[$class] = $name;          
           
-                    //Check if the new child class has a before and runs it if it does
-                    //has to be done this way to prevent recalling the Controller->before() over and over
-                    $reflect = new ReflectionClass($class);
-                    if( $reflect->getMethod('before')->getDeclaringClass()->getName() == $class ){
-                        add_action('wp', array( ${$class}, 'before' ) );
+                    if( method_exists(${$class}, 'before' ) ){
+                        //Check if the new child class has a before and runs it if it does
+                        //has to be done this way to prevent recalling the Controller->before() over and over
+                        $reflect = new ReflectionClass($class);
+                        if( $reflect->getMethod('before')->getDeclaringClass()->getName() == $class ){
+                            add_action('wp', array( ${$class}, 'before' ) );
+                        }
                     }
 
                     if( method_exists($class, 'single') ){

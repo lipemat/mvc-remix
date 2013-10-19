@@ -2,8 +2,13 @@
 /**
  * Creates a Meta Data box, Creates the fields and handles the saving
  * @author Mat Lipe <mat@vimm.com>
- * @since 10.3.13
- * @uses The Class's Methods are already available in controllers and Models etc
+ * @since 10.18.13
+ * 
+ * 
+ * @uses Add this to your controller class 
+           use MvcPostTypeTax;
+ * 
+ * 
  * @uses Add class arrays named "meta_fields" = array();
  *      * if key has check in it this will output a checkbox
  *      * if key has select in it will output a select using the array with same name as key
@@ -24,155 +29,6 @@
  */     
               
 trait MvcPostTypeTax{
-    
-    /**
-     * Setup the Saving of meta box data
-     * @since 1.13.13
-     * @uses Called automagically at Bootstrap
-     */
-    function initMetaSave(){
-        add_action('save_post', array( $this , 'meta_save' ) );
-    }
-    
-    /**
-     * Creates the Meta Box
-     * @param obj $post the post object
-     * @since 1.11.13
-     */
-    function meta_box( $post ){
-        $type = $post->post_type;
-        //For deprecation
-        if( isset( $this->{$type.'_meta_fields'}) ){
-            $this->meta_fields = $this->{$type.'_meta_fields'};
-        }
-        
-        //if not fields, no need to be here
-        if( !isset($this->meta_fields)) return;
-        add_meta_box( $type.'_meta_box', self::human_format_slug($type) . ' Data ' , array( $this, 'meta_box_output' ), $type , 'normal' , 'high' );
-    
-    }
-    
-    /**
-     * Creates the output for the meta box - Goes through the array with the %meta-name%_meta_Fields
-     * @param obj $post
-     * @param if key has check in it this will output a checkbox
-     * @param if key has select in it will output a select using the array with same name as key
-     * @param if the keys are set in select array they will become the selects values, otherwise the array values will become the selects values
-     * @example array( 'select_state' => 'state' ) will look for an array $select_state
-     * @example array( 'one','two', 'check_three' => 'three', 'select_state' => 'state' );
-     * @example array( 'textarea_desc' => array( 'name' => string, ['mce' => bool] ) will output a text area
-     * @example array( 'image_1' => 'Image Name') will create an image upload form
-     * @since 7.10.13
-     */
-    function meta_box_output( $post ){
-        $type = $post->post_type;
-        //Get the proper class array 
-        if( isset( $this->{$type .'_meta_fields'} ) ){
-            $fields = $this->{$type .'_meta_fields'};
-        } else {
-            $fields = $this->meta_fields;
-        }
-        
-        
-        wp_nonce_field( plugin_basename( __FILE__ ), $type. '_meta_box', true );
-    
-        //Go through all the fields in the array
-        foreach( $fields as $key => $field ){
-            
-            //Retrieve the field name
-            if( is_array( $field ) ){
-                 if( isset( $field['name'] ) ){
-                    $field_name = $field['name'];
-                 } else {
-                    $field_name = $field;
-                 }
-            } else {
-                 $field_name = $field;
-            }
-            
-            
-            echo '<li style="list-style: none; margin: 0 0 15px 10px">'; 
-            if( is_array( $field ) ){
-                echo self::human_format_slug($field['name']);
-            } else {
-                echo self::human_format_slug($field);
-            }
-            
-                //Checkbox
-                if( strpos($key,'check') !== false){
-                    echo ': &nbsp; &nbsp; <input type="checkbox" name="' . $field . '" value="1" '. checked( get_post_meta( $post->ID , $field , true ), true, false ) . '/>';
-                
-                //Select Field  
-                } elseif( strpos($key,'select') !== false ){
-                    echo ': &nbsp; <select name="'. $field . '">';
-                    
-                       //Get this classes array with the same name as the key
-                       $values_array = $this->{$key};
-                
-                        //To Determine if this is an associative array or not
-                        $ass = ($values_array != array_values($values_array));
-                    
-                        //Go through the matching array
-                        foreach( $values_array as $key => $value ){
-                            if( $ass ){
-                                //use the key as the value
-                                printf( '<option value="%s" %s>%s</option>', $key, selected( get_post_meta($post->ID,$field,true), $key), $value );
-                            } else {
-                                //use the value as the value
-                                printf( '<option value="%s" %s>%s</option>', $value, selected( get_post_meta($post->ID,$field,true), $value), $value );
-                            }
-                        }
-                        echo '</select><!-- End ' . $field . ' -->';
-                        
-                //textarea field
-                } elseif( strpos($key,'textarea') !== false ){
-                    $this->MvcForm->textarea( $field_name, get_post_meta( $post->ID , $field_name, true ), array(), true, $field );
-                    
-                //Image Upload Form
-                } elseif( strpos($key,'image') !== false ){
-                               
-                    $this->MvcForm->imageUploadForm( $field_name, get_post_meta( $post->ID , $field_name, true ) );
-                                
-                        
-                //Standard Text Field   
-                } else {
-                    echo ': <input type="text" name="' . $field . '" value="'. htmlspecialchars(get_post_meta( $post->ID , $field , true )) . '" size="75"/>';
-                }
-            
-            echo '</li>';
-
-        }
-    
-    }
-    
-    
-    /**
-     * Saves the meta fields
-     * @since 8.27.13
-     */
-    function meta_save($postId){
-        global $post;
-        
-        //Make sure this is valid
-        if( !isset( $post->post_type ) ) return;    
-        $type = $post->post_type; 
-         
-        if ( wp_is_post_revision( $postId ) ) return;
-        if ( defined('DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
-        if ( !wp_verify_nonce( $_POST[$type.'_meta_box'], plugin_basename(__FILE__ ) ) ) return;
-    
-        //Go through the options extra fields
-        if( isset( $this->meta_fields) ){
-          foreach( $this->meta_fields as $field ){
-              if( is_array( $field ) ){
-                update_post_meta( $post->ID, $field['name'], $_POST[$field['name']] );
-              } else {
-                update_post_meta( $post->ID, $field, $_POST[$field ] );  
-              }
-          }
-        }
-    }
-    
     
     /**
      * Registers a post type with default values which can be overridden as needed.
@@ -233,7 +89,7 @@ trait MvcPostTypeTax{
                 'supports'      => array( 'title', 'editor', 'thumbnail', 'author', 'comments' , 'genesis-seo' , 'genesis-layouts' ,
                         'excerpt', 'trackbacks' , 'custom-fields' , 'comments' , 'revisions' ,'page-attributes',
                         'post-formats'  ),
-                'register_meta_box_cb' => array( $this, 'meta_box' )
+                'register_meta_box_cb' => null
     
         );
     
