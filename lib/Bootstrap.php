@@ -108,14 +108,14 @@ class MvcBootstrap extends MvcFramework{
      * 
      * @since 5.5.0
      * 
-     * @since 8.1.13
+     * @since 10.18.13
      * 
      * @uses works off of the $GLOBALS set earlier in the file
      * 
      */
     function singleAndArchiveMethods(){
         $type = get_post_type();
-        
+
         if( is_single() ){
             if( isset($GLOBALS['MvcClassesWithSingle']) ){
                 foreach( $GLOBALS['MvcClassesWithSingle'] as $name => $class ){
@@ -125,6 +125,14 @@ class MvcBootstrap extends MvcFramework{
                 }
             }
          }
+        
+         if( is_page() ){
+             if( method_exists($GLOBALS['PageController'], 'single') ){
+                 $GLOBALS['PageController']->single();   
+             }
+         }
+        
+        
         
          if( is_page_template('page_blog.php') ){
              $type = 'post';
@@ -183,6 +191,9 @@ class MvcBootstrap extends MvcFramework{
         $mvc_theme['mvc_dirs'] = apply_filters( 'mvc_theme_dirs', array( MVC_THEME_DIR ) );
 
         foreach( $mvc_theme['mvc_dirs'] as $dir ){
+            
+            $classes = array();
+            
             if( file_exists($dir.'Controller/Controller.php') ){
                 
                 require($dir.'Controller/Controller.php' );
@@ -197,9 +208,7 @@ class MvcBootstrap extends MvcFramework{
 
                 $classes['Controller'] = 'Controller';
              } 
-           
 
-            $classes = array();
             
             if( !file_exists( $dir.'Controller' ) ) continue;
             
@@ -212,7 +221,9 @@ class MvcBootstrap extends MvcFramework{
 
                     if( in_array($name, array('Admin','admin') ) && !MVC_IS_ADMIN ) continue;
           
+               
                     $class = str_replace('.php', '', $file);
+                    global ${$class};
                     ${$class} = new $class;
                 
           
