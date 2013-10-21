@@ -12,7 +12,7 @@
  * @since 9/27/13
  */
 
-
+ if( class_exists('MvcMobileDetect') ) return; 
 class MvcMobileDetect {
 
    /**

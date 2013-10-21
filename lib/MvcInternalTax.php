@@ -14,6 +14,7 @@
  * @author Mat Lipe
  * 
  */
+if( class_exists('MvcInternalTax') ) return;  
 class MvcInternalTax extends MvcPostTypeTax{
 
      public $terms = array(); //The previously retrieved terms

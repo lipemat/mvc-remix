@@ -8,6 +8,7 @@
          * @TODO Come up with a way to assign attributes to fields such as text
          * 
          */
+if( class_exists('MvcForm') ) return;         
 class MvcForm {
     
     

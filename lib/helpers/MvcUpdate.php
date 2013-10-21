@@ -13,6 +13,8 @@
  * 
  * @uses do not call this directly 
  */
+ 
+if( class_exists('MvcUpdate') ) return;   
 class MvcUpdate {
 
     /**

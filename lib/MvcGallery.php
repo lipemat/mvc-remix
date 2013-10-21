@@ -9,6 +9,7 @@
  * @since 10.1.13
  * 
  */
+if( class_exists('MvcGallery') ) return;  
 class MvcGallery extends MvcFramework{
        public $post_types = array();
        private $groups = array();

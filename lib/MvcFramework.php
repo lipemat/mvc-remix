@@ -15,6 +15,7 @@
  * 
  *
  */
+if( class_exists('MvcFramework') ) return;  
 class MvcFramework{
 
     public $browser     = false; //Keep track to the views browser

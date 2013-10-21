@@ -8,6 +8,7 @@
  * @author Mat Lipe
  * 
  */
+if( class_exists('MvcMobileMenu') ) return;    
 class MvcMobileMenu extends MvcFramework{
      
      //Light or dark theme was specified

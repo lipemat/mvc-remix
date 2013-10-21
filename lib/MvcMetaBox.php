@@ -11,6 +11,7 @@
              * @TODO Come up with a way to assign attributes to fields such as text
              * @TODO Ponder a way to allow for revision of meta data as well
              */
+if( class_exists('MvcMetaBox') ) return;             
 class MvcMetaBox extends MvcFramework{
       public $id; //Id of the meta box
       public $postTypes; //Array of post types the meta box should show up on    

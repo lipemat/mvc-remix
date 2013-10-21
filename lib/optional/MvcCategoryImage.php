@@ -11,6 +11,7 @@
  * @uses MvcCateoryImage::getImage($term_id = false);
  * 
  */
+if( class_exists('MvcCategoryImage') ) return;   
 class MvcCategoryImage extends MvcFramework{
         
         

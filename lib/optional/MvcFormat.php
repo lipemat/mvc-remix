@@ -8,7 +8,7 @@
  * 
  * @uses add_theme_support('mvc_format');
  */
- 
+if( class_exists('MvcFormat') ) return;  
 class MvcFormat extends MvcFramework{
     
     //to tell the framework the sidebar has been specified elsewhere

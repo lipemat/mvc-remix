@@ -8,6 +8,9 @@
  * 
  * @uses add_theme_support('mvc_styles');
  */
+
+if( class_exists('MvcStyles') ) return; 
+ 
 class MvcStyles extends MvcFramework{
         
     function __construct(){

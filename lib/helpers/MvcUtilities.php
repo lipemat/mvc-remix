@@ -6,6 +6,9 @@
  * @since 2.0
  * @author Mat Lipe
  */
+ 
+if( class_exists('MvcUtilites') ) return;  
+ 
 class MvcUtilites {
     
     

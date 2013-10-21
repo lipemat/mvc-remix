@@ -24,7 +24,7 @@
  * //TODO Consider switching this to use MvcMetaBox to only have one place to make updates
  * 
  */     
-              
+ if( class_exists('MvcPostTypeTax') ) return;              
 class MvcPostTypeTax{
     
     /**

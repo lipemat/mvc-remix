@@ -8,6 +8,7 @@
  * 
  * @since 9.13.13
  */
+if( class_exists('MvcImageResize') ) return; 
 class MvcImageResize extends MvcFramework {
     protected $_image_sizes = array(); //Keeps track of all theme and plugins image sizes                
 

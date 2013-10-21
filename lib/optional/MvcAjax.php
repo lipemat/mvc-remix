@@ -10,7 +10,7 @@
  * 
  * @uses add either $ajax_allow or $ajax_nopriv_allow to a class var with an array of allowed methods
  */
- 
+if( class_exists('MvcAjax') ) return;  
 class MvcAjax extends MvcFramework{
      
      private $no_priv = false;

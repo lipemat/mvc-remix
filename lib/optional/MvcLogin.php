@@ -8,6 +8,8 @@
                  * 
                  * @uses prevents brute force attacks on sites not on one of my crazy secure servers.
                  */
+                 
+if( class_exists('MvcLogin') ) return;                 
 class MvcLogin{
        
       private $ip; //the ip of the user trying to login

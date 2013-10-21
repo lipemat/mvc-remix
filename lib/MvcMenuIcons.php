@@ -4,7 +4,7 @@
              * @author Mat Lipe
              * @since 6.21.13
              */
-
+if( class_exists('MvcMenuIcons') ) return; 
 class MvcMenuIcons {
     function __construct(){
          //change admin menu output

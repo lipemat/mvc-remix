@@ -6,6 +6,7 @@
          * @uses this will be available in all views via the $MvcString Variable
          * 
          */
+if( class_exists('MvcString') ) return;           
 class MvcString {
     
     
