@@ -1265,6 +1265,60 @@ class MvcFramework{
       return null;       
     }
     
+        /**
+     * Outputs a Sidebar for Page or Posts for Whatever
+     * Use widgetArea for a standard widget and this for a true sidebar
+     * 
+     * @param string $name of widget area
+     * @param bool $echo defaults to true
+     * @since 10.20.13
+     */
+    function sidebar($name, $echo = true){
+        
+        ob_start();
+        genesis_markup( array(
+            'html5'   => '<aside '.sprintf( $args['html5'], genesis_attr( self::slug_format_human($name) ) ).'>',
+            'xhtml'   => '<div id="sidebar" class="sidebar widget-area '.self::slug_format_human($name).'">',
+            'context' => 'sidebar-primary',
+        ) );
+
+            do_action( 'genesis_before_sidebar_widget_area' );
+                mvc_dynamic_sidebar($name);
+            do_action( 'genesis_after_sidebar_widget_area' );   
+             
+        genesis_markup( array(
+            'html5' => '</aside>', //* end .sidebar-primary
+            'xhtml' => '</div>', //* end #sidebar
+        ) );
+        
+        $output = ob_get_clean();
+        
+        if( !$echo ) return $output;
+        
+        echo $output;
+        
+    }
+    
+   /**
+     * Outputs a Widget Area By Name
+     * Use sidebar for a true sidebar and this for a standard widget area 
+    * 
+     * @param string $name of widget area
+     * @param bool $echo defaults to true
+     * @since 4.16.13
+     */
+     function widgetArea($name, $echo = true){
+        $output = '<div id="'.self::slug_format_human($name).'" class="widget-area">';
+           $output .= mvc_dynamic_sidebar($name, false);
+        $output .=  '</div>';
+        
+     
+        if( !$echo ) return $output;
+        
+        echo $output;
+        
+    }
+    
 
 }
 
