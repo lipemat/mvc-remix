@@ -4,7 +4,7 @@
              * 
              * @since 4.7.0
              * 
-             * @since 8.27.13
+             * @since 10.21.13
              * 
              * @uses construct as separate object per meta box
              *
@@ -102,7 +102,7 @@ class MvcMetaBox extends MvcFramework{
       /**
        * Saves the Meta Data
        * 
-       * @since 8.27.13
+       * @since 10.21.13
        */
       function saveMetaData($postId){
         global $post;
@@ -112,9 +112,9 @@ class MvcMetaBox extends MvcFramework{
         if ( wp_is_post_revision( $postId ) ) return;
         if ( !wp_verify_nonce( $_POST[$this->id.'_meta_box'], plugin_basename(__FILE__ ) ) ) return;
         
+        $fields = apply_filters( 'mvc_meta_box_fields_to_save', $this->getFieldNames(), $this );
         
-        
-        foreach( $this->getFieldNames() as $field ){
+        foreach( $fields as $field ){
             
             if( is_array( $_POST[$field] ) ){
                  $_POST[$field] = $this->MvcUtilites->arrayFilterRecursive( $_POST[$field] );
