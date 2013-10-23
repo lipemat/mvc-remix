@@ -5,7 +5,7 @@
  * @uses automatically extended into the Model Views and Controllers and Bootstrap
  * @see Bootstrap.php
  * @author Mat Lipe <mat@matlipe.com>
- * @since 10.19.13
+ * @since 10.22.13
 
  * @TODO Create a fragment caching class - run tests database vs files
  * @TODO create an auto shortcode registering class - see NUSD theme
@@ -1272,13 +1272,12 @@ class MvcFramework{
      * 
      * @param string $name of widget area
      * @param bool $echo defaults to true
-     * @since 10.20.13
+     * @since 10.22.13
      */
     function sidebar($name, $echo = true){
-        
         ob_start();
         genesis_markup( array(
-            'html5'   => '<aside '.sprintf( $args['html5'], genesis_attr( self::slug_format_human($name) ) ).'>',
+            'html5'   => '<aside '. genesis_attr( self::slug_format_human($name) ) .'>',
             'xhtml'   => '<div id="sidebar" class="sidebar widget-area '.self::slug_format_human($name).'">',
             'context' => 'sidebar-primary',
         ) );
