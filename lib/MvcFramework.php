@@ -5,7 +5,7 @@
  * @uses automatically extended into the Model Views and Controllers and Bootstrap
  * @see Bootstrap.php
  * @author Mat Lipe <mat@matlipe.com>
- * @since 10.22.13
+ * @since 10.24.13
 
  * @TODO Create a fragment caching class - run tests database vs files
  * @TODO create an auto shortcode registering class - see NUSD theme
@@ -310,6 +310,8 @@ class MvcFramework{
      * 
      * @param string $sidebar - Name of widget area
      * @uses must be called before the 'genesis_after_content' hook is run
+     * 
+     * @see Will not work if not using Genesis
      */
     function changeSidebar($sidebar){
           global $Bootstrap;
@@ -1273,23 +1275,34 @@ class MvcFramework{
      * @param string $name of widget area
      * @param bool $echo defaults to true
      * @since 10.22.13
+     *
+     * @uses genesis_markup() and mvc_dynamic_sidebar() - if not using genesis will just display sidebar
      */
     function sidebar($name, $echo = true){
-        ob_start();
-        genesis_markup( array(
-            'html5'   => '<aside '. genesis_attr( self::slug_format_human($name) ) .'>',
-            'xhtml'   => '<div id="sidebar" class="sidebar widget-area '.self::slug_format_human($name).'">',
-            'context' => 'sidebar-primary',
-        ) );
+        
+        global $wp_registered_sidebars;
+        
+        
+         ob_start();
+        //we are not rocking genesis
+        if( !function_exists('genesis_markup') ){
+            mvc_dynamic_sidebar($name);
+        } else {
+            genesis_markup( array(
+                'html5'   => '<aside '. genesis_attr( self::slug_format_human($name) ) .'>',
+                'xhtml'   => '<div id="sidebar" class="sidebar widget-area '.self::slug_format_human($name).'">',
+                'context' => 'sidebar-primary',
+            ) );
 
-            do_action( 'genesis_before_sidebar_widget_area' );
-                mvc_dynamic_sidebar($name);
-            do_action( 'genesis_after_sidebar_widget_area' );   
+                do_action( 'genesis_before_sidebar_widget_area' );
+                    mvc_dynamic_sidebar($name);
+                do_action( 'genesis_after_sidebar_widget_area' );   
              
-        genesis_markup( array(
-            'html5' => '</aside>', //* end .sidebar-primary
-            'xhtml' => '</div>', //* end #sidebar
-        ) );
+            genesis_markup( array(
+                'html5' => '</aside>', //* end .sidebar-primary
+                'xhtml' => '</div>', //* end #sidebar
+            ) );
+        }
         
         $output = ob_get_clean();
         
