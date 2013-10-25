@@ -6,7 +6,7 @@
  * @uses Pretty much automatic - use standard WP add_image_size() and this will pick it up
  * @May be tapped in using the pulbic methods as well - however probably not neccessary
  * 
- * @since 9.13.13
+ * @since 10.25.13
  */
 if( class_exists('MvcImageResize') ) return; 
 class MvcImageResize extends MvcFramework {
@@ -157,6 +157,7 @@ class MvcImageResize extends MvcFramework {
                 $height = $size[1];
             
             } elseif ( isset( $this->_image_sizes[$size] ) ) {
+
                 $width  = $this->_image_sizes[$size]['width'];
                 $height = $this->_image_sizes[$size]['height'];
                 $crop   = $this->_image_sizes[$size]['crop'];
@@ -199,14 +200,13 @@ class MvcImageResize extends MvcFramework {
         }
         
         // maybe need resize
-        if ( !empty( $width ) || !empty( $height ) ) {
+        if ( !empty( $width ) || !empty( $height ) ) {              
                 $image  = $this->resize( $image_id, $image_url, $width, $height, $crop );
                 $image_url = $image['url'];
                 $width     = $image['width'];
                 $height    = $image['height'];
         // no need resize 
-        } else {}
-        
+        } else {} 
         
         /* BEGIN OUTPUT */
         
@@ -323,6 +323,7 @@ class MvcImageResize extends MvcFramework {
         if ( !isset( $file_info['dirname'] ) && !isset( $file_info['filename'] ) && !isset( $file_info['extension'] )  )
             return;
         
+   
         $base_file = $file_info['dirname'].'/'.$file_info['filename'].'.'.$file_info['extension'];
         if ( !file_exists($base_file) )
             return;
@@ -336,7 +337,7 @@ class MvcImageResize extends MvcFramework {
 
         // checking if the file size is larger than the target size
         // if it is smaller or the same size, stop right here and return
-        if ( $image_src[1] > $width ) {
+        if ( $image_src[1] > $width || $image_src[2] > $height  ) {
             // the file is larger, check if the resized version already exists (for $crop = true but will also work for $crop = false if the sizes match)
             if ( file_exists( $cropped_img_path ) ) {
                 $cropped_img_url = str_replace( basename( $image_src[0] ), basename( $cropped_img_path ), $image_src[0] );
