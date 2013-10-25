@@ -21,6 +21,7 @@ Create 3 folders inside your theme named:
 * Controllers
 * Models
 * Views
+
 Inside your Controller folder you may create files with names that end in Controller like so 'testController.php'.
 Inside your Models folder you must create a matching file without Controller liks so 'test.php'.
 Inside your newly created files create a class matching the files name like so 'class testController{}'.
