@@ -1,7 +1,7 @@
 MVC Theme - WordPress Plugin
 ==============================
 
-#MVC Framework written to work on top of WordPress Genesis theme
+##MVC Framework written to work on top of WordPress Genesis theme
 
 This will work with a non Genesis them or may be extended into other plugins. However many of the formatting or frontend features
 are designed to work with Genesis hooks a will become frustration for someone who wants the full functionality and is using a non 
@@ -40,7 +40,7 @@ Calls to views may be made from your controller like $this->view('view_file_name
 
 
 
-More useful readme and documentation coming soon.
+###More useful readme and documentation coming soon.
 
 Up until 9/4/13 this was a private project used on many live 
 WordPress sites. It is being made public in hopes of helping other developers out there who love MVC.
