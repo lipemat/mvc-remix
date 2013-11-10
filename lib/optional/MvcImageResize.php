@@ -1,13 +1,16 @@
 <?php
 /**
  * Manage Image resizing on the fly to prevent a bunch of uneeded image sizes for every image uploaded
+ * Includes support for the Wp Smush.it plugin and will run the smush on all image sizes when generating the thumbnails. This also allow for smushing image larger than 1mb when 
+ * using cropped sizes less than 1MB
  * 
  * @author Mat Lipe <mat@matlipe.com>
  * @uses Pretty much automatic - use standard WP add_image_size() and this will pick it up
  * @May be tapped in using the pulbic methods as well - however probably not neccessary
  * 
- * @since 10.25.13
+ * @since 11.10.13
  */
+
 if( class_exists('MvcImageResize') ) return; 
 class MvcImageResize extends MvcFramework {
     protected $_image_sizes = array(); //Keeps track of all theme and plugins image sizes                
@@ -283,12 +286,16 @@ class MvcImageResize extends MvcFramework {
 
     /**
      * Resize images dynamically using wp built in functions
+     * Will also run the images through smush.it if available
      *
      * @param int $attach_id
      * @param string $img_url
      * @param int $width
      * @param int $height
      * @param bool $crop
+     * 
+     * @since 11.10.13
+     * 
      * @return array
      */
     protected function resize( $attach_id = null, $img_url = null, $width, $height, $crop = false ) {
@@ -400,6 +407,15 @@ class MvcImageResize extends MvcFramework {
                 'width' => $new_img_size[0],
                 'height' => $new_img_size[1]
             );
+
+            //If using Wp Smushit
+            if( class_exists('WpSmushit') ){
+                if( filesize( $new_img_path ) < 1048576 ){
+                    $smush = new WpSmushit();
+                    $smush->do_smushit($new_img_path, $new_img);
+                    
+                }
+            }
 
             return $image;
         }
