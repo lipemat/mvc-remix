@@ -410,9 +410,9 @@ class MvcImageResize extends MvcFramework {
 
             //If using Wp Smushit
             if( class_exists('WpSmushit') ){
-                if( filesize( $new_img_path ) < 1048576 ){
-                    $smush = new WpSmushit();
-                    $smush->do_smushit($new_img_path, $new_img);
+                global $WpSmushit;
+                if( filesize( $new_img_path ) < WP_SMUSHIT_MAX_BYTES ){
+                   $WpSmushit->do_smushit($new_img_path, $new_img);
                     
                 }
             }
