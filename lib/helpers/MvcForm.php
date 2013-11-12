@@ -324,7 +324,7 @@ class MvcForm {
         
 
 
-   /**
+    /**
      * 
      * Creates an Html Button
      * 
@@ -342,7 +342,7 @@ class MvcForm {
      * @since 11.12.13
      */
     function button($name, $atts = array(), $echo = true ){
-        $atts = array(
+        $defaults = array(
             'id'    => $name,
             'value' => 'Click Here',
             'onclick' => false,
@@ -354,7 +354,7 @@ class MvcForm {
                 'value' => $atts
              );
          }
-        
+
         $atts = wp_parse_args($atts, $defaults);
         
         $output = '<input type="button" ';
