@@ -736,14 +736,16 @@ class MvcForm {
   /**
      * Creates a text Field
      * @param string $name the field name
-     * @param array [$atts]  array( 
+     * @param string|array [$atts]  array( 
      *                          'id' => %id%,
      *                          'value' => %value%,
-   *                            'name'  => %name%
-     *                          
+     *                          'name'  => %name%
      *                                  )
+     *         if string is sent will use as the value 
+     *
      * @param bool $echo defaults to true
-     * @since 2.1
+     * 
+     * @since 11.12.13
      */
     function text($name, $atts = array(), $echo = true){
          $defaults = array(
@@ -752,9 +754,15 @@ class MvcForm {
                        'name'   => $name
                        
          );
-                       
+         
+         if( !is_array( $atts ) ){
+             $atts = array(
+                        'value' => $atts
+             );
+         }
+            
         $atts = wp_parse_args($atts, $defaults); 
-        
+
         $output = '<input type="text" ';
         $output .= $this->attributeFactory($atts);
         
@@ -766,6 +774,7 @@ class MvcForm {
             return $output;
         } 
     }
+
 
 
     /**
