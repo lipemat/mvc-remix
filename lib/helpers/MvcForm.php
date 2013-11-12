@@ -1,7 +1,7 @@
 <?php
         /**
          * Form Helpers only available in Views
-         * @since 10.1.13
+         * @since 11.12.13
          * @author Mat Lipe
          * @uses this will be available in all views via the $MvcString Variable
          * 
@@ -223,10 +223,10 @@ class MvcForm {
     }
 
 
-    /**
+         /**
      * Image Upload Form complete with Jquery
      * 
-     * @since 10.1.13
+     * @since 11.12.13
      * 
      * @param string $name - the fields name if no specified in the args
      * @param string $value
@@ -238,12 +238,16 @@ class MvcForm {
                   );
      * @param bool $echo (defaults to true );
      * 
+     * @uses contains and event called 'MVCImageUploadReturn' which is triggered when a new image is returned
+     *       This may be tapped into via js like so JQuery(document).bind("MVCImageUploadReturn", function( e, url ){});
+      * 
      * @uses Be sure the ID does not already exist on the dom or this will break
      *
      */
     function imageUploadForm( $name, $value = '', $args = array(), $echo = true ){
         
        wp_enqueue_media();
+        
         
        $defaults = array(
                 'value'        => $value,
@@ -287,6 +291,7 @@ class MvcForm {
                          _custom_media = true;
                         wp.media.editor.send.attachment = function(props, attachment){
                             if ( _custom_media ) {
+                                jQuery.event.trigger('MVCImageUploadReturn', [attachment.url, attachment, props]);
                                 $("#"+id).val(attachment.url);
                             } else {
                                 return _orig_send_attachment.apply( this, [props, attachment] );
