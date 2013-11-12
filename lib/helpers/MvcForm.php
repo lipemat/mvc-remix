@@ -324,21 +324,22 @@ class MvcForm {
         
 
 
-    /**
+   /**
      * 
      * Creates an Html Button
      * 
      * @param string $name
-     * @param array  $args  => array(
+     * @param string|array  $args  => array(
      *                        'class' => %class%,
      *                        'value' => %value%,
      *                        'id'    => %id%
      *                        'onclick' => %onclick%
      *                      )
-     * @param bool $echo - defaults to true
-     * @since 2.1.0
+     *        if a string is sent will be converted to value
      * 
-     * @since 5.29.13
+     * @param bool $echo - defaults to true
+     * 
+     * @since 11.12.13
      */
     function button($name, $atts = array(), $echo = true ){
         $atts = array(
@@ -347,6 +348,12 @@ class MvcForm {
             'onclick' => false,
             'class'   => false
         );
+        
+        if( !is_array( $atts ) ){
+             $atts = array(
+                'value' => $atts
+             );
+         }
         
         $atts = wp_parse_args($atts, $defaults);
         
@@ -362,6 +369,7 @@ class MvcForm {
            echo $output;
 
     }
+    
     
     
     
