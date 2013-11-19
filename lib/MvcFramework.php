@@ -5,7 +5,7 @@
  * @uses automatically extended into the Model Views and Controllers and Bootstrap
  * @see Bootstrap.php
  * @author Mat Lipe <mat@matlipe.com>
- * @since 10.24.13
+ * @since 11.18.13
 
  * @TODO Create a fragment caching class - run tests database vs files
  * @TODO create an auto shortcode registering class - see NUSD theme
@@ -664,23 +664,33 @@ class MvcFramework{
 
     /**
      * Retreive data set in a controller with set()
-     * @since 2.8.13
+     * 
+     * @since 11.18.13
+     * 
      * @uses $this->get('key');
+     *
      * @uses may only be used inside a view to retreive data set from its controller
+     * 
      * @param string $name [optional] of the key defaults to all that has been set
+     * @param string [$controller] - the class to retrieve from default to current
+     *
      */
     function get($name = false){
         global $controllerViewGlobals;
         
-        if( !$name ){
-            if( empty( $controllerViewGlobals[$this->getController()] ) ){
-                return array();
-            }
-           return $controllerViewGlobals[$this->getController()];  
+        if( !$controller ){
+            $controller =  $this->getController();  
         }
         
-        if( isset( $controllerViewGlobals[$this->getController()][$name] ) ){
-            return $controllerViewGlobals[$this->getController()][$name];
+        if( !$name ){
+            if( empty( $controllerViewGlobals[$controller] ) ){
+                return array();
+            }
+           return $controllerViewGlobals[$controller];  
+        }
+        
+        if( isset( $controllerViewGlobals[$controller][$name] ) ){
+            return $controllerViewGlobals[$controller][$name];
         }
         return false; //nothing set
     }
