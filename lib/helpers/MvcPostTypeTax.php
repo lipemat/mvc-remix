@@ -1,30 +1,19 @@
 <?php 
 /**
- * Creates a Meta Data box, Creates the fields and handles the saving
- * @author Mat Lipe <mat@vimm.com>
- * @since 10.19.13
+ * Register a Post Type and/or taxonomy
+ * 
+ * @uses This fills in all the defaults for you
+ * 
+ * @author Mat Lipe <mat@matlipe.com>
+ * 
+ * @since 11.19.13
  * 
  * 
- * 
- * @uses Add class arrays named "meta_fields" = array();
- *      * if key has check in it this will output a checkbox
- *      * if key has select in it will output a select using the array with same name as key
- *      * if the keys are set in select array they will become the selects values, otherwise the array values will become the selects values
- *      * array( 'select_state' => 'state' ) will look for an array $select_state
- *      * array( 'one','two', 'check_three' => 'three', 'select_state' => 'state' );
- * @uses Be sure the set the callback of a custom post type to array( $this, meta_box ) or this will not create the meta fields
  * @package MVC
  * 
  * 
- * //TODO Add Another Row as a type of meta fields
- * @see Evernotes/Wordpress/Add Another Row ability to Meta Data Section
- * @see MvcForm::repeater
- * 
- * //TODO Ponder a way to add revision support to meta fields 
- * //TODO Consider switching this to use MvcMetaBox to only have one place to make updates
- * 
  */     
- if( class_exists('MvcPostTypeTax') ) return;              
+if( class_exists('MvcPostTypeTax') ) return;              
 class MvcPostTypeTax{
     
     /**
@@ -32,7 +21,7 @@ class MvcPostTypeTax{
      * @param $title the name of the post type
      * @param [$args] the arguments to overwrite
      * @example register_post_type( 'newtest' , array() );
-     * @since 5.20.13
+     * @since 11.19.13
      *
      **/
     function register_post_type( $title, $args = array() ){
@@ -53,41 +42,45 @@ class MvcPostTypeTax{
                 'labels' => array(
                         'name'                       => $pluralTitle,
                         'singular_name'              => $title,
-                        'search_items'               => sprintf( 'Search %s', $pluralTitle ),
-                        'popular_items'              => sprintf( 'Popular %s', $pluralTitle ),
+                        'menu_name'                  => $pluralTitle,
                         'all_items'                  => sprintf( 'All %s' , $pluralTitle),
-                        'parent_item'                => sprintf( 'Parent %s', $title ),
-                        'parent_item_colon'          => sprintf( 'Parent %s:', $title ),
-                        'edit_item'                  => sprintf( 'Edit %s', $title ),
-                        'update_item'                => sprintf( 'Update %s' , $title ),
-                        'add_new_item'               => sprintf( 'Add New %s' , $title),
-                        'new_item_name'              => sprintf( 'New %s Name', $title ),
-                        'separate_items_with_commas' => sprintf( 'Seperate %s with commas', $title ),
-                        'add_or_remove_items'        => sprintf( 'Add or remove %s', $pluralTitle ),
-                        'choose_from_most_used'      => sprintf( 'Choose from the most used %s', $pluralTitle ),
-                        'view_item'                  => sprintf( 'View %s', $title ),
                         'add_new'                    => sprintf( 'Add New %s', $title ),
+                        'add_new_item'               => sprintf( 'Add New %s' , $title),
+                        'edit_item'                  => sprintf( 'Edit %s', $title ),
                         'new_item'                   => sprintf( 'New %s', $title ),
-                        'menu_name'                  => $pluralTitle
+                        'view_item'                  => sprintf( 'View %s', $title ),
+                        'search_items'               => sprintf( 'Search %s', $pluralTitle ),
+                        'not_found'                  => sprintf( 'No %s found', $pluralTitle ),
+                        'not_found_in_trash'         => sprintf( 'No %s found in trash', $pluralTitle ),
+                        'parent_item_colon'          => sprintf( 'Parent %s:', $title ),   
                 ),
-                'menu_position'     => null,
-                'public'            => true,
-                'show_in_nav_menus' => true,
-                'show_ui'           => true,
-                'exclude_from_search'=> false,
-                'show_tagcloud'     => false,
-                'hierarchical'      => true,
-                'query_var'         => $sanitizedTitle,
-                'rewrite'           => array( 'slug' => $sanitizedTitle ),
-                '_builtin'          => false,
-                'menu_icon'         => null,
-                'has_archive'       => true,
-                'show_in_menu'      => true, //Change this to a string for the menu to make this is submenu of
-                'supports'      => array( 'title', 'editor', 'thumbnail', 'author', 'comments' , 'genesis-seo' , 'genesis-layouts' ,
-                        'excerpt', 'trackbacks' , 'custom-fields' , 'comments' , 'revisions' ,'page-attributes',
-                        'post-formats'  ),
-                'register_meta_box_cb' => null
-    
+                
+                
+                'description'          => null, //describe me
+                'public'               => true, //General publicly usable
+                'exclude_from_search'  => false, //hide from search
+                'publicly_queryable'   => true, //can reach on front end
+                'show_ui'              => true, //admin CPT section
+                'show_in_nav_menus'    => true, //custom menus
+                'show_in_menu'         => true, //Change this to a string for the menu to make this is submenu of
+                'show_in_admin_bar'    => true, //show in top bar
+                'menu_position'        => null, //spot in admin menu
+                'menu_icon'            => null, //icon for admin menu
+                'capability_type'      => 'post', //custom caps map_meta_cap must be true
+                'capabilities'         => false, //can specify custom caps - not needed in most cases because capability_type does this for you
+                'map_meta_cap'         => true, //to use specified caps    
+                'hierarchical'         => true,
+                'supports'             => array( 'title', 'editor', 'thumbnail', 'author', 'comments' , 'genesis-seo' , 'genesis-layouts' ,'excerpt', 'trackbacks' , 'custom-fields' , 'comments' , 'revisions' ,'page-attributes','post-formats' ),
+                'register_meta_box_cb' => null, //if a meta box generator shoudld be called
+                'taxonomies'           => false, //taxonomies to assign to this post type
+                'has_archive'          => true, //if can get a list by going to name               
+                'rewrite'              => array( 
+                                            'slug' => $sanitizedTitle, //first part
+                                            'with_front' => true, //show slug in all urls
+                                            'pages'      => true, //paginate ability?
+                 ), //how the link should look
+                 'query_var'           => $sanitizedTitle, //key show up in queries
+                 'can_export'          => true, //can you export?
         );
     
     
@@ -107,12 +100,17 @@ class MvcPostTypeTax{
     
     
     /**
+     * 
      * Registers a taxonomy with default values which can be overridden as needed.
+     * 
      * @param $title is the name of the taxonomy
      * @param $post_type the post type to link it to
      * @param $args an array to overwrite the defaults
+     * 
      * @example register_taxonomy( 'post-cat', 'custom-post-type', array( 'pluralTitle' => 'lots of cats' ) );
-     * @since 12.12.12
+     * 
+     * 
+     * @since 11.19.13
      */
     function register_taxonomy( $title, $post_type = '', $args = array() ){
     
@@ -131,31 +129,36 @@ class MvcPostTypeTax{
                 'labels' => array(
                         'name'                       => $puralTitle,
                         'singular_name'              => $title,
-                        'search_items'               => sprintf( __( 'Search %s'                   , 'gmp' ), $puralTitle ),
-                        'popular_items'              => sprintf( __( 'Popular %s'                  , 'gmp' ), $puralTitle ),
-                        'all_items'                  => sprintf( __( 'All %s'                      , 'gmp' ), $puralTitle ),
-                        'parent_item'                => sprintf( __( 'Parent %s'                   , 'gmp' ), $title      ),
-                        'parent_item_colon'          => sprintf( __( 'Parent %s:'                  , 'gmp' ), $title      ),
-                        'edit_item'                  => sprintf( __( 'Edit %s'                     , 'gmp' ), $title      ),
-                        'update_item'                => sprintf( __( 'Update %s'                   , 'gmp' ), $title      ),
-                        'add_new_item'               => sprintf( __( 'Add New %s'                  , 'gmp' ), $title      ),
-                        'new_item_name'              => sprintf( __( 'New %s Name'                 , 'gmp' ), $title      ),
-                        'separate_items_with_commas' => sprintf( __( 'Seperate %s with commas'     , 'gmp' ), $title      ),
-                        'add_or_remove_items'        => sprintf( __( 'Add or remove %s'            , 'gmp' ), $puralTitle ),
-                        'choose_from_most_used'      => sprintf( __( 'Choose from the most used %s', 'gmp' ), $puralTitle ),
                         'menu_name'                  => $puralTitle,
+                        'all_items'                  => sprintf(  'All %s', $puralTitle ),
+                        'edit_item'                  => sprintf( 'Edit %s', $title ),
+                        'view_item'                  => sprintf( 'View %s', $title ),
+                        'update_item'                => sprintf( 'Update %s', $title ),
+                        'add_new_item'               => sprintf( 'Add New %s', $title ),
+                        'new_item_name'              => sprintf( 'New %s Name', $title ),
+                        'parent_item'                => sprintf( 'Parent %s', $title ),
+                        'parent_item_colon'          => sprintf( 'Parent %s:', $title ),
+                        'search_items'               => sprintf( 'Search %s', $puralTitle ),
+                        'popular_items'              => sprintf( 'Popular %s', $puralTitle ),
+                        'separate_items_with_commas' => sprintf( 'Separate %s with commas', $puralTitle ),
+                        'add_or_remove_items'        => sprintf( 'Add or remove %s', $puralTitle ),
+                        'choose_from_most_used'      => sprintf( 'Choose from the most used %s', $puralTitle ),
                 ),
-                'public'            => true,
-                'show_in_nav_menus' => true,
-                'show_ui'           => true,
-                'show_tagcloud'     => false,
-                'hierarchical'      => true,
-                'query_var'         => $sanitizedTaxonomy,
-                'rewrite'           => array( 'slug' => $sanitizedTaxonomy ),
-                '_builtin'          => false,
-                'show_admin_column' => true //Only works in 3.5
-    
-    
+                'public'                => true, //general public nature
+                'show_ui'               => true, //show admin ui
+                'show_in_nav_menus'     => true, //custom menus
+                'show_tagcloud'         => false, //if tagcloud widget may use this
+                'show_admin_column'     => true, //show admin taxonomy columns
+                'hierarchical'          => true, //allow for parents
+                'update_count_callback' => false, //call a function when the _update_post_term_count is run
+                'query_var'             => $sanitizedTaxonomy, //the key used in the query
+                'rewrite'               => array( //how the urls will look
+                                                'slug' => $sanitizedTaxonomy, //slug
+                                                'with_front' => true, //show slug before link
+                                                'hierarchical' => false, //show parents in url
+                ),
+                'capabilities'          => null, //can be array of custom capabilites
+                'sort'                  => false, //remember the order terms are added to objects
         );
     
         //Make this keep the no overwritten default labels
