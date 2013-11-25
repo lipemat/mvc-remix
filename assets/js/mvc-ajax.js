@@ -7,6 +7,11 @@
  * @author Mat Lipe <mat@matlipe.com>
  */
 
+//debug function
+function _p(v){
+    console.log(v);
+    console.log(arguments.callee.caller);
+}
 
 /**
  * Main object for ajax interaction
@@ -56,11 +61,5 @@ var MvcAjax = {
         this.data.args = data;
         
         return this.data;
-    },
-    
-    
-    
-
-    
-
-}
+    }
+};
