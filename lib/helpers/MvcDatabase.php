@@ -6,6 +6,8 @@
  * 
  * @author Mat Lipe <mat@matlipe.com>
  * 
+ * @see Much borrowed from paulund https://gist.github.com/paulund/6687336
+ * 
  * @uses extend as an abstract or use as is
  * 
  * @uses new MvcDatabase(%table%);
