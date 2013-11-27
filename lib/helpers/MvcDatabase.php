@@ -81,7 +81,7 @@ class MvcDatabase {
      *
      * @return Table result
      */
-    public function getWhere(array $conditionValue, $condition = '=') {
+    public function getBy(array $conditionValue, $condition = '=') {
         global $wpdb;
 
         $sql = 'SELECT * FROM `' . $this->$table_name . '` WHERE ';
@@ -105,6 +105,22 @@ class MvcDatabase {
         $result = $wpdb->get_results($sql);
 
         return $result;
+    }
+    
+    
+    /**
+     * Get results by a custom WHERE statement
+     * 
+     * @since 11.27.13
+     * 
+     * @param string $where - custom WHERE statement
+     * 
+     */
+    public function getWhere( $where ){
+         global $wpdb;
+         $sql = 'SELECT * FROM `' . $this->$table_name . '` WHERE '.$where;
+         $result = $wpdb->get_results($sql);
+         return $result;
     }
     
     
