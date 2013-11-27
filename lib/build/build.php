@@ -7,7 +7,7 @@
              * * Widget
              * 
              * 
-             * @since 7.30.13
+             * @since 11.27.13
              * @author Mat Lipe
              * 
              * @TODO Add a Build for the Homepage Widget Structure
@@ -32,7 +32,7 @@ $replace = array(
  */
 if( $controller == 'Tincr' ){
     $content = str_replace('%theme%', $argv[4], file_get_contents('template/tincr.json') );
-    file_put_contents('../../../../../tincr.json', $content);
+    file_put_contents('../../../../../../tincr.json', $content);
     echo 'Tincr Config File Built';
     die();
 }
@@ -77,13 +77,13 @@ function fail(){
 }
 
 if( !$controller ) fail();
-if( file_exists('../../Controller/'.$controller.'Controller.php') ) fail();
+if( file_exists('../../../Controller/'.$controller.'Controller.php') ) fail();
 
 /**
  * Build the Controller
  */
 $cont = file_get_contents('template/Controller.php'); 
-$success = file_put_contents('../../Controller/'.$controller.'Controller.php', replace_content($cont) );
+$success = file_put_contents('../../../Controller/'.$controller.'Controller.php', replace_content($cont) );
 
 if( $success === false ) fail();
  
@@ -91,14 +91,14 @@ if( $success === false ) fail();
  * Build the Model
  */
 $cont = file_get_contents('template/Model.php'); 
-$success = file_put_contents('../../Model/'.$controller.'.php', replace_content($cont) );
+$success = file_put_contents('../../../Model/'.$controller.'.php', replace_content($cont) );
 
 if( $success === false ) fail();
  
 /**
  * Create the Views
  */
-mkdir('../../View/'.$controller);
+echo mkdir('../../../View/'.$controller);
 
 
 echo ' Build Completed';

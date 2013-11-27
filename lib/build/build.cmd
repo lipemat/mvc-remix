@@ -8,7 +8,7 @@ echo *****************************************
 echo .
 echo      MVC file creator
 echo      @author Mat Lipe
-echo      @since 6.14.13
+echo      @since 11.27.13
 echo      @usage %~0 as is will give a menu
 echo      @usage %~0 "custom Post type name" build MVC scaffolding
 echo      @usage %~0 tincr - build a config file for tincr
