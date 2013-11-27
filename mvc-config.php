@@ -4,7 +4,7 @@
              * Add the file to your theme and make changes there
              * 
              * 
-             *  @since 10.8.13
+             *  @since 11.27.13
              *  @author Mat Lipe <mat@matlipe.com>
              *  
              */
@@ -33,6 +33,7 @@ add_theme_support( 'mvc_widgets' );
 add_theme_support( 'mvc_secure' );
 add_theme_support( 'mvc_format' );
 add_theme_support( 'mvc_ajax' );
+add_theme_support( 'mvc_update' );
 
 //add_theme_support('mvc_mobile_responsive');
 //add_theme_support('mvc_mobile_menu','dark'); //light or dark

@@ -2,7 +2,7 @@
 
                             /**
                              * Pull the Whole Framework Together
-                             * @since 10.18.13
+                             * @since 11.27.13
                              * @author Mat Lipe <mat@matlipe.com>
                              */
 
@@ -18,14 +18,14 @@ include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 //Allow for autoloading framework Classes
 spl_autoload_register('_mvc_autoload');
 
-if( is_admin() ){
-    new MvcUpdate();   
-}
-
 
 /** The Config for this Theme **/
 if( !locate_template('mvc-config.php', true) ){
    include( MVC_DIR.'mvc-config.php' );
+}
+
+if( current_theme_supports('mvc_update') && is_admin() ){
+    new MvcUpdate();   
 }
 
 
