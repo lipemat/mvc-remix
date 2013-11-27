@@ -9,6 +9,7 @@
  * @uses extend as an abstract or use as is
  * 
  * @uses new MvcDatabase(%table%);
+ * 
  */
 class MvcDatabase {
     /**
@@ -24,7 +25,7 @@ class MvcDatabase {
      * @param String $table_name - The current table name
      */
     public function __construct($table_name) {
-        $this->$table_name = $table_name;
+        $this->table_name = $table_name;
     }
     
     
@@ -43,7 +44,7 @@ class MvcDatabase {
             return false;
         }
 
-        $wpdb->insert($this->$table_name, $data);
+        $wpdb->insert($this->table_name, $data);
 
         return $wpdb->insert_id;
     }
@@ -60,7 +61,7 @@ class MvcDatabase {
     public function getResults($orderBy = NULL) {
         global $wpdb;
 
-        $sql = 'SELECT * FROM `' . $this->$table_name . '`';
+        $sql = 'SELECT * FROM `' . $this->table_name . '`';
 
         if (!empty($orderBy)) {
             $sql .= ' ORDER BY ' . $orderBy;
@@ -84,7 +85,7 @@ class MvcDatabase {
     public function getBy(array $conditionValue, $condition = '=') {
         global $wpdb;
 
-        $sql = 'SELECT * FROM `' . $this->$table_name . '` WHERE ';
+       $sql = 'SELECT * FROM `' . $this->table_name . '` WHERE ';
 
         foreach ($conditionValue as $field => $value) {
             switch(strtolower($condition)) {
@@ -118,7 +119,7 @@ class MvcDatabase {
      */
     public function getWhere( $where ){
          global $wpdb;
-         $sql = 'SELECT * FROM `' . $this->$table_name . '` WHERE '.$where;
+         $sql = 'SELECT * FROM `' . $this->table_name . '` WHERE '.$where;
          $result = $wpdb->get_results($sql);
          return $result;
     }
@@ -141,7 +142,7 @@ class MvcDatabase {
             return false;
         }
 
-        $updated = $wpdb->update($this->$table_name, $data, $conditionValue);
+        $updated = $wpdb->update($this->table_name, $data, $conditionValue);
 
         return $updated;
     }
@@ -159,7 +160,7 @@ class MvcDatabase {
     public function delete(array $conditionValue) {
         global $wpdb;
 
-        $deleted = $wpdb->delete($this->$table_name, $conditionValue);
+        $deleted = $wpdb->delete($this->table_name, $conditionValue);
 
         return $deleted;
     }
