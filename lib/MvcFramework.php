@@ -5,11 +5,11 @@
  * @uses automatically extended into the Model Views and Controllers and Bootstrap
  * @see Bootstrap.php
  * @author Mat Lipe <mat@matlipe.com>
- * @since 11.18.13
+ * @since 11.27.13
 
  * @TODO Create a fragment caching class - run tests database vs files
  * @TODO create an auto shortcode registering class - see NUSD theme
- * @TODO create a way to server up all js or css files from one php file like mvc_add_style() and mvc_add_js() to prevent all the requests - maybe grunt.js
+ * @TODO create a way to serve up all js or css files from one php file like mvc_add_style() and mvc_add_js() to prevent all the requests - maybe grunt.js
  * @TODO enable revision support for post meta
  * @TODO Add the Custom Image Sizes to the Media Uploader. Ponder a way to decided which ones are requires so the user won't see like a billion of them
  * 
@@ -570,18 +570,22 @@ class MvcFramework{
     
     /**
      * Returns the output of the proper View File to a filter
-     * @since 1.30.13
+     * 
+     * @since 11.27.13
+     * 
      * @uses call with no param and it will pull the view file matching the method name from the controller named folder
      * @uses accepts extra param which will be turned into variables in the view
+     * 
      * @param $file the view file to use
      * @param $folder the view folder to use
      * @param Array $args will be extracted into usable args is associate array otherwise will be avaiable as is in view
+     * @param bool [$hideInfo] - to remove the <!-- comments --> (defaults to false);
      * 
      * @return string
      */
-    function filter( $file = false, $folder = false, $args = array() ){
+    function filter( $file = false, $folder = false, $args = array(), $hideInfo = false ){
          ob_start();
-         $this->view($file, $folder, $args);
+         $this->view($file, $folder, $args, $hideInfo);
          return ob_get_clean();
     }
     
@@ -589,17 +593,21 @@ class MvcFramework{
     
     /**
      * Calles the Proper view file from a controller
-     * @since 5.17.13
+     * 
+     * @since 11.27.13
+     * 
      * @uses call with no param and it will pull the view file matching the method name from the controller named folder
      * @uses accepts extra param which will be turned into variables in the view
      * @uses all keys set using $this->set() will be extracted into usable variables in view
+     * 
      * @param $file the view file to use
      * @param $folder the view folder to use
      * @param Array $args will be extracted into usable args is associate array otherwise will be avaiable as is in view
+     * @param bool [$hideInfo] - to remove the <!-- comments --> (defaults to false);
      * 
      * @return void
      */
-    function view( $file = false, $folder = false, $args = array() ){
+    function view( $file = false, $folder = false, $args = array(), $hideInfo = false ){
         $MvcString = $this->MvcString;
         $MvcForm = $this->MvcForm;
         
@@ -618,7 +626,9 @@ class MvcFramework{
         //Any keys set for this view will also be extracted
         extract( $this->get() );
         
-        echo '<!-- View/'.$folder.'/'. $file . '.php -->';
+        if( !$hideInfo ){
+            echo '<!-- View/'.$folder.'/'. $file . '.php -->';
+        }
         include( MVC_THEME_DIR.'View/'.$folder.'/'. $file . '.php' );
     }
 
