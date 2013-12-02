@@ -759,9 +759,6 @@ class MvcForm {
      * @since 11.12.13
      */
     function text($name, $atts = array(), $echo = true){
-        
-        _p( $atts );
-        
          $defaults = array(
                        'id'     => $name,
                        'value'  => '',
