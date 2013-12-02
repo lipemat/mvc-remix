@@ -4,7 +4,7 @@
              * Add the file to your theme and make changes there
              * 
              * 
-             *  @since 11.27.13
+             *  @since 12.2.13
              *  @author Mat Lipe <mat@matlipe.com>
              *  
              */
@@ -26,6 +26,9 @@ if ( ! isset( $content_width ) ){
 /** Changes Search Form Values **/
 define('SEARCH_BUTTON_TEXT','Search');
 define('SEARCH_TEXT','Search this website');
+
+/** Change to remove class prefix from views folder **/
+define( "MVC_CONTROLLER_PREFIX", false);
 
 
 add_theme_support( 'mvc_styles' );

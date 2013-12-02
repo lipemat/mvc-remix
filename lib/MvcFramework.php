@@ -5,7 +5,7 @@
  * @uses automatically extended into the Model Views and Controllers and Bootstrap
  * @see Bootstrap.php
  * @author Mat Lipe <mat@matlipe.com>
- * @since 11.27.13
+ * @since 12.2.13
 
  * @TODO Create a fragment caching class - run tests database vs files
  * @TODO create an auto shortcode registering class - see NUSD theme
@@ -101,7 +101,7 @@ class MvcFramework{
      * @since 10.2.13
      */
     function __get($object){
-        
+
         if( !class_exists($object) ){
             if( file_exists(MVC_THEME_DIR.'lib/'.$object.'.php') ){
                 require_once( MVC_THEME_DIR.'lib/'.$object.'.php' );
@@ -594,7 +594,7 @@ class MvcFramework{
     /**
      * Calles the Proper view file from a controller
      * 
-     * @since 11.27.13
+     * @since 12.2.13
      * 
      * @uses call with no param and it will pull the view file matching the method name from the controller named folder
      * @uses accepts extra param which will be turned into variables in the view
@@ -612,7 +612,11 @@ class MvcFramework{
         $MvcForm = $this->MvcForm;
         
         if( !$folder ){
+            
             $folder = $this->getController();
+            if( defined("MVC_CONTROLLER_PREFIX") && MVC_CONTROLLER_PREFIX ){
+                $folder = str_replace(  MVC_CONTROLLER_PREFIX, "", $folder ); 
+            }
         }
         
 
