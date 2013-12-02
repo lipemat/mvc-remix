@@ -2,7 +2,7 @@
 
                             /**
                              * Pull the Whole Framework Together
-                             * @since 11.27.13
+                             * @since 12.2.13
                              * @author Mat Lipe <mat@matlipe.com>
                              */
 
@@ -32,6 +32,8 @@ if( current_theme_supports('mvc_update') && is_admin() ){
 
 define( 'IS_MOBILE_THEME', current_theme_supports('mvc_mobile_responsive') );  
 
+
+$MvcFramework = new MvcFramework();
 
 //For Secure Themes
 if( current_theme_supports('mvc_secure') ){
