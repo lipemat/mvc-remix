@@ -1,7 +1,7 @@
 <?php
         /**
          * Form Helpers only available in Views
-         * @since 11.12.13
+         * @since 12.2.13
          * @author Mat Lipe
          * @uses this will be available in all views via the $MvcString Variable
          * 
@@ -500,10 +500,11 @@ class MvcForm {
      * 
      * @since 2.1.0
      * 
-     * @since 7.18.13
+     * @since 12.2.13
      * 
      * @see This does not currently work with mce editors
      * @TODO Convert this to use the standard MvcMetaBox::metaBoxOutput like checking for arrays and retrieving field names etc
+     * @TODO Make this add the class to each field like it currently does with text
      * 
      */
     function repeater( $name, $args = array(), $data, $echo = true ){
@@ -566,6 +567,7 @@ class MvcForm {
                     $field_name = str_replace('select_', '', $key);
                     if( !isset($data[$num][$field_name]) ) $data[$num][$field_name] = ''; 
                     $field['selected'] = $data[$num][$field_name];
+                    
                     $output .= $this->select($name.'['.$num.']['.$field_name.']', $field, false );
                 
                 } 
@@ -613,7 +615,8 @@ class MvcForm {
                    
                    $params = array(
                                     'value' => $data[$num][$field],
-                                    'id'    => $field
+                                    'id'    => $field,
+                                    'class' => $field
                                 );
                    $output .= $this->text($name.'['.$num.']['.$field.']', $params, false);
                 }
@@ -756,6 +759,9 @@ class MvcForm {
      * @since 11.12.13
      */
     function text($name, $atts = array(), $echo = true){
+        
+        _p( $atts );
+        
          $defaults = array(
                        'id'     => $name,
                        'value'  => '',
