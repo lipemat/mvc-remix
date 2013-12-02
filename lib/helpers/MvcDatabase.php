@@ -28,6 +28,52 @@ class MvcDatabase {
     }
     
     
+    /**
+     * Get a count if items in this table with optional conditions
+     *
+     * @param  Array [$conditionValue] - A key value pair of the conditions you want to search on
+     * @param  String $condition - A string value for the condition of the query default to equals
+     *
+     * @return int
+     * 
+     * @since 12.2.13
+     */
+    public function getCount(array $conditionValue = array(), $condition = '=' ) {
+       global $wpdb;
+       
+        if( is_array( $fields ) ){
+            $fields = implode(',', $fields);
+        }
+        
+        $sql = 'SELECT COUNT(*) FROM `' . $this->table_name . '`';
+
+        if( !empty( $conditionValue ) ){
+            $sql .= ' WHERE ';
+        }
+
+        foreach ($conditionValue as $field => $value) {
+            switch(strtolower($condition)) {
+                case 'in' :
+                    if (!is_array($value)) {
+                        throw new Exception("Values for IN query must be an array.", 1);
+                    }
+
+                    $sql .= $wpdb->prepare('`%s` IN (%s)', $field, implode(',', $value));
+                    break;
+
+                default :
+                    $wheres[] = $wpdb->prepare('`' . $field . '` ' . $condition . ' %s', $value);
+                    break;
+            }
+        }
+        
+        if( !empty( $wheres ) ){
+            $sql .= implode( ' AND ', $wheres );   
+        }
+        $result = $wpdb->get_var($sql);
+
+        return $result;
+    }
 
     /**
      * Insert data into the current data
@@ -360,4 +406,3 @@ class MvcDatabase {
     }
 
 }
-?>
