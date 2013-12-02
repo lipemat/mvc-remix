@@ -6,7 +6,7 @@
  * 
  * @author Mat Lipe <mat@matlipe.com>
  * 
- * @since 11.19.13
+ * @since 12.2.13
  * 
  * 
  * @package MVC
@@ -99,7 +99,7 @@ class MvcPostTypeTax{
     }
     
     
-    /**
+  /**
      * 
      * Registers a taxonomy with default values which can be overridden as needed.
      * 
@@ -110,7 +110,7 @@ class MvcPostTypeTax{
      * @example register_taxonomy( 'post-cat', 'custom-post-type', array( 'pluralTitle' => 'lots of cats' ) );
      * 
      * 
-     * @since 11.19.13
+     * @since 12.2.13
      */
     function register_taxonomy( $title, $post_type = '', $args = array() ){
     
@@ -157,7 +157,7 @@ class MvcPostTypeTax{
                                                 'with_front' => true, //show slug before link
                                                 'hierarchical' => false, //show parents in url
                 ),
-                'capabilities'          => null, //can be array of custom capabilites
+                'capabilities'          => array(), //can be array of custom capabilites
                 'sort'                  => false, //remember the order terms are added to objects
         );
     
@@ -170,11 +170,12 @@ class MvcPostTypeTax{
         $args = wp_parse_args( $args, $defaults );
     
         $taxonomy = isset( $args['taxonomy'] ) ? $args['taxonomy'] : $sanitizedTaxonomy;
-    
+ 
         register_taxonomy( $taxonomy, $post_type, $args );
     
     
     }
+    
     
     /**
      * Generates plural version of title
