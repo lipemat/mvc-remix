@@ -7,6 +7,8 @@
  * @since 12.2.13
  * 
  * @uses add_theme_support('mvc_styles');
+ * 
+ * @TODO Make a universal method to check for assets folders to pull files from as well as default locations
  */
 
 if( class_exists('MvcStyles') ) return; 
@@ -238,6 +240,13 @@ class MvcStyles extends MvcFramework{
             wp_enqueue_style(
                 'mvc-admin-styles',
                 MVC_THEME_URL . 'admin.css' //The location of the style
+            );
+        }
+        
+        if( file_exists(MVC_THEME_DIR.'css/admin.css') ){
+            wp_enqueue_style(
+                'mvc-admin-styles',
+                MVC_THEME_URL . 'css/admin.css' //The location of the style
             );
         }
 
