@@ -4,7 +4,7 @@
  * Optional CSS and JS handler for the theme
  * Allow for targeting specific browsers and such with css file names
  * 
- * @since 10.8.13
+ * @since 12.2.13
  * 
  * @uses add_theme_support('mvc_styles');
  */
@@ -202,7 +202,7 @@ class MvcStyles extends MvcFramework{
      * @see the js and css dirs in the child theme
      * @uses called by construct()
      * @uses to change the local admin css use the filter 'mat-local-admin-css'
-     * @since 8.1.13
+     * @since 12.2.13
      */
     function admin_js(){
         
@@ -214,122 +214,120 @@ class MvcStyles extends MvcFramework{
                #adminmenuback,#adminmenuwrap{background-color:#df01d7;background-image:-ms-linear-gradient(180deg,#04b431,#df01d7);background-image:-moz-linear-gradient(180deg,#619bbb,#df01d7);background-image:-o-linear-gradient(180deg,#619bbb,#df01d7);background-image:-webkit-linear-gradient(180deg,#619bbb,#df01d7);background-image:linear-gradient(180deg,#619bbb,#df01d7)}a,#adminmenu a,#the-comment-list p.comment-author strong a,#media-upload a.del-link,#media-items a.delete,.plugins a.delete,.ui-tabs-nav a{color:black}#adminmenu li.wp-has-current-submenu a.wp-has-current-submenu,#adminmenu li.current a.menu-top,.folded #adminmenu li.wp-has-current-submenu,.folded #adminmenu li.current.menu-top,#adminmenu .wp-menu-arrow,#adminmenu .wp-has-current-submenu .wp-submenu .wp-submenu-head{background-color:#777;background-image:-ms-linear-gradient(bottom,#610b5e,#3b0b17);background-image:-moz-linear-gradient(bottom,#610b5e,#3b0b17);background-image:-o-linear-gradient(bottom,#610b5e,#3b0b17);background-image:-webkit-linear-gradient(bottom,#610b5e,#3b0b17);background-image:linear-gradient(bottom,#610b5e,#3b0b17);transform:rotate(30deg)}#adminmenu li.wp-has-current-submenu{-moz-box-shadow:0 0 2px 2px black;-webkit-box-shadow:0 0 2px black;box-shadow:0 0 2px 2px black}
              </style>
            <?php
-        echo apply_filters('mvc-local-admin-css', ob_get_clean());
-        }
+            echo apply_filters('mvc-local-admin-css', ob_get_clean());
+       }
 
         if( file_exists(MVC_THEME_DIR.'js/admin.js') ){
-        wp_enqueue_script(
-        'mvc-admin-js',
-        MVC_JS_URL. 'admin.js',
-        array('jquery' )
-        );
-        $dirs = array( 'IMG'      => MVC_IMAGE_URL,
-        'THEME'    => MVC_THEME_URL,
-        'INCLUDES' => SCRIPT_DIR,
-        'LOADING_ICON' => MVC_IMAGE_URL.'loading.gif' );
+            wp_enqueue_script(
+                'mvc-admin-js',
+                 MVC_JS_URL. 'admin.js',
+                 array('jquery' )
+            );
+            $dirs = array( 'IMG'          => MVC_IMAGE_URL,
+                           'THEME'        => MVC_THEME_URL,
+                           'LOADING_ICON' => MVC_IMAGE_URL.'loading.gif' 
+            );
 
-        wp_localize_script('mvc-admin-js', 'DIRS', $dirs);
+            wp_localize_script('mvc-admin-js', 'DIRS', $dirs);
 
-        //to localize stuff
-        do_action('mvc_admin_js', 'mvc-admin-js');
-
+            //to localize stuff
+            do_action('mvc_admin_js', 'mvc-admin-js');
         }
 
         if( file_exists(MVC_THEME_DIR.'admin.css') ){
-        wp_enqueue_style(
-        'mvc-admin-styles',
-        MVC_THEME_URL . 'admin.css' //The location of the style
-        );
+            wp_enqueue_style(
+                'mvc-admin-styles',
+                MVC_THEME_URL . 'admin.css' //The location of the style
+            );
         }
 
-        }
+    }
 
-        /**
-        * Add the child.js file to the site
-        * @since 8.1.13
-        * @uses called by __construct()
-        * @uses also add a global js variable with includes the commonly used dirs called 'DIR'
-        * @uses adds the mobile stylesheets if defined in the theme config
-        *
-        */
-        function add_js_css(){
+    /**
+     * Add the child.js file to the site
+     * @since 12.2.13
+     * @uses called by __construct()
+     * @uses also add a global js variable with includes the commonly used dirs called 'DIR'
+     * @uses adds the mobile stylesheets if defined in the theme config
+     *
+     */
+    function add_js_css(){
 
         if( file_exists(MVC_THEME_DIR.'js/child.js') ){
-        wp_enqueue_script(
-        'mvc-child-js',
-        MVC_JS_URL. 'child.js',
-        array('jquery' )
-        );
+            wp_enqueue_script(
+                'mvc-child-js',
+                MVC_JS_URL. 'child.js',
+                array('jquery' )
+            );
 
-        $dirs = array(
-        'IMG'     => MVC_IMAGE_URL,
-        'THEME'    => MVC_THEME_URL,
-        'INCLUDES' => SCRIPT_DIR,
-        'LOADING_ICON' => MVC_IMAGE_URL.'loading.gif' );
+            $dirs = array(
+                'IMG'     => MVC_IMAGE_URL,
+                'THEME'    => MVC_THEME_URL,
+                'LOADING_ICON' => MVC_IMAGE_URL.'loading.gif' );
 
-        wp_localize_script('mvc-child-js', 'DIRS', $dirs);
+            wp_localize_script('mvc-child-js', 'DIRS', $dirs);
 
-        //to localize stuff
-        do_action('mvc_child_js', 'mvc-child-js');
+            //to localize stuff
+            do_action('mvc_child_js', 'mvc-child-js');
         }
 
         //Add the mobile Style if required
         if( current_theme_supports('mobile_responsive') ){
-        if( file_exists(MVC_THEME_DIR.'mobile/mobile-responsive.css') ){
-        wp_enqueue_style(
-        'mvc-mobile-styles',
-        MVC_MOBILE_URL . 'mobile-responsive.css' //The location of the style
-        );
-        }
+            if( file_exists(MVC_THEME_DIR.'mobile/mobile-responsive.css') ){
+                wp_enqueue_style(
+                    'mvc-mobile-styles',
+                    MVC_MOBILE_URL . 'mobile-responsive.css' //The location of the style
+                );
+            }
 
-        //Add the mobile script or the non mobile script based on device
-        if( !self::is_mobile() ){
-        if( file_exists(MVC_THEME_DIR.'mobile/desktop.js') ){
-        wp_enqueue_script(
-        'mvc-non-mobile-script',
-        MVC_MOBILE_URL. 'desktop.js',
-        array('jquery')
-        );
+            //Add the mobile script or the non mobile script based on device
+            if( !self::is_mobile() ){
+                if( file_exists(MVC_THEME_DIR.'mobile/desktop.js') ){
+                    wp_enqueue_script(
+                        'mvc-non-mobile-script',
+                        MVC_MOBILE_URL. 'desktop.js',
+                        array('jquery')
+                    );
 
-        }
-        } else {
+                }
+            } else {
 
-        //Add the tablet stuff
-        if( self::is_tablet() ){
-        wp_enqueue_style(
-        'mvc-tablet-styles',
-        MVC_MOBILE_URL . 'tablet.css' //The location of the style
-        );
+                //Add the tablet stuff
+                if( self::is_tablet() ){
+                    wp_enqueue_style(
+                        'mvc-tablet-styles',
+                        MVC_MOBILE_URL . 'tablet.css' //The location of the style
+                    );
 
-        if( file_exists(MVC_THEME_DIR.'mobile/tablet.js') ){
-        wp_enqueue_script(
-        'mvc-tablet-script',
-        MVC_MOBILE_URL. 'tablet.js',
-        array('jquery')
-        );
-        }
-        }
+                    if( file_exists(MVC_THEME_DIR.'mobile/tablet.js') ){
+                        wp_enqueue_script(
+                            'mvc-tablet-script',
+                             MVC_MOBILE_URL. 'tablet.js',
+                             array('jquery')
+                        );
+                    }
+                }
 
-        //Add the phone stuff
-        if( self::is_phone() ){
-        wp_enqueue_style(
-        'mvc-phone-styles',
-        MVC_MOBILE_URL . 'phone.css' //The location of the style
-        );
+                //Add the phone stuff
+                if( self::is_phone() ){
+                    wp_enqueue_style(
+                        'mvc-phone-styles',
+                        MVC_MOBILE_URL . 'phone.css' //The location of the style
+                    );
 
-        if( file_exists(MVC_THEME_DIR.'mobile/phone.js') ){
-        wp_enqueue_script(
-        'mvc-phone-script',
-        MVC_MOBILE_URL. 'phone.js',
-        array('jquery')
-        );
-        }
-        }
-        } //-- End if mobile device
+                    if( file_exists(MVC_THEME_DIR.'mobile/phone.js') ){
+                        wp_enqueue_script(
+                            'mvc-phone-script',
+                            MVC_MOBILE_URL. 'phone.js',
+                            array('jquery')
+                        );
+                    }
+                }
+            } //-- End if mobile device
 
         } //-- End if Mobile Responsive Theme Support
 
-        }
+    }
 
-        }
+}
     
