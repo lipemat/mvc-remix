@@ -2,7 +2,7 @@
 /**
  * Interaction with the database on a custom Level
  * 
- * @since 11.27.13
+ * @since 12.2.13
  * 
  * @author Mat Lipe <mat@matlipe.com>
  * 
@@ -128,10 +128,13 @@ class MvcDatabase {
      *
      * @param  String $orderBy - Order by column name
      * @param  String|Array [$fields] - fields to include in results
-     *
+     * @param  String [$limit] - either number or rows or start,end
+     * 
      * @return Table result
+     * 
+     * @since 12.2.13
      */
-    public function getResults($orderBy = NULL, $fields = '*' ) {
+    public function getResults($orderBy = NULL, $fields = '*', $limit = false ) {
         global $wpdb;
         
         if( is_array( $fields ) ){
@@ -142,6 +145,10 @@ class MvcDatabase {
 
         if (!empty($orderBy)) {
             $sql .= ' ORDER BY ' . $orderBy;
+        }
+
+        if( $limit ){
+            $sql .= ' LIMIT '.$limit;   
         }
 
         $all = $wpdb->get_results($sql);
@@ -353,3 +360,4 @@ class MvcDatabase {
     }
 
 }
+?>
