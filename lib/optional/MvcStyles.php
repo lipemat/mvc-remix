@@ -4,7 +4,7 @@
  * Optional CSS and JS handler for the theme
  * Allow for targeting specific browsers and such with css file names
  * 
- * @since 12.2.13
+ * @since 12.4.13
  * 
  * @uses add_theme_support('mvc_styles');
  * 
@@ -199,12 +199,15 @@ class MvcStyles extends MvcFramework{
     
     
     
-            /**
+    /**
      * Add the admin.js and admin.css file to the dashboard
+     *
      * @see the js and css dirs in the child theme
+     * 
      * @uses called by construct()
      * @uses to change the local admin css use the filter 'mat-local-admin-css'
-     * @since 12.2.13
+     * 
+     * @since 12.4.13
      */
     function admin_js(){
         
@@ -241,9 +244,7 @@ class MvcStyles extends MvcFramework{
                 'mvc-admin-styles',
                 MVC_THEME_URL . 'admin.css' //The location of the style
             );
-        }
-        
-        if( file_exists(MVC_THEME_DIR.'css/admin.css') ){
+        } elseif( file_exists(MVC_THEME_DIR.'css/admin.css') ){
             wp_enqueue_style(
                 'mvc-admin-styles',
                 MVC_THEME_URL . 'css/admin.css' //The location of the style
@@ -254,7 +255,9 @@ class MvcStyles extends MvcFramework{
 
     /**
      * Add the child.js file to the site
-     * @since 12.2.13
+     * 
+     * @since 12.4.13
+     * 
      * @uses called by __construct()
      * @uses also add a global js variable with includes the commonly used dirs called 'DIR'
      * @uses adds the mobile stylesheets if defined in the theme config
@@ -279,6 +282,21 @@ class MvcStyles extends MvcFramework{
             //to localize stuff
             do_action('mvc_child_js', 'mvc-child-js');
         }
+        
+        
+        //For custom css files when using with plugins
+        if( file_exists(MVC_THEME_DIR.'child.css') ){
+            wp_enqueue_style(
+                'mvc-child-styles',
+                MVC_THEME_URL . 'child.css' //The location of the style
+            );
+        } elseif( file_exists(MVC_THEME_DIR.'css/child.css') ){
+            wp_enqueue_style(
+                'mvc-child-styles',
+                MVC_THEME_URL . 'css/child.css' //The location of the style
+            );
+        }
+        
 
         //Add the mobile Style if required
         if( current_theme_supports('mobile_responsive') ){
