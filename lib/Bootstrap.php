@@ -2,7 +2,7 @@
 
                             /**
                              * Pull the Whole Framework Together
-                             * @since 12.2.13
+                             * @since 12.4.13
                              * @author Mat Lipe <mat@matlipe.com>
                              */
 
@@ -202,7 +202,7 @@ class MvcBootstrap extends MvcFramework{
      * 
      * @since 0.1.0
      * 
-     * @since 10.18.13
+     * @since 12.4.13
      * 
      * @uses if the theme has a Controllers/Controller.php file this will run automatically
      * @filters mvc_theme_dirs - allows for other plugins or themes to use the magic of this
@@ -251,7 +251,14 @@ class MvcBootstrap extends MvcFramework{
           
                     //Add the Model
                     require($dir.'Model/'.$name.'.php');
-                    ${$class}->{$name} = new $name;
+                    
+                    if( defined('MVC_CONTROLLER_PREFIX') && MVC_CONTROLLER_PREFIX ){
+                        $var = str_replace( MVC_CONTROLLER_PREFIX , '', $name );   
+                    } else {
+                        $var = $name;
+                    }
+                    
+                    ${$class}->{$var} = new $name;
                 
                     //add to global var for later use
                     $mvc_theme['controllers'][$class] = ${$class};
@@ -285,7 +292,13 @@ class MvcBootstrap extends MvcFramework{
                         if( !in_array($model,$classes) ){
                             require_once($dir.'Model/'.$model.'.php');
                         }
-                        ${$controller}->{$model} = new $model;
+                        
+                        if( defined('MVC_CONTROLLER_PREFIX') && MVC_CONTROLLER_PREFIX ){
+                            $var = str_replace( MVC_CONTROLLER_PREFIX , '', $model );   
+                        } else {
+                            $var = $model;
+                        }
+                        ${$controller}->{$var} = new $model;
                     }
                 }
                 //Run the init
