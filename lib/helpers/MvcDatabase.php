@@ -165,7 +165,6 @@ class MvcDatabase {
         if( $limit ){
             $sql .= ' LIMIT '.$limit;   
         }
-        
 
         $all = $wpdb->get_results($sql);
 
@@ -219,12 +218,15 @@ class MvcDatabase {
      * @param  sting $salt - the salt the fields where encrypted with
      * @param  String [$condition] - A string value for the condition of the query default to equals
      * @param  String|Array [$fields] - fields to include in results
+     * @param  String [$limit] - optional LIMIT clause in query
+     *
+     * @since 12.5.13 
      *
      * @return Table result
      * 
      * 
      */
-    public function getEncryptedBy(array $conditionValue, array $encryptedFields, $salt, $condition = '=', $fields = '*' ) {
+    public function getEncryptedBy(array $conditionValue, array $encryptedFields, $salt, $condition = '=', $fields = '*', $limit = false ) {
         global $wpdb;
 
         foreach( $encryptedFields as $field ){
@@ -252,9 +254,15 @@ class MvcDatabase {
 
         }
         
-          if( !empty( $wheres ) ){
+        if( !empty( $wheres ) ){
             $sql .= implode( ' AND ', $wheres );   
         }
+          
+        
+        if( $limit ){
+            $sql .= ' LIMIT '.$limit;   
+        }
+ 
 
         $result = $wpdb->get_results($sql);
 
@@ -269,10 +277,13 @@ class MvcDatabase {
      * @param  Array $conditionValue - A key value pair of the conditions you want to search on
      * @param  String $condition - A string value for the condition of the query default to equals
      * @param  String|Array [$fields] - fields to include in results
+     * @param  String [$limit] - optional LIMIT clause
+     * 
+     * @since 12.5.13
      *
      * @return Table result
      */
-    public function getBy(array $conditionValue, $condition = '=', $fields = '*' ) {
+    public function getBy(array $conditionValue, $condition = '=', $fields = '*', $limit = false ) {
        global $wpdb;
        
         if( is_array( $fields ) ){
@@ -300,6 +311,10 @@ class MvcDatabase {
         
         if( !empty( $wheres ) ){
             $sql .= implode( ' AND ', $wheres );   
+        }
+
+        if( $limit ){
+            $sql .= ' LIMIT '.$limit;   
         }
 
         $result = $wpdb->get_results($sql);
