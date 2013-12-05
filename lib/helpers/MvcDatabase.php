@@ -2,7 +2,7 @@
 /**
  * Interaction with the database on a custom Level
  * 
- * @since 12.2.13
+ * @since 12.5.13
  * 
  * @author Mat Lipe <mat@matlipe.com>
  * 
@@ -134,10 +134,11 @@ class MvcDatabase {
      * @param string $salt - the salt that was used to encrypt
      * @param string [$orderBy] - field to orderby (defaults to false)
      * @param  String|Array [$fields] - fields to include in results
+     * @param string [$limit] - ability to set a LIMIT in the query
      * 
-     * @since 11.27.13
+     * @since 12.5.13
      */
-    public function getEncryptedResults(array $encryptedFields, $salt, $orderBy = false, $fields = '*' ) {
+    public function getEncryptedResults(array $encryptedFields, $salt, $orderBy = false, $fields = '*', $limit = false ) {
         global $wpdb;
         
         
@@ -160,6 +161,11 @@ class MvcDatabase {
         if (!empty($orderBy)) {
             $sql .= ' ORDER BY ' . $orderBy;
         }
+        
+        if( $limit ){
+            $sql .= ' LIMIT '.$limit;   
+        }
+        
 
         $all = $wpdb->get_results($sql);
 
