@@ -218,6 +218,7 @@ class MvcDatabase {
      * @param  sting $salt - the salt the fields where encrypted with
      * @param  String [$condition] - A string value for the condition of the query default to equals
      * @param  String|Array [$fields] - fields to include in results
+     * @param  String [$orderBy] - field to order results by
      * @param  String [$limit] - optional LIMIT clause in query
      *
      * @since 12.5.13 
@@ -226,7 +227,7 @@ class MvcDatabase {
      * 
      * 
      */
-    public function getEncryptedBy(array $conditionValue, array $encryptedFields, $salt, $condition = '=', $fields = '*', $limit = false ) {
+    public function getEncryptedBy(array $conditionValue, array $encryptedFields, $salt, $condition = '=', $fields = '*', $orderBy = false, $limit = false ) {
         global $wpdb;
 
         foreach( $encryptedFields as $field ){
@@ -259,10 +260,14 @@ class MvcDatabase {
         }
           
         
+        if( $orderBy ){
+            $sql .= ' ORDER BY '.$orderBy;   
+        }  
+        
         if( $limit ){
             $sql .= ' LIMIT '.$limit;   
         }
- 
+
 
         $result = $wpdb->get_results($sql);
 
