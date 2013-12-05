@@ -29,6 +29,54 @@ class MvcDatabase {
     
     
     /**
+     * Rerieve one field from the selected table
+     * 
+     * @param array $encryptedFields - the fields which are encrypted in the database
+     * @param string $salt - the salt that was used to encrypt
+     * @param  String $field - field to return singularily
+     * @param string [$orderBy] - field to orderby (defaults to false)
+     * @param string [$limit] - ability to set a LIMIT in the query
+     * 
+     * @since 12.5.13
+     */
+    public function getVarEncrypted(array $encryptedFields, $salt,  $field, $orderBy = false, $limit = false ) {
+        
+        $r = $this->getEncryptedResults($encryptedFields, $salt, $orderBy, array($field), $limit);
+        
+        if( empty( $r[0]->$field ) ) return false;
+        
+        return $r[0]->$field;
+    }
+    
+    
+    
+    /**
+     * Rerieve one field from the selected table
+     * 
+     * @param  Array $conditionValue - A key value pair of the conditions you want to search on
+     * @param  Array $encryptedFields - the fields which are encrypted
+     * @param  sting $salt - the salt the fields where encrypted with
+     * @param  String $field - field to include in results 
+     * @param  String [$condition] - A string value for the condition of the query default to =
+     * @param  String [$orderBy] - field to order results by
+     * @param  String [$limit] - optional LIMIT clause in query
+     * 
+     * @since 12.5.13
+     */
+    public function getVarEncryptedBy(array $conditionValue, array $encryptedFields, $salt, $field, $condition = '=', $orderBy = false, $limit = false ) {
+        
+        $r = $this->getEncryptedBy($conditionValue, $encryptedFields, $salt, $condition, array($field), $orderBy, $limit );
+
+        if( empty( $r[0]->$field ) ) return false;
+        
+        return $r[0]->$field;
+    }
+    
+    
+    
+    
+    
+    /**
      * Get a count if items in this table with optional conditions
      *
      * @param  Array [$conditionValue] - A key value pair of the conditions you want to search on
@@ -173,6 +221,26 @@ class MvcDatabase {
     
     
 
+     /**
+     * Get a single value by a condition
+     *
+     * @param  Array $conditionValue - A key value pair of the conditions you want to search on
+     * @param  String|Array [$fields] - fields to include in results
+     * @param  String $condition - A string value for the condition of the query default to equals
+     * @param  String [$limit] - optional LIMIT clause
+     * 
+     * @since 12.5.13
+     *
+     * @return string
+     */
+    public function getVar(array $conditionValue,  $field , $condition = '=', $limit = false ) {
+        $r = $this->getBy($conditionValue, $condition, array( $field ), $limit);
+        
+        if( empty( $r[0]->$field ) ) return false;
+        return $r[0]->$field;
+    }
+    
+    
     
     /**
      * Get all from the selected table
@@ -267,7 +335,6 @@ class MvcDatabase {
         if( $limit ){
             $sql .= ' LIMIT '.$limit;   
         }
-
 
         $result = $wpdb->get_results($sql);
 
@@ -410,7 +477,6 @@ class MvcDatabase {
         }
 
         $sql = "UPDATE `$this->table_name` SET " . implode( ', ', $set ) . ' WHERE ' . implode( ' AND ', $wheres );
-
         return $wpdb->query( $sql );
     }
     
