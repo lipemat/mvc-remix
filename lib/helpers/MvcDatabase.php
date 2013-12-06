@@ -200,25 +200,63 @@ class MvcDatabase {
             $en_fields[] = 'AES_DECRYPT('.$field.',"'.$salt.'") as '.$field;
         }
 
-        if( is_array( $fields ) ){
+        return $this->buildGetQuery(array_merge((array)$fields, $en_fields), $orderBy, $limit);
+
+    } 
+    
+    
+    
+    /**
+     * Builds and executes a SELECT query
+     * 
+     * @param array|string $fields - the fields to return (defaults ot *)
+     * @param string|array $orderBy - if array will use the second param as the order
+     * @param string $limit - used in the LIMIT part of the query
+     * 
+     * @since 12.5.13
+     */
+    function buildGetQuery($fields = '*', $orderBy = false, $limit = false, $conditions = array(), $condition = '='){
+        global $wpdb;
+        
+        if( is_array($fields) ){
             $fields = implode(',', $fields);
         }
         
-        $sql = 'SELECT '.$fields.','.implode(',',$en_fields).' FROM `' . $this->table_name . '`';
+        $sql = 'SELECT '.$fields.' FROM `' . $this->table_name . '`';
+        
+        
+        foreach ($conditions as $field => $value) {
+            switch(strtolower($condition)) {
+                case 'in' :
+                    if (!is_array($value)) {
+                        throw new Exception("Values for IN query must be an array.", 1);
+                    }
+                    $sql .= $wpdb->prepare('`%s` IN (%s)', $field, implode(',', $value));
+                    break;
 
-        if (!empty($orderBy)) {
-            $sql .= ' ORDER BY ' . $orderBy;
+                default :
+                    $wheres[] = $wpdb->prepare('`' . $field . '` ' . $condition . ' %s', $value);
+                    break;
+            }
         }
+        
+        if( !empty( $wheres ) ){
+            $sql .= '` WHERE ';
+            $sql .= implode( ' AND ', $wheres );   
+        }
+        
+        
+        
+        $sql .= $this->orderBy($orderBy);
         
         if( $limit ){
             $sql .= ' LIMIT '.$limit;   
         }
 
-        $all = $wpdb->get_results($sql);
+        return $wpdb->get_results($sql);
 
-        return $all;
-    } 
-    
+        
+    }
     
 
      /**
@@ -251,29 +289,35 @@ class MvcDatabase {
      * 
      * @return Table result
      * 
-     * @since 12.2.13
+     * @since 12.5.13
      */
     public function getResults($orderBy = NULL, $fields = '*', $limit = false ) {
         global $wpdb;
         
-        if( is_array( $fields ) ){
-            $fields = implode(',', $fields);
-        }
         
-        $sql = 'SELECT '.$fields.' FROM `' . $this->table_name . '`';
-
-        if (!empty($orderBy)) {
-            $sql .= ' ORDER BY ' . $orderBy;
-        }
-
-        if( $limit ){
-            $sql .= ' LIMIT '.$limit;   
-        }
-
-        $all = $wpdb->get_results($sql);
-
-        return $all;
+        return $this->buildGetQuery($fields, $orderBy, $limit);
     }
+    
+    
+    /**
+     * Formats the ORDER BY clause in the query
+     * 
+     * @param string|array $orderBy - if array the second key will be treated as the direction
+     * 
+     * @return string;
+     * 
+     * 
+     */
+    function orderBy($orderBy){
+        if( empty( $orderBy ) ) return '';
+        if( is_array( $orderBy ) ){
+            
+            return ' ORDER BY '.$orderBy[0].' '.$orderBy[1];
+        } else {
+            return ' ORDER BY '.$orderBy;
+        }    
+    }
+    
     
     
         /**
@@ -320,17 +364,14 @@ class MvcDatabase {
             } else {
                  $wheres[] = $wpdb->prepare('`' . $field . '` ' . $condition . ' %s', $value); 
             }
-
         }
         
         if( !empty( $wheres ) ){
             $sql .= implode( ' AND ', $wheres );   
         }
           
-        
-        if( $orderBy ){
-            $sql .= ' ORDER BY '.$orderBy;   
-        }  
+        $sql .= $this->orderBy($orderBy);
+
         
         if( $limit ){
             $sql .= ' LIMIT '.$limit;   
@@ -355,43 +396,10 @@ class MvcDatabase {
      *
      * @return Table result
      */
-    public function getBy(array $conditionValue, $condition = '=', $fields = '*', $limit = false ) {
+    public function getBy(array $conditionValue, $condition = '=', $fields = '*', $limit = false, $orderBy ) {
        global $wpdb;
-       
-        if( is_array( $fields ) ){
-            $fields = implode(',', $fields);
-        }
-        
-        $sql = 'SELECT '.$fields.' FROM `' . $this->table_name . '` WHERE ';
 
-
-        foreach ($conditionValue as $field => $value) {
-            switch(strtolower($condition)) {
-                case 'in' :
-                    if (!is_array($value)) {
-                        throw new Exception("Values for IN query must be an array.", 1);
-                    }
-
-                    $sql .= $wpdb->prepare('`%s` IN (%s)', $field, implode(',', $value));
-                    break;
-
-                default :
-                    $wheres[] = $wpdb->prepare('`' . $field . '` ' . $condition . ' %s', $value);
-                    break;
-            }
-        }
-        
-        if( !empty( $wheres ) ){
-            $sql .= implode( ' AND ', $wheres );   
-        }
-
-        if( $limit ){
-            $sql .= ' LIMIT '.$limit;   
-        }
-
-        $result = $wpdb->get_results($sql);
-
-        return $result;
+       return $this->buildGetQuery($fields, $orderBy, $limit, $conditionValue, $condition );
     }
     
     
