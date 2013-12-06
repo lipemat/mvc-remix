@@ -4,7 +4,7 @@
  * Optional CSS and JS handler for the theme
  * Allow for targeting specific browsers and such with css file names
  * 
- * @since 12.4.13
+ * @since 12.5.13
  * 
  * @uses add_theme_support('mvc_styles');
  * 
@@ -256,7 +256,7 @@ class MvcStyles extends MvcFramework{
     /**
      * Add the child.js file to the site
      * 
-     * @since 12.4.13
+     * @since 12.5.13
      * 
      * @uses called by __construct()
      * @uses also add a global js variable with includes the commonly used dirs called 'DIR'
@@ -273,9 +273,11 @@ class MvcStyles extends MvcFramework{
             );
 
             $dirs = array(
-                'IMG'     => MVC_IMAGE_URL,
-                'THEME'    => MVC_THEME_URL,
-                'LOADING_ICON' => MVC_IMAGE_URL.'loading.gif' );
+                'IMG'          => MVC_IMAGE_URL,
+                'THEME'        => MVC_THEME_URL,
+                'LOADING_ICON' => MVC_IMAGE_URL.'loading.gif',
+                'ADMIN_URL'    => get_admin_url()
+            );
 
             wp_localize_script('mvc-child-js', 'DIRS', $dirs);
 
