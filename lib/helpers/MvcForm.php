@@ -798,8 +798,14 @@ class MvcForm {
      *                                  )
      * @param bool $echo defaults to true
      * @since 2.1
+     * 
+     * @since 12.9.13
      */
     function hidden($name, $args, $echo = true){
+
+        if( !is_array( $args ) ){
+            $args = array('value' => $args );   
+        }
 
         $defaults = array(
                        'id'     => false,
