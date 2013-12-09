@@ -1,7 +1,7 @@
 <?php
         /**
          * Form Helpers only available in Views
-         * @since 12.2.13
+         * @since 12.9.13
          * @author Mat Lipe
          * @uses this will be available in all views via the $MvcString Variable
          * 
@@ -827,6 +827,28 @@ class MvcForm {
         } 
     }
     
+    
+    
+    /**
+     * Echos a submit button, with provided text and appropriate class
+     *
+     * @since 0.5.0
+     *
+     * @param string $text The text of the button (defaults to 'Save Changes')
+     * @param string $type The type of button. One of: primary, secondary, delete
+     * @param string $name The HTML name of the submit button. Defaults to "submit". If no id attribute
+     *               is given in $other_attributes below, $name will be used as the button's id.
+     * @param bool $wrap True if the output button should be wrapped in a paragraph tag,
+     *             false otherwise. Defaults to true
+     * @param array|string $other_attributes Other attributes that should be output with the button,
+     *                     mapping attributes to their values, such as array( 'tabindex' => '1' ).
+     *                     These attributes will be output as attribute="value", such as tabindex="1".
+     *                     Defaults to no other attributes. Other attributes can also be provided as a
+     *                     string such as 'tabindex="1"', though the array format is typically cleaner.
+     */
+    function submitButton( $text = null, $type = 'primary large', $name = 'submit', $wrap = true, $other_attributes = null ){
+        echo $this->get_submit_button( $text, $type, $name, $wrap, $other_attributes);
+    }
     
     
     /**
