@@ -2,7 +2,7 @@
 /**
  * Interaction with the database on a custom Level
  * 
- * @since 12.5.13
+ * @since 12.9.13
  * 
  * @author Mat Lipe <mat@matlipe.com>
  * 
@@ -333,7 +333,7 @@ class MvcDatabase {
      * @param  String [$orderBy] - field to order results by
      * @param  String [$limit] - optional LIMIT clause in query
      *
-     * @since 12.5.13 
+     * @since 12.9.13 
      *
      * @return Table result
      * 
@@ -341,6 +341,7 @@ class MvcDatabase {
      */
     public function getEncryptedBy(array $conditionValue, array $encryptedFields, $salt, $condition = '=', $fields = '*', $orderBy = false, $limit = false ) {
         global $wpdb;
+        $en_fields = array();
 
         foreach( $encryptedFields as $field ){
             if( $fields != '*' ){
