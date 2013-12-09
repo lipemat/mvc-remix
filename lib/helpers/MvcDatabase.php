@@ -357,7 +357,11 @@ class MvcDatabase {
             $fields = implode(',', $fields);
         }
         
-        $sql = 'SELECT '.$fields.','.implode(',',$en_fields).' FROM `' . $this->table_name . '` WHERE ';
+        if( empty( $en_fields ) ){
+            $sql = 'SELECT '.$fields.' FROM `' . $this->table_name . '` WHERE ';
+        } else {
+            $sql = 'SELECT '.$fields.','.implode(',',$en_fields).' FROM `' . $this->table_name . '` WHERE ';
+        }
 
         foreach ($conditionValue as $field => $value) {
             if( in_array( $field, $encryptedFields ) ){
