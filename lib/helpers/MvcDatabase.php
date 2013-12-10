@@ -215,7 +215,7 @@ class MvcDatabase {
      * @param string|array $orderBy - if array will use the second param as the order
      * @param string $limit - used in the LIMIT part of the query
      * 
-     * @since 12.5.13
+     * @since 12.10.13
      */
     function buildGetQuery($fields = '*', $orderBy = false, $limit = false, $conditions = array(), $condition = '='){
         global $wpdb;
@@ -243,7 +243,7 @@ class MvcDatabase {
         }
         
         if( !empty( $wheres ) ){
-            $sql .= '` WHERE ';
+            $sql .= ' WHERE ';
             $sql .= implode( ' AND ', $wheres );   
         }
         
