@@ -2,7 +2,7 @@
 /**
  * Interaction with the database on a custom Level
  * 
- * @since 12.9.13
+ * @since 12.10.13
  * 
  * @author Mat Lipe <mat@matlipe.com>
  * 
@@ -184,10 +184,12 @@ class MvcDatabase {
      * @param  String|Array [$fields] - fields to include in results
      * @param string [$limit] - ability to set a LIMIT in the query
      * 
-     * @since 12.5.13
+     * @since 12.10.13
      */
     public function getEncryptedResults(array $encryptedFields, $salt, $orderBy = false, $fields = '*', $limit = false ) {
         global $wpdb;
+        
+        $en_fields = array();
         
         
         foreach( $encryptedFields as $field ){
