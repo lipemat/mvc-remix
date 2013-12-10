@@ -399,11 +399,11 @@ class MvcDatabase {
      * @param  String|Array [$fields] - fields to include in results
      * @param  String [$limit] - optional LIMIT clause
      * 
-     * @since 12.5.13
+     * @since 12.10.13
      *
      * @return Table result
      */
-    public function getBy(array $conditionValue, $condition = '=', $fields = '*', $limit = false, $orderBy ) {
+    public function getBy(array $conditionValue, $condition = '=', $fields = '*', $limit = false, $orderBy = false ) {
        global $wpdb;
 
        return $this->buildGetQuery($fields, $orderBy, $limit, $conditionValue, $condition );
