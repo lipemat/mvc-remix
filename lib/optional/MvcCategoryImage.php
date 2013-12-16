@@ -3,29 +3,45 @@
 /**
  * Adds Category Icon Ability
  * 
- * @since 5.3.0
+ * @since 0.1.0
  * 
- * @since 6.25.13
+ * @since 12.16.13
  * 
  * @uses add_theme_support('category-icons');
  * @uses MvcCateoryImage::getImage($term_id = false);
  * 
+ * @see Currently will only work on Genesis
+ * @TODO make independent of Genesis
+ * 
  */
 if( class_exists('MvcCategoryImage') ) return;   
 class MvcCategoryImage extends MvcFramework{
+    
+       private $taxonomy;
         
-        
-       function __construct(){
+       
+       /**
+        * Handle the category Images
+        * 
+        * @since 12.16.13
+        * 
+        * @param string $taxonomy - in case you want to use it somewhere besides category 
+        */
+       function __construct($taxonomy = 'category'){
+           $this->taxonomy = $taxonomy;
          
            //Add the upload form
-           add_action('category_add_form_fields', array ( $this , 'imageUploadForm'), 99 );
-           add_action('edit_category_form_fields', array( $this , 'imageEditUploadForm' ), 99 );
+           add_action($taxonomy.'_add_form_fields', array ( $this , 'imageUploadForm'), 99 );
+           add_action($taxonomy.'_edit_form_fields', array( $this , 'imageEditUploadForm' ), 99 );
            
            //Add the JQuery for the media uploader
            add_action('admin_head', array($this, 'mediaUploader') );
            
            //Save the category meta on add category - Genesis take care of this on edit
-           add_action('created_category', array($this,'genesis_term_meta_save'), 10, 2 );
+           add_action('created_'.$taxonomy, array($this,'genesis_term_meta_save'), 10, 2 );
+           if( $taxonomy != 'category' ){
+               add_action('edit_'.$taxonomy, array($this,'genesis_term_meta_save'), 10, 2 );
+           }
        } 
        
        
@@ -86,7 +102,7 @@ class MvcCategoryImage extends MvcFramework{
         /**
         * Form for uploading the Category Image
         * 
-        * @since 6.24.13
+        * @since 12.16.13
         * @uses added to the 'category_add_form_fields' and 'edit_category_form_fields' by self::__construct()
         */
        function imageEditUploadForm($args){
@@ -96,18 +112,18 @@ class MvcCategoryImage extends MvcFramework{
                $icon = '';
            } else {
                $value = 'Click to Change';
-               $icon = sprintf('<img src="%s" width="40px" />', $args->meta['category-image'] );
+               $icon = sprintf('<img src="%s" width="40px" style="float:left; padding: 0 20px 0 0;"/>', $args->meta['category-image'] );
            }
            
            
            ?><tr>
                 <th scope="row" valign="top">
-                    <label for="slug">Category Image:</label>
+                    <label for="slug"><?php echo $this->human_format_slug($this->taxonomy); ?> Image:</label>
                        
                 </th>
             <td>
                 <?php echo $icon; ?>
-                <input type="text" name="meta[category-image]" id="category-image" value="<?php echo $args->meta['category-image']; ?>" size="40"/>
+                <input type="text" name="meta[category-image]" id="category-image" value="<?php echo $args->meta['category-image']; ?>" size="40"/><br />
                 <input type="button" rel="category-image" value="<?php echo $value;?>" class="button-secondary upload-image"/>
             </td>
         </tr>
@@ -124,14 +140,14 @@ class MvcCategoryImage extends MvcFramework{
        /**
         * Form for uploading the Category Image
         * 
-        * @since 6.24.13
+        * @since 12.16.13
         * @uses added to the 'category_add_form_fields' and 'edit_category_form_fields' by self::__construct()
         */
        function imageUploadForm($args){
            ?>
            <div>
               <p>
-               Category Image:
+               <?php echo $this->slug_human_format($this->taxonomy); ?> Image:
                <input type="text" name="meta[category-image]" id="category-image" value="" />
                <input type="button" 
                     rel="category-image" 
@@ -148,7 +164,7 @@ class MvcCategoryImage extends MvcFramework{
      /**
      * Exact Replica of the genesis Version but designed to work with Ajax Calls
      *
-     * @since 6.24.13
+     * @since 12.16.13
      * @uses save the category meta on add
      */
       
