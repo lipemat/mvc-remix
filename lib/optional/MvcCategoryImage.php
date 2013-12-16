@@ -147,7 +147,7 @@ class MvcCategoryImage extends MvcFramework{
            ?>
            <div>
               <p>
-               <?php echo $this->slug_human_format($this->taxonomy); ?> Image:
+               <?php echo $this->human_format_slug($this->taxonomy); ?> Image:
                <input type="text" name="meta[category-image]" id="category-image" value="" />
                <input type="button" 
                     rel="category-image" 
