@@ -5,7 +5,7 @@
  * @uses automatically extended into the Model Views and Controllers and Bootstrap
  * @see Bootstrap.php
  * @author Mat Lipe <mat@matlipe.com>
- * @since 12.2.13
+ * @since 12.16.13
 
  * @TODO Create a fragment caching class - run tests database vs files
  * @TODO create an auto shortcode registering class - see NUSD theme
@@ -245,7 +245,7 @@ class MvcFramework{
      * @since 5.3.0
      * 
      * 
-     * @since 8.8.13
+     * @since 12.16.13
      * @param string [$screen] - the screen to add this to
      * 
      * @uses button to trigger uploader must have class 'upload_image' and rel which matches id of text field
@@ -265,39 +265,37 @@ class MvcFramework{
                 }
             }
         }
-        
-        wp_enqueue_script('media-upload');
-        wp_enqueue_script('thickbox');
-        wp_enqueue_style('thickbox');
+         
+        wp_enqueue_media();
         ?>
         <script type="text/javascript">
 
-        jQuery(document).ready(function($) {        
-             var formfield = false;
-             // Upload function goes here
-            jQuery('.upload-image').click(function() {
-                  formfield = jQuery(this).attr('rel');
-                  tb_show( '', 'media-upload.php?type=image&matcustom=true&TB_iframe=true');
-                  return false ;
-            });
-            
-           window.original_send_to_editor = window.send_to_editor;
-          //This will run when the submit button is pressed
-           window.send_to_editor = function(html) {
-                if(formfield){
-                  imgurl = jQuery('img',html).attr('src');
-                  jQuery('#'+formfield).val(imgurl);
-                  tb_remove();
-                  formfield = false;
-                } else {
-                    window.original_send_to_editor(html);
-                }
-            }
+          jQuery(document).ready(function($){
+                var _custom_media = true,
+                _orig_send_attachment = wp.media.editor.send.attachment;
 
-            jQuery(document).keyup( function(e) {
-                if (e.keyCode == 27) formField=null;
-            });
-        });
+                $('.image_upload').click(function(e) {
+                        var send_attachment_bkp = wp.media.editor.send.attachment;
+                        var button = $(this);
+                        var id = button.attr('rel');
+                         _custom_media = true;
+                        wp.media.editor.send.attachment = function(props, attachment){
+                            if ( _custom_media ) {
+                                jQuery.event.trigger('MVCImageUploadReturn', [attachment.url, attachment, props]);
+                                $("#"+id).val(attachment.url);
+                            } else {
+                                return _orig_send_attachment.apply( this, [props, attachment] );
+                            };
+                        }
+
+                        wp.media.editor.open(button);
+                        return false;
+                  });
+
+                $('.add_media').on('click', function(){
+                    _custom_media = false;
+                });
+           });
       </script>
       <?php  
     }

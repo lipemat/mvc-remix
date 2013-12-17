@@ -33,15 +33,10 @@ class MvcCategoryImage extends MvcFramework{
            //Add the upload form
            add_action($taxonomy.'_add_form_fields', array ( $this , 'imageUploadForm'), 99 );
            add_action($taxonomy.'_edit_form_fields', array( $this , 'imageEditUploadForm' ), 99 );
-           
-           //Add the JQuery for the media uploader
-           add_action('admin_head', array($this, 'mediaUploader') );
-           
+
            //Save the category meta on add category - Genesis take care of this on edit
            add_action('created_'.$taxonomy, array($this,'genesis_term_meta_save'), 10, 2 );
-           if( $taxonomy != 'category' ){
-               add_action('edit_'.$taxonomy, array($this,'genesis_term_meta_save'), 10, 2 );
-           }
+           add_action('edit_'.$taxonomy, array($this,'genesis_term_meta_save'), 10, 2 );
        } 
        
        
@@ -109,22 +104,38 @@ class MvcCategoryImage extends MvcFramework{
            
            if( empty( $args->meta['category-image'] ) ){
                $value = 'Click to Upload';
-               $icon = '';
+               $icon = sprintf('<img src="%s" width="40px" style="float:left; padding: 0 20px 0 0;" id="ategory-img-placeholder"/>', site_url('wp-includes/images/blank.gif') );
            } else {
                $value = 'Click to Change';
-               $icon = sprintf('<img src="%s" width="40px" style="float:left; padding: 0 20px 0 0;"/>', $args->meta['category-image'] );
+               $icon = sprintf('<img src="%s" width="40px" style="float:left; padding: 0 20px 0 0;" id="category-img-placeholder"/>', $args->meta['category-image'] );
            }
            
            
-           ?><tr>
+           ?>
+           <script type="text/javascript">
+              jQuery(document).bind("MVCImageUploadReturn", function( e, url ){
+                  jQuery("#category-img-placeholder").attr("src", url);
+              });
+           </script>
+           
+           <tr>
                 <th scope="row" valign="top">
                     <label for="slug"><?php echo $this->human_format_slug($this->taxonomy); ?> Image:</label>
                        
                 </th>
             <td>
                 <?php echo $icon; ?>
-                <input type="text" name="meta[category-image]" id="category-image" value="<?php echo $args->meta['category-image']; ?>" size="40"/><br />
-                <input type="button" rel="category-image" value="<?php echo $value;?>" class="button-secondary upload-image"/>
+                
+                <?php 
+                $field_args = array(
+                          'name' => "meta[category-image]",
+                          'id'   => 'category-image',
+                          'button_label' => $value
+                          );
+                
+                $this->MvcForm->imageUploadForm("meta[category-image]", $args->meta['category-image'], $field_args); 
+               ?>
+
             </td>
         </tr>
           
@@ -148,12 +159,18 @@ class MvcCategoryImage extends MvcFramework{
            <div>
               <p>
                <?php echo $this->human_format_slug($this->taxonomy); ?> Image:
-               <input type="text" name="meta[category-image]" id="category-image" value="" />
-               <input type="button" 
-                    rel="category-image" 
-                    value="Click to Upload" 
-                    class="button-secondary upload-image"
-               />
+               <?php 
+                $field_args = array(
+                          'name' => "meta[category-image]",
+                          'id'   => 'category-image',
+                          'button_label' => 'Click to Upload'
+                          );
+                
+                $this->MvcForm->imageUploadForm("meta[category-image]", '', $field_args); 
+                ?>
+               </p>
+               <p>
+                   &nbsp;
                </p>
            </div>
            <?php
