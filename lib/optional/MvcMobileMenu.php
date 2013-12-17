@@ -4,7 +4,7 @@
  * 
  * @uses add_theme_support('mobile_menu');
  * 
- * @since 5.7.0
+ * @since 12.17.13
  * @author Mat Lipe
  * 
  */
@@ -18,6 +18,7 @@ class MvcMobileMenu extends MvcFramework{
       * @since 8.6.13
       */
      function __construct(){
+        if( !$this->is_mobile() ) return;
         $this->checkForLightOrDark();
         add_action('wp_enqueue_scripts', array( $this, 'addJsCss') ); 
         add_filter('current_theme_supports-mobile_menu', array( $this, 'checkForLightOrDark' ),99,3 );
@@ -70,7 +71,7 @@ class MvcMobileMenu extends MvcFramework{
      /**
       * Adds the js and css for the collapsible mobile menu
       * 
-      * @since 8.6.13
+      * @since 12.17.13
       * @uses will enque the css file matching the color name specified during add_theme_support('mobile_menu', %color% )
       * 
       * @uses added to the wp_enqueue_scripts hook by self::construct()
@@ -79,13 +80,13 @@ class MvcMobileMenu extends MvcFramework{
          
         wp_enqueue_script(
                 'jquery-sidr',
-                 MVC_THEME_URL.'lib/js/mobile_menu.js',
+                 MVC_ASSETS_URL.'js/mobile_menu.js',
                  array('jquery'),
                  null,
                  true
         );
 
-        $css = MVC_THEME_URL.'lib/css/mobile_menu_'.$this->theme_color.'.css';
+        $css = MVC_ASSETS_URL.'css/mobile_menu_'.$this->theme_color.'.css';
 
         wp_enqueue_style(
                 'mvc-mobile-menu-css',
