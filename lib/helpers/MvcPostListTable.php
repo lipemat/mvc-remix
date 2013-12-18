@@ -26,6 +26,8 @@ class MvcPostListTable extends WP_Posts_List_Table{
     private $post_type;
     public $wp_list_table;
     private $attached_class;
+    private $row_actions = false;
+    private $outside_class = false;
     
     //default args
     private $args = array(
@@ -59,6 +61,7 @@ class MvcPostListTable extends WP_Posts_List_Table{
         
         if( $class && is_object($class) ){
             $this->attached_class = $class;
+            $this->outside_class = true;
         } else {
             $this->attached_class = $this;   
         }
@@ -67,6 +70,53 @@ class MvcPostListTable extends WP_Posts_List_Table{
        
     }
     
+    
+    
+    /**
+     * Set the row actions to Ovveride the defaults
+     * 
+     * @since 12.18.13
+     * 
+     * @param array $actions array( key => link )
+     * @uses the key will be used as the <span class as well>
+     * 
+     */
+    public function setRowActions(array $actions){
+        $this->row_actions = $actions;
+    }
+    
+    
+    /**
+     * Ovverides the row actions if setRowActions has been called
+     * 
+     * @since 12.18.13
+     * 
+     * @uses call setRowActions with the new actions 
+     * 
+     * @uses adding a setRowActions($actions) method to passed class will allow for filtering
+     *       the available actions
+     * @uses this method may also be overridden automatically by the passed class
+     */
+    public function row_actions($actions){
+        if( !$this->row_actions ){
+            $this->row_actions = $actions;
+        }
+
+        //if outside ovverides are present
+        if( $this->outside_class ){
+            if( method_exists($this->attached_class, 'setRowActions') ){
+                $this->row_actions = $this->attached_class->setRowActions($this->row_actions);
+            }
+            
+            if( method_exists($this->attached_class, 'row_actions') ){
+                $this->attached_class->row_actions($this->row_actions);
+                return;
+            }  
+        }
+
+        echo parent::row_actions($this->row_actions);
+        
+    }
     
     /**
      * Overrides the default pagination args
