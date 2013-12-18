@@ -115,6 +115,23 @@ class MvcPostListsTable extends WP_Posts_List_Table{
         parent::bulk_actions();
         
     }
+    
+    /**
+     * Ability to turn off date_filter if set in the args to do so
+     * 
+     * @overrides the parent method
+     *
+     * @uses called automatically
+     * @uses defaults to parent::extra_tablenav()
+     * 
+     * 
+     */
+    function extra_tablenav(){
+         if( !$this->args['date_filter'] ) return;
+        
+        parent::extra_tablenav();
+        
+    }
 
 
     /**
