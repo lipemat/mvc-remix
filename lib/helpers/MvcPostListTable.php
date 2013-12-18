@@ -6,7 +6,7 @@ require_once( ABSPATH . 'wp-admin/includes/screen.php' );
 require_once( ABSPATH . 'wp-admin/includes/post.php' );
 require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
 require_once( ABSPATH . 'wp-admin/includes/class-wp-posts-list-table.php' );
-
+require_once( ABSPATH . 'wp-admin/includes/taxonomy.php' );
 
 /**
  * List the posts on the frontend
