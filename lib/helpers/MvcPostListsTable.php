@@ -241,7 +241,8 @@ class MvcPostListsTable extends WP_Posts_List_Table{
        </form>
        
        <?php
-        if ( $this->has_items() && $this->args['bulk_actions'] ){
+
+        if ( $this->has_items() && $this->args['bulk_action'] ){
             $this->inline_edit();
         }
         ?>
