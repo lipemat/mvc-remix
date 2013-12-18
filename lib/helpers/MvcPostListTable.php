@@ -176,6 +176,7 @@ class MvcPostListTable extends WP_Posts_List_Table{
     }
     
     
+    
     /**
      * Set the columns for the table
      * 
