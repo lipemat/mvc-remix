@@ -151,7 +151,7 @@ class MvcPostListsTable extends WP_Posts_List_Table{
      */
     function attachCustomColumnsToClass( $column, $postId ){
           if( method_exists( $this->attached_class, 'column_' . $column ) ) {
-              echo $this->attached_class->{'column_' . $column_name};
+              echo $this->attached_class->{'column_' . $column}($postId);;
           } elseif( method_exists( $this->attached_class, 'column_default' ) ){
               echo $this->attached_class->column_default($postId, $column);
           }
