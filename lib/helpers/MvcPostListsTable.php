@@ -11,7 +11,12 @@ require_once( ABSPATH . 'wp-admin/includes/class-wp-posts-list-table.php' );
 /**
  * List the posts on the frontend
  * 
- * @since 0.6.0
+ * @uses extend into another class or construct
+ * 
+ * @param string [$postType] = the post type to display (defaults to post )
+ * @param class [$class] = a class to use for the column output methods
+ * 
+ * @since 12.18.13
  * 
  * @author Mat Lipe <mat@matlipe.com>
  * 
@@ -19,25 +24,173 @@ require_once( ABSPATH . 'wp-admin/includes/class-wp-posts-list-table.php' );
 class MvcPostListsTable extends WP_Posts_List_Table{
     private $post_type;
     public $wp_list_table;
+    private $attached_class;
+    
+    //default args
+    private $args = array(
+        'paginate' => true,
+        'date_filter' => true,
+        'bulk_action' => true
+    
+    );
+    
     
     /**
      * Assign the post type and init the table
      * 
      * @param string $postType (defaults to post)
+     * @param class $class = The class to use for the custom column outputs (if not extending this class );
      */
-    function __construct( $postType = 'post' ){
+    function __construct( $postType = 'post', $class = false, $args = array()){
+        
+        $this->args = wp_parse_args( $args, $this->args );
+        
+        if( !$this->args['paginate'] ){
+            $this->setPaginateArgs(array('per_page' => 999999999) );   
+        }
+  
         $this->post_type = $postType;
          
         $_GET['post_type'] = $this->post_type;
         $args['screen'] = WP_Screen::get( $this->post_type );
         
-        $wp_list_table = new WP_Posts_List_Table($args);
-        $this->wp_list_table = new WP_Posts_List_Table($args);
+        parent::__construct( $args );
         
+        if( $class && is_object($class) ){
+            $this->attached_class = $class;
+        } else {
+            $this->attached_class = $this;   
+        }
+        
+        add_action( "manage_{$postType}_posts_custom_column", array( $this, 'attachCustomColumnsToClass'),9, 2 );
        
+    }
+    
+    
+    /**
+     * Overrides the default pagination args
+     * 
+     * @param array $args array( ['total_items'] => int,[ 'per_page'] => int, [total_pages] => int );
+     * @uses all are option so may be used to override one or all
+     * 
+     * @since 12.18.13
+     */
+    public function setPaginateArgs($args){
+         $this->set_pagination_args( $args );
+    }
+        
+    
+    
+    /**
+     * Ability to turn off pagination if set in the args to do so
+     * 
+     * @overrides the parent method
+     *
+     * @uses called automatically
+     * @uses defaults to parent::pagination()
+     * 
+     * 
+     */
+    function pagination($where){
+        if( !$this->args['paginate'] ) return;
+        
+        parent::pagination($where);
+    }
+    
+    
+    
+    /**
+     * Ability to turn off bulk_actions if set in the args to do so
+     * 
+     * @overrides the parent method
+     *
+     * @uses called automatically
+     * @uses defaults to parent::bulk_actions()
+     * 
+     * 
+     */
+    function bulk_actions(){
+        if( !$this->args['bulk_action'] ) return;
+        
+        parent::bulk_actions();
+        
+    }
+
+
+    /**
+     * Runs the attached classes method 'column_$column' or 'column_default' if that does not exist
+     * 
+     * If a class was passed during construct that class will be used, otherwise the class extending this will be used
+     * This overrides the default behavior of the Wp_Post List Table to use the Wp List Table structure
+     * 
+     * @since 12.18.13
+     * 
+     * @param string $column - column name
+     * @param int $postId - the post's id
+     * 
+     * @uses added to the manage_$postType_posts_custom_column action by self::__construct()
+     * 
+     * 
+     */
+    function attachCustomColumnsToClass( $column, $postId ){
+          if( method_exists( $this->attached_class, 'column_' . $column ) ) {
+              echo $this->attached_class->{'column_' . $column_name};
+          } elseif( method_exists( $this->attached_class, 'column_default' ) ){
+              echo $this->attached_class->column_default($postId, $column);
+          }
+    }
+    
+
+    /**
+     * Overrides the columns using data from self::setColumns()
+     * 
+     * @uses parent::get_column_info() if empty
+     * 
+     * @since 12.18.13
+     */
+    public function get_column_info(){
+        if( empty( $this->columns ) ) return parent::get_column_info();
+
+   //     return parent::get_column_info();
+
+        return $this->columns;
         
     }
     
+    
+    /**
+     * Set the columns for the table
+     * 
+     * @since 12.18.13
+     * 
+     * @param array $columns array( 'key' => 'label' )
+     * @param array $sortable array( 'key' => 'orderby' ) //columns which can sort
+     * @param array $hidden array( 'key' ) //columns which are hidden
+     * 
+     * 
+     */
+    public function setColumns($columns, $_sortable = array(), $hidden = array()){
+        
+        $sortable = array();
+        foreach ( $_sortable as $id => $data ) {
+            if ( empty( $data ) )
+                continue;
+
+            $data = (array) $data;
+            if ( !isset( $data[1] ) )
+                $data[1] = false;
+
+            $sortable[$id] = $data;
+        }
+
+
+        $this->_column_headers = array( $columns, $hidden, $sortable );
+        
+        
+        $this->columns = array( $columns, $hidden, $sortable);   
+    }
+    
+
     
     /**
      * Display the table
@@ -53,13 +206,13 @@ class MvcPostListsTable extends WP_Posts_List_Table{
              get_bloginfo('url').'/wp-admin/load-scripts.php?c=1&load%5B%5D=inline-edit-post'
         );
 
-        if( $action = $this->wp_list_table->current_action() ){
+        if( $action = $this->current_action() ){
             $this->displayMessage( $this->updatePosts($action) );
        }
 
-        $this->wp_list_table->prepare_items();
+        $this->prepare_items();
         ob_start();
-            $this->wp_list_table->views();
+            $this->views();
         echo str_replace( 'edit.php', '', ob_get_clean() ); 
         ?>
         <form id="posts-filter" action="" method="get">
@@ -67,12 +220,13 @@ class MvcPostListsTable extends WP_Posts_List_Table{
             <input type="hidden" name="post_type" class="post_type_page" value="<?php echo $this->post_type; ?>" />
             <input type="hidden" name="show_sticky" value="1" />
 
-            <?php $this->wp_list_table->display(); ?>
+            <?php $this->display(); ?>
        </form>
        
        <?php
-        if ( $this->wp_list_table->has_items() )
-            $this->wp_list_table->inline_edit();
+        if ( $this->has_items() && $this->args['bulk_actions'] ){
+            $this->inline_edit();
+        }
         ?>
 
         <div id="ajax-response"></div>
@@ -81,6 +235,10 @@ class MvcPostListsTable extends WP_Posts_List_Table{
         
         
     }
+
+    
+    
+
 
 
     /**
