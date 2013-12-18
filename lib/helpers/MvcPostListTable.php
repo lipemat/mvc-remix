@@ -285,6 +285,10 @@ class MvcPostListTable extends WP_Posts_List_Table{
             $this->views();
         echo str_replace( 'edit.php', '', ob_get_clean() ); 
         ?>
+        <script type="text/javascript">
+            var typenow = 'class';
+            var ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
+</script>
         <form id="posts-filter" action="" method="get">
             <input type="hidden" name="post_status" class="post_status_page" value="<?php echo !empty($_REQUEST['post_status']) ? esc_attr($_REQUEST['post_status']) : 'all'; ?>" />
             <input type="hidden" name="post_type" class="post_type_page" value="<?php echo $this->post_type; ?>" />
