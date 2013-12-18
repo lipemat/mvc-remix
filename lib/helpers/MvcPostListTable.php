@@ -21,7 +21,8 @@ require_once( ABSPATH . 'wp-admin/includes/class-wp-posts-list-table.php' );
  * @author Mat Lipe <mat@matlipe.com>
  * 
  */
-class MvcPostListsTable extends WP_Posts_List_Table{
+if( !class_exists('MvcPostListTable') ){
+class MvcPostListTable extends WP_Posts_List_Table{
     private $post_type;
     public $wp_list_table;
     private $attached_class;
@@ -214,6 +215,7 @@ class MvcPostListsTable extends WP_Posts_List_Table{
      * 
      * @since 12.18.13
      * 
+     * @TODO figure why the click all is not working
      * 
      */
     public function output(){
@@ -281,7 +283,7 @@ class MvcPostListsTable extends WP_Posts_List_Table{
              <div id="message" class="updated"><p>
                 <?php 
                 if ( isset( $_REQUEST['updated'] ) && $updated = absint( $_REQUEST['updated'] ) ) {
-                        
+
                         if( $updated > 1 ){
                             $plural = $this->plural($this->post_type);
                             $name = $plural;
@@ -445,4 +447,5 @@ class MvcPostListsTable extends WP_Posts_List_Table{
     
     
     
+}
 }
