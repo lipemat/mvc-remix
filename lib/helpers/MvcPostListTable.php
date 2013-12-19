@@ -20,6 +20,13 @@ require_once( ABSPATH . 'wp-admin/includes/taxonomy.php' );
  * 
  * @author Mat Lipe <mat@matlipe.com>
  * 
+ * 
+ * @see if you do not construct this class at the top of every load the ajax will revert 
+ *      The row_actions back to default after an inline edit - use these filters somewhere that always runs
+ *      add_filter('page_row_actions', 'setRowActions',99, 2 );
+        add_filter('post_row_actions', 'setRowActions',99, 2 );
+ * 
+ * 
  */
 if( !class_exists('MvcPostListTable') ){
 class MvcPostListTable extends WP_Posts_List_Table{
@@ -45,6 +52,9 @@ class MvcPostListTable extends WP_Posts_List_Table{
      * @param class $class = The class to use for the custom column outputs (if not extending this class );
      */
     function __construct( $postType = 'post', $class = false, $args = array()){
+        
+        add_filter('page_row_actions', array( $this, 'setRowActions'),99, 2 );
+        add_filter('post_row_actions', array( $this, 'setRowActions'),99, 2 );
         
         $this->args = wp_parse_args( $args, $this->args );
         
@@ -80,9 +90,29 @@ class MvcPostListTable extends WP_Posts_List_Table{
      * @param array $actions array( key => link )
      * @uses the key will be used as the <span class as well>
      * 
+     * @uses adding a setRowActions($actions) method to passed class will allow for filtering
+     *       the available actions
+     * 
+     * 
+     * @see if you do not construct this class at the top of every load the ajax will revert 
+     *      The row_actions back to default after an inline edit - use these filters somewhere that always runs
+     *       add_filter('page_row_actions', 'setRowActions',99, 2 );
+             add_filter('post_row_actions', 'setRowActions',99, 2 );
+     * 
+     * 
      */
-    public function setRowActions(array $actions){
-        $this->row_actions = $actions;
+    public function setRowActions(array $actions, $post){
+        
+        if( !$post->post_type == $this->post_type ) return $actions;
+
+        //if outside ovverides are present
+        if( $this->outside_class ){
+            if( method_exists($this->attached_class, 'setRowActions') ){
+                $actions = $this->attached_class->setRowActions($actions);
+            }
+        }
+        
+        return $actions;
     }
     
     
@@ -93,28 +123,19 @@ class MvcPostListTable extends WP_Posts_List_Table{
      * 
      * @uses call setRowActions with the new actions 
      * 
-     * @uses adding a setRowActions($actions) method to passed class will allow for filtering
-     *       the available actions
+
      * @uses this method may also be overridden automatically by the passed class
      */
     public function row_actions($actions){
-        if( !$this->row_actions ){
-            $this->row_actions = $actions;
-        }
-
         //if outside ovverides are present
         if( $this->outside_class ){
-            if( method_exists($this->attached_class, 'setRowActions') ){
-                $this->row_actions = $this->attached_class->setRowActions($this->row_actions);
-            }
-            
             if( method_exists($this->attached_class, 'row_actions') ){
-                $this->attached_class->row_actions($this->row_actions);
+                $this->attached_class->row_actions($actions);
                 return;
             }  
         }
 
-        echo parent::row_actions($this->row_actions);
+        echo parent::row_actions($actions);
         
     }
     
