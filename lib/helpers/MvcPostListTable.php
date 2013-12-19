@@ -108,7 +108,7 @@ class MvcPostListTable extends WP_Posts_List_Table{
         //if outside ovverides are present
         if( $this->outside_class ){
             if( method_exists($this->attached_class, 'setRowActions') ){
-                $actions = $this->attached_class->setRowActions($actions);
+                $actions = $this->attached_class->setRowActions($actions, $post);
             }
         }
         
