@@ -18,7 +18,8 @@ define( 'MVC_IS_ADMIN', is_admin() );
 
 define( 'MVC_DIR', plugin_dir_path(__FILE__).'/' );
 define( 'MVC_ASSETS_URL', plugin_dir_url(__FILE__).'/assets/' );
-define( 'MVC_DIR_NAME', end(explode('/', plugins_url('', __FILE__))) );
+$dir_name = explode('/', plugins_url('', __FILE__));
+define( 'MVC_DIR_NAME', end($dir_name) );
 define( 'MVC_SLUG', MVC_DIR_NAME.'/'.basename(__FILE__));
 
 

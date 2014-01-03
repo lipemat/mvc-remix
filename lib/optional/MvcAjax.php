@@ -93,9 +93,9 @@ class MvcAjax extends MvcFramework{
     /**
      * Ques up the js required for the ajax interaction
      * 
-     * @since 10.2.13
+     * @since 1.3.14
      */
-    function addJs(){
+    function addJs($file){
         wp_enqueue_script(
             'mvc-ajax',
             MVC_ASSETS_URL.'js/mvc-ajax.js',
