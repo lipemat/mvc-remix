@@ -2,7 +2,7 @@
 
                             /**
                              * Pull the Whole Framework Together
-                             * @since 12.4.13
+                             * @since 1.3.14
                              * @author Mat Lipe <mat@matlipe.com>
                              */
 
@@ -20,9 +20,14 @@ spl_autoload_register('_mvc_autoload');
 
 
 /** The Config for this Theme **/
-if( !locate_template('mvc-config.php', true) ){
-   include( MVC_DIR.'mvc-config.php' );
+if ( file_exists(get_stylesheet_directory() . '/mvc-config.php')) {
+    load_template(get_stylesheet_directory() . '/mvc-config.php');
+} elseif ( file_exists(get_template_directory() . '/mvc-config.php') ) {
+    load_template(get_template_directory() . '/mvc-config.php');
+} else {
+    include( MVC_DIR.'mvc-config.php' );
 }
+
 
 if( current_theme_supports('mvc_update') && is_admin() ){
     new MvcUpdate();   
