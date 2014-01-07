@@ -4,9 +4,10 @@
  * Formatting for Genesis and Other WordPress outputs
  * 
  * 
- * @since 10.2.13
+ * @since 1.7.14
  * 
  * @uses add_theme_support('mvc_format');
+ * 
  */
 if( class_exists('MvcFormat') ) return;  
 class MvcFormat extends MvcFramework{
@@ -68,10 +69,12 @@ class MvcFormat extends MvcFramework{
      * Changes all the sidebar on the Blog type "post" pages if a widget called "Blog Sidebar" exists
      * @uses create a widget area called 'Blog Sidebar' this will do the rest
      * @uses called by __construct();
-     * @since 8.6.13
+     * @since 1.7.14
      */
     function blog_sidebar(){
         if( $this->sidebar_changed ) return;
+        
+        if( !function_exists('genesis_site_layout') ) return;
         
         if(  genesis_site_layout() == 'full-width-content' ) return;
         
