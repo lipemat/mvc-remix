@@ -4,7 +4,7 @@
  * Optional CSS and JS handler for the theme
  * Allow for targeting specific browsers and such with css file names
  * 
- * @since 12.10.13
+ * @since 1.7.14
  * 
  * @uses add_theme_support('mvc_styles');
  * 
@@ -32,7 +32,7 @@ class MvcStyles extends MvcFramework{
      /**
      * Add column entries to the style dropdown.
      *
-     * @since 10.8.13
+     * @since 1.7.14
      * @param array $settings Existing settings for all toolbar items
      * @return array $settings Amended settings
      * @uses added to the tiny_mce_before_init filter
@@ -40,54 +40,54 @@ class MvcStyles extends MvcFramework{
      function editorStyleColumns(array $settings) {
 
                 $style_formats = array(
-                    array('title' => __('Columns', CHILD_DOMAIN), ),
+                    array('title' => 'Columns', ),
                     array(
-                        'title' => __('First Half', CHILD_DOMAIN),
+                        'title' => 'First Half',
                         'block' => 'div',
                         'classes' => 'one-half first',
                     ),
                     array(
-                        'title' => __('Half', CHILD_DOMAIN),
+                        'title' => 'Half',
                         'block' => 'div',
                         'classes' => 'one-half',
                     ),
                     array(
-                        'title' => __('First Third', CHILD_DOMAIN),
+                        'title' => 'First Third',
                         'block' => 'div',
                         'classes' => 'one-third first',
                     ),
                     array(
-                        'title' => __('Third', CHILD_DOMAIN),
+                        'title' => 'Third',
                         'block' => 'div',
                         'classes' => 'one-third',
                     ),
                     array(
-                        'title' => __('First Quarter', CHILD_DOMAIN),
+                        'title' => 'First Quarter',
                         'block' => 'div',
                         'classes' => 'one-fourth first',
                     ),
                     array(
-                        'title' => __('Quarter', CHILD_DOMAIN),
+                        'title' => 'Quarter',
                         'block' => 'div',
                         'classes' => 'one-fourth',
                     ),
                     array(
-                        'title' => __('First Fifth', CHILD_DOMAIN),
+                        'title' => 'First Fifth',
                         'block' => 'div',
                         'classes' => 'one-fifth first',
                     ),
                     array(
-                        'title' => __('Fifth', CHILD_DOMAIN),
+                        'title' => 'Fifth',
                         'block' => 'div',
                         'classes' => 'one-fifth',
                     ),
                     array(
-                        'title' => __('First Sixth', CHILD_DOMAIN),
+                        'title' => 'First Sixth',
                         'block' => 'div',
                         'classes' => 'one-sixth first',
                     ),
                     array(
-                        'title' => __('Sixth', CHILD_DOMAIN),
+                        'title' => 'Sixth',
                         'block' => 'div',
                         'classes' => 'one-sixth',
                     ),
