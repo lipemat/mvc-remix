@@ -139,8 +139,10 @@ class MvcBootstrap extends MvcFramework{
          }
         
          if( is_page() ){
-             if( method_exists($GLOBALS['PageController'], 'single') ){
-                 $GLOBALS['PageController']->single();   
+             if( isset( $GLOBALS['PageController'] ) ){
+                if( method_exists($GLOBALS['PageController'], 'single') ){
+                   $GLOBALS['PageController']->single();   
+                }
              }
          }
         
