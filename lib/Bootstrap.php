@@ -2,7 +2,7 @@
 
                             /**
                              * Pull the Whole Framework Together
-                             * @since 1.3.14
+                             * @since 1.20.14
                              * @author Mat Lipe <mat@matlipe.com>
                              */
 
@@ -81,7 +81,7 @@ if( current_theme_supports('mvc_ajax') ){
 /**
  * Put all the default stuff in motion
  * 
- * @since 11.27.13
+ * @since 1.20.14
  * 
  * @author Mat Lipe <mat@matlipe.com>
  * 
@@ -209,7 +209,7 @@ class MvcBootstrap extends MvcFramework{
      * 
      * @since 0.1.0
      * 
-     * @since 12.4.13
+     * @since 1.20.14
      * 
      * @uses if the theme has a Controllers/Controller.php file this will run automatically
      * @filters mvc_theme_dirs - allows for other plugins or themes to use the magic of this
@@ -298,6 +298,7 @@ class MvcBootstrap extends MvcFramework{
                     foreach (${$controller}->uses as $model) {
                         if( !in_array($model,$classes) ){
                             require_once($dir.'Model/'.$model.'.php');
+                            $classes[] = $model;
                         }
                         
                         if( defined('MVC_CONTROLLER_PREFIX') && MVC_CONTROLLER_PREFIX ){
