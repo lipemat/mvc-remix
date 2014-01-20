@@ -3,15 +3,16 @@ MVC Theme - WordPress Plugin
 
 ##MVC Framework written to work on top of WordPress Genesis theme
 
-This will work with a non Genesis them or may be extended into other plugins. However many of the formatting or frontend features
-are designed to work with Genesis hooks a will become frustration for someone who wants the full functionality and is using a non 
+As you may notice from looking at the code, the plugin itself is not MVC. I know, strange right... Perhaps someday it may make sense to organize the plugin as MVC as well but for now it is far too powerful the way it is. Instead what this plugin does is give you MVC functionality inside your theme. Using the instructions found below your will be able to organize your themes into Controllers Models and Views which work together automatically. You will be able to develop your code in a way that is organzied and very easy to pawn off the entire styling phase to your designers without theme ever having to dig through a bunch of PHP code they get lost in. You can also use the built in filters to turn any plugin into an MVC structure for rapid organized development. Plus there is any entire framework of useful objects built in to make many boilerplate tasks fun again. If Cake PHP and WordPress had a baby it would be MVC theme.
+
+Sorry for the lack of documentation. I am currently grooming an apprectice who will help get the wiki ready to roll.
+
+This will work with a non Genesis themes or may be extended into other plugins. However many of the formatting or frontend features
+are designed to work with Genesis hooks a will become frustraing for someone who wants the full functionality and is using a non 
 Genesis theme.
 
 
-## Plugin is currently in BETA
-As of version 0.2.1 things are looking good and stable but more testing is a good idea. This will now update from the Github releases automatically using the standard WordPress plugin updates. Code is subject to change so it is possible a feature will no work after
-running an update, but the majority of the code will either stay the same or be enhanced and debugged only. Once this is out of beta
-you will be able to update with full confidence you would expect for my WordPress plugins.
+This will now update from the Github releases automatically using the standard WordPress plugin updates. You may now update this plugin with the full confidence you expect from all of my plugins.
 
 
 ##Usage
@@ -38,12 +39,8 @@ Calls may be made from your controller to your Model like $this->test->test_meth
 Calls to views may be made from your controller like $this->view('view_file_name');
 
 
-
-
 ###More useful readme and documentation coming soon.
 
-Up until 9/4/13 this was a private project used on many live 
-WordPress sites. It is being made public in hopes of helping other developers out there who love MVC.
 
 
 

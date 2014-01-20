@@ -3,10 +3,11 @@
  * Adds ability to upload images into a gallery group
  * * Creates meta box and handles all uploding needs
  * 
- * @uses new MvcGallery($postTypes);
+ * @uses new MvcGallery($postTypes, array( %gallery_1, %gallery_2) );
  * @param array $postTypes - The post types to use this on
 
- * @since 10.1.13
+ * @since 1.20.14
+ * 
  * 
  */
 if( class_exists('MvcGallery') ) return;  
@@ -20,9 +21,8 @@ class MvcGallery extends MvcFramework{
         * @param array $postTypes - the posts types to add the functionalty to
         * @param array [$groups] - the different groups of images default to gallery 
         * @uses __construct($postTypes)
-        * @since 4.5.0
         * 
-        * @since 10.1.13
+        * @since 1.20.14
         */
        function __construct($postTypes = array('post','page'), $groups = array('gallery')){
            
@@ -37,8 +37,6 @@ class MvcGallery extends MvcFramework{
              wp_enqueue_script('jquery-ui-sortable');  
              
              add_action('admin_menu', array($this, 'metaBoxSetup'), 99 );
-
-             add_filter('attachment_fields_to_edit', array($this, 'addAttachmentField'), 20, 2);    
 
              add_action('save_post', array($this, 'save_post'), 99 );       
           //   add_filter('the_post', array($this, 'the_post'));  -- Deprecated until I find a use for it        
@@ -60,7 +58,7 @@ class MvcGallery extends MvcFramework{
        }
        
        
-              /**
+       /**
         * Returns and an array of the groups with slugs as keys
         * 
         * @since 10.1.13
@@ -80,48 +78,12 @@ class MvcGallery extends MvcFramework{
            
        }
 
-       /**
-        * Add the "Add to" section of the image editing box
-        * 
-        * @since 10.1.13
-        * @uses added to the 'attachment_fields_to_edit' filter by self::construct
-        */
-       function addAttachmentField($form_fields, $post ){
-           
-             if( !in_array(get_post_type($_REQUEST['post_id']), $this->post_types )) return $form_fields;
-           
-              $calling_post_id = 0 ;
-              if( isset( $_GET['post_id' ] )){
-                     $calling_post_id = absint($_GET['post_id']);
-              } elseif (isset ($_POST ) && count($_POST)){ // Like for async-upload where $_GET['post_id'] isn't set
-                     $calling_post_id = $post->post_parent;  
-              }
-              
-              if(!$calling_post_id) return $form_fields;  
-              
-              $url = $this->getAttachmentUrl( $post );
-             
-             
-              foreach( $this->groups as $group ){
-                  $form_fields["{$post->post_type}-{$post->ID}-$group-mvc-gallery"] = array(
-                     'label' => 'Add To',
-                     'input' => 'html',
-                     'html'  => '<a href="#" group="'.$group.'" url="'.$url.'" title="'.basename($post->guid).'" id="'.$post->ID.'" class="mvc-gallery button-primary" onclick="MvcGallery.AddImage(this)">'.ucwords(str_replace('_',' ',$group) ).'</a>'
-                );
-              }
-             
-
-              return $form_fields;      
-       }      
-      
-       
-      
       
       
        /**
        * Saves the Gallery Images to the Post Meta
        * 
-       * @since 5.9.13
+       * @since 1.20.14
        * @uses called by the 'save_post' action
        *
        */           
@@ -137,11 +99,11 @@ class MvcGallery extends MvcFramework{
               }
 
               foreach($this->groups as $group){
-                     if( isset( $_POST['mvc-gallery-'.$group] ) ){
-                        update_post_meta($post_id, 'mvc-gallery-'.$group, $_POST['mvc-gallery-'.$group] );
-                     } else {
-                        delete_post_meta($post_id, 'mvc-gallery-'.$group, $_POST['mvc-gallery-'.$group] );
-                     }
+                 if( isset( $_POST['mvc-gallery-'.$group] ) ){
+                     update_post_meta($post_id, 'mvc-gallery-'.$group, $_POST['mvc-gallery-'.$group] );
+                 } else {
+                     delete_post_meta($post_id, 'mvc-gallery-'.$group );
+                 }
               }
                            
               return $post_id;
@@ -181,7 +143,7 @@ class MvcGallery extends MvcFramework{
         * Output of the Gallery Meta Box
         * * Displays the existing Gallery Images and has links to add more
         * 
-        * @since 10.1.13
+        * @since 1.20.14
         * @uses called by self::metaBoxSetup
         * 
         * @param obj $post - the current post
@@ -195,8 +157,7 @@ class MvcGallery extends MvcFramework{
              ?>
                <div class="mvc-gallery">
                     <p>
-
-                      <input class="button" id="<?php echo $group['id']; ?>" value="Add Media" style="text-align: center"/>
+                      <input class="button" data-group="<?php echo $group['id']; ?>" data-title="<?php echo $group['title']; ?>" value="Add Image" style="text-align: center"/>
                    </p>
                    <?php if(empty ($images)){
                             ?><p id="uncheck-message" style="display:none">Uncheck an image to remove it.</p><?php
@@ -297,34 +258,36 @@ class MvcGallery extends MvcFramework{
         */
        function js(){
            ?><script type="text/javascript">
-                var GalleryBox = true;
-                    var MvcGallery = {
-                        AddImage : function(e){
-                           var e = jQuery(e);
-                           var attachment = {};
-                                  
-                           attachment.url = e.attr('url');
-                           attachment.id = e.attr('id');
-                           attachment.filename = e.attr('title');
-                           
-                           GalleryBox = jQuery('#'+e.attr('group')+'.postbox');
-                           
-                           GalleryBox.find('#uncheck-message').show();
-                           GalleryBox.find('ol').append('<li><img src="'+attachment.url+'"/>' +
-                                    '<input type="checkbox" name="mvc-gallery-' +e.attr('group')+'[]" value="'+attachment.id+'" checked="checked" />'+
-                                    '<label><span>'+attachment.filename+'</span></label>'+
-                                    '</li>'
-                                    );
-                       }    
-                    }
-
-     
                 jQuery(function($){
-
                     $('.mvc-gallery ol').sortable({placeholder: 'sortable-placeholder'});
                     
                     $('.mvc-gallery .button').click(function(e) {
-                          wp.media.editor.open(e);
+                           var group = $(this);
+                           var ol = $('[rel="mvc-gallery-'+group.data("group")+'"]');
+                           var custom_uploader = wp.media ({           
+                                title: 'Add to '+group.data('title'),
+                                button: {
+                                    text: 'Add to '+group.data('title')
+                                },
+                                library : {
+                                  type : 'image'
+                                },
+                                multiple: true
+                 
+                                }) .on('select', function() {
+                                    ol.find('#uncheck-message').show();
+                                    var items = custom_uploader.state().get('selection');
+                                    for( var i = 0 ; i <= items.models.length; i++ ){ 
+                                        var attachment = items.models[i].toJSON();
+                                        
+                                        ol.append('<li>'+
+                                                '<img src="'+attachment.url+'"/>' +
+                                                '<input type="checkbox" name="mvc-gallery-' +group.data("group")+'[]" value="'+attachment.id+'" checked="checked" />'+
+                                                '<label><span>'+attachment.filename+'</span></label>'+
+                                                '</li>'
+                                    );
+                                    }
+                                }).open();
                     });
                 });
                     

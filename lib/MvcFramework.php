@@ -1121,6 +1121,7 @@ class MvcFramework{
      * *                   string 'wrap_end' -  the closing wrap e.g. </div>
      * *                   bool   'include_content_images' - to include images which appear in content - default false
      * *                   bool   'include_meta_images' -  to include images added to meta fields like tabs - default false
+     * *                   string 'mvc-gallery' - The name of the gallery used when constructing MvcGallery(, $gallery)
      * 
      * 
      * @since 4.5.0
