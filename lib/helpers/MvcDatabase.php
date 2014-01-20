@@ -2,7 +2,7 @@
 /**
  * Interaction with the database on a custom Level
  * 
- * @since 12.10.13
+ * @since 1.20.14
  * 
  * @author Mat Lipe <mat@matlipe.com>
  * 
@@ -322,7 +322,7 @@ class MvcDatabase {
     
     
     
-        /**
+    /**
      * Get Encrypted fields by encrypted conditions
      * 
      * @uses will encrypt specified fields using in conditionals and decrypt fields coming out
@@ -335,7 +335,7 @@ class MvcDatabase {
      * @param  String [$orderBy] - field to order results by
      * @param  String [$limit] - optional LIMIT clause in query
      *
-     * @since 12.9.13 
+     * @since 1.20.14
      *
      * @return Table result
      * 
@@ -354,39 +354,10 @@ class MvcDatabase {
             }
             $en_fields[] = 'AES_DECRYPT('.$field.',"'.$salt.'") as '.$field;
         }
-       
-        if( is_array( $fields ) ){
-            $fields = implode(',', $fields);
-        }
         
-        if( empty( $en_fields ) ){
-            $sql = 'SELECT '.$fields.' FROM `' . $this->table_name . '` WHERE ';
-        } else {
-            $sql = 'SELECT '.$fields.','.implode(',',$en_fields).' FROM `' . $this->table_name . '` WHERE ';
-        }
-
-        foreach ($conditionValue as $field => $value) {
-            if( in_array( $field, $encryptedFields ) ){
-                 $wheres[] = '`' . $field . '`' . $condition . ' AES_ENCRYPT("'.$value.'","'.$salt.'")'; 
-            } else {
-                 $wheres[] = $wpdb->prepare('`' . $field . '` ' . $condition . ' %s', $value); 
-            }
-        }
+         
+        return $this->buildGetQuery(array_merge((array)$fields, $en_fields), $orderBy, $limit, $conditionValue, $condition);
         
-        if( !empty( $wheres ) ){
-            $sql .= implode( ' AND ', $wheres );   
-        }
-          
-        $sql .= $this->orderBy($orderBy);
-
-        
-        if( $limit ){
-            $sql .= ' LIMIT '.$limit;   
-        }
-
-        $result = $wpdb->get_results($sql);
-
-        return $result;
     }
     
     
