@@ -2,7 +2,7 @@
 /**
  * Interaction with the database on a custom Level
  * 
- * @since 1.21.14
+ * @since 1.22.14
  * 
  * @author Mat Lipe <mat@matlipe.com>
  * 
@@ -188,7 +188,7 @@ class MvcDatabase {
      * @param  String|Array [$fields] - fields to include in results
      * @param string [$limit] - ability to set a LIMIT in the query
      * 
-     * @since 12.10.13
+     * @since 1.22.14
      */
     public function getEncryptedResults(array $encryptedFields, $salt, $orderBy = false, $fields = '*', $limit = false ) {
         global $wpdb;
@@ -204,6 +204,7 @@ class MvcDatabase {
                 if( !in_array( $field, $fields ) ) continue;   
             }
             $en_fields[] = 'AES_DECRYPT('.$field.',"'.$salt.'") as '.$field;
+            unset( $fields[array_search($field, $fields)] );
         }
 
         return $this->buildGetQuery(array_merge((array)$fields, $en_fields), $orderBy, $limit);
