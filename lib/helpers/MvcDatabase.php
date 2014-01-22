@@ -204,7 +204,9 @@ class MvcDatabase {
                 if( !in_array( $field, $fields ) ) continue;   
             }
             $en_fields[] = 'AES_DECRYPT('.$field.',"'.$salt.'") as '.$field;
-            unset( $fields[array_search($field, $fields)] );
+            if( is_array( $fields ) && in_array($field, $fields ) ){
+                unset( $fields[array_search($field, $fields)] );
+            }
         }
 
         return $this->buildGetQuery(array_merge((array)$fields, $en_fields), $orderBy, $limit);
