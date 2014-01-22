@@ -2,7 +2,7 @@
 /**
  * Interaction with the database on a custom Level
  * 
- * @since 1.20.14
+ * @since 1.21.14
  * 
  * @author Mat Lipe <mat@matlipe.com>
  * 
@@ -215,7 +215,7 @@ class MvcDatabase {
      * @param string|array $orderBy - if array will use the second param as the order
      * @param string $limit - used in the LIMIT part of the query
      * 
-     * @since 12.10.13
+     * @since 1.21.14
      */
     function buildGetQuery($fields = '*', $orderBy = false, $limit = false, $conditions = array(), $condition = '='){
         global $wpdb;
@@ -233,7 +233,7 @@ class MvcDatabase {
                     if (!is_array($value)) {
                         throw new Exception("Values for IN query must be an array.", 1);
                     }
-                    $sql .= $wpdb->prepare('`%s` IN (%s)', $field, implode(',', $value));
+                    $sql .= 'WHERE `'.$field.'` IN ("'.implode('","', $value).'")';
                     break;
 
                 default :
