@@ -76,7 +76,7 @@ class MvcDatabase {
     
     
     
-    /**
+ /**
      * Get a count if items in this table with optional conditions
      *
      * @param  Array [$conditionValue] - A key value pair of the conditions you want to search on
@@ -84,7 +84,7 @@ class MvcDatabase {
      *
      * @return int
      * 
-     * @since 12.2.13
+     * @since 1.21.14
      */
     public function getCount(array $conditionValue = array(), $condition = '=' ) {
        global $wpdb;
@@ -99,14 +99,13 @@ class MvcDatabase {
             $sql .= ' WHERE ';
         }
 
-        foreach ($conditionValue as $field => $value) {
+       foreach ($conditionValue as $field => $value) {
             switch(strtolower($condition)) {
                 case 'in' :
                     if (!is_array($value)) {
                         throw new Exception("Values for IN query must be an array.", 1);
                     }
-
-                    $sql .= $wpdb->prepare('`%s` IN (%s)', $field, implode(',', $value));
+                    $sql .= '`'.$field.'` IN ("'.implode('","', $value).'")';
                     break;
 
                 default :
@@ -115,6 +114,7 @@ class MvcDatabase {
             }
         }
         
+        
         if( !empty( $wheres ) ){
             $sql .= implode( ' AND ', $wheres );   
         }
@@ -122,6 +122,10 @@ class MvcDatabase {
 
         return $result;
     }
+
+
+
+
 
     /**
      * Insert data into the current data
