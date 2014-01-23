@@ -6,7 +6,7 @@
  * @uses new MvcGallery($postTypes, array( %gallery_1, %gallery_2) );
  * @param array $postTypes - The post types to use this on
 
- * @since 1.20.14
+ * @since 1.23.14
  * 
  * 
  */
@@ -253,12 +253,13 @@ class MvcGallery extends MvcFramework{
        /**
         * The Js required for the Image uploading and attaching
         * 
-        * @since 9.30.13
+        * @since 1.23.14
         * @uses added to 'admin_print_scripts' hook by self::__construct
         */
        function js(){
            ?><script type="text/javascript">
                 jQuery(function($){
+                    if( $('.mvc-gallery ol').length < 1 ) return;
                     $('.mvc-gallery ol').sortable({placeholder: 'sortable-placeholder'});
                     
                     $('.mvc-gallery .button').click(function(e) {
