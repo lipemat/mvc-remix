@@ -74,7 +74,7 @@ function mvc_register_sidebar($name, $description = false, $args = array()){
 if( !function_exists('_p') ){
    function _p($data, $hide = false, $adminOnly = false){
         
-        if( $adminOnly && !MVC_IS_ADMIN() ) return;
+        if( $adminOnly && !MVC_IS_ADMIN ) return;
         
         if( $hide ){
             echo '<div style="display:none">';

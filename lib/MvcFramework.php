@@ -370,7 +370,7 @@ class MvcFramework{
      * @since 4.6.0
      */
     function addJs($file){
-        if( !MVC_IS_ADMIN() ){
+        if( !MVC_IS_ADMIN ){
             wp_enqueue_script(
                 'mvc-'.$file,
                 MVC_JS_URL. $file.'.js',
