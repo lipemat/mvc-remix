@@ -704,32 +704,45 @@ class MvcForm {
     
     /**
      * Creates a select from an array
+     * 
+     * 
      * @param sting $name
      * @param array $args ( 
      *                    options        => array( %key% => %value )
      *                    selected       => %value%
      *                    id             => %string%
-     *                    all_label      => %string% )
+     *                    all_label      => %string%,
+     *                    class          => %string% )
      *                    
      * @param bool $echo display or return default to true
+     * 
+     * 
      * @uses array( value => display )
-     * @since 2.0.2
+     * 
+     * @since 2.3.14
+     * 
+     * 
      */
     function select($name, $args = array(), $echo = true ){
             
            
         if( !$echo ) ob_start();
-        
+
         $defaults = array(
-                            'selected' => '',
-                            'id'       => 'mvc_select',
-                            'all_label'      => false
+                            'selected'  => '',
+                            'id'        => 'mvc_select',
+                            'all_label' => false,
+                            'class'     => false
                             );
         $args = wp_parse_args($args, $defaults);
         
         extract( $args );
+        
+        if( $args['class'] ){
+            $args['class'] = 'class="'.$args['class'].'"';
+        } 
 
-        printf( '<select name="%s" id="%s">', $name, $id );
+        printf( '<select name="%s" id="%s" %s>', $name, $id, $args['class']);
             if( $all_label ){
                 printf('<option value="">%s</option>', $all_label );
             }
