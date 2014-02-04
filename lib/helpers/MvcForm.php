@@ -223,10 +223,10 @@ class MvcForm {
     }
 
 
-         /**
+     /**
      * Image Upload Form complete with Jquery
      * 
-     * @since 11.12.13
+     * @since 2.4.14
      * 
      * @param string $name - the fields name if no specified in the args
      * @param string $value
@@ -245,10 +245,9 @@ class MvcForm {
      *
      */
     function imageUploadForm( $name, $value = '', $args = array(), $echo = true ){
-        
+       static $been_here = false;
        wp_enqueue_media();
-        
-        
+         
        $defaults = array(
                 'value'        => $value,
                 'button_label' => 'Upload',
@@ -256,6 +255,7 @@ class MvcForm {
                 'id'           => $name
             );
        $args = wp_parse_args($args, $defaults);
+       
        
        ob_start();
 
@@ -274,45 +274,43 @@ class MvcForm {
             class="button-secondary image_upload"
        />
        
+       <?php 
+       //only display the js once
+       if( $been_here ){
+           if( $echo ){
+                echo ob_get_clean();
+           } else {
+                return ob_get_clean();
+           }    
+           return;
+       }
        
-       <?php if( !isset( $this->already_uploaded_scripts ) ){
-                    $this->already_uploaded_scripts = true;
-        ?>
+       $been_here = true;
+       ?>
        
        <script type="text/javascript">
-           jQuery(document).ready(function($){
-                var _custom_media = true,
-                _orig_send_attachment = wp.media.editor.send.attachment;
-
-                $('.image_upload').click(function(e) {
-                        var send_attachment_bkp = wp.media.editor.send.attachment;
-                        var button = $(this);
-                        var id = button.attr('rel');
-                         _custom_media = true;
-                        wp.media.editor.send.attachment = function(props, attachment){
-                            if ( _custom_media ) {
-                                jQuery.event.trigger('MVCImageUploadReturn', [attachment.url, attachment, props]);
-                                $("#"+id).val(attachment.url);
-                            } else {
-                                return _orig_send_attachment.apply( this, [props, attachment] );
-                            };
-                        }
-
-                        wp.media.editor.open(button);
-                        return false;
-                  });
-
-                $('.add_media').on('click', function(){
-                    _custom_media = false;
+           function handle_mvc_form_image_upload(e){
+               var cu = wp.media ({
+                    button: {
+                        text: 'Use Selected Media'
+                    },
+                    multiple: false
+                    }).on('select', function(){
+                        var items = cu.state().get('selection' );
+                        var attachment = items.models[0].toJSON ();
+                        jQuery.event.trigger('MVCImageUploadReturn', [attachment.url, attachment, attachment]);
+                        jQuery("#"+e.attr('rel')).val(attachment.url);
+                }).open();
+                return false;
+           }
+           jQuery( function($){
+               jQuery('.image_upload').click(function(e){
+                    handle_mvc_form_image_upload(jQuery(this));     
                 });
-           });
-
+            });
       </script>
        
        <?php   
-       
-       } //End already uploaded scripts
-       
        if( $echo ){
            echo ob_get_clean();
        } else {
@@ -498,17 +496,15 @@ class MvcForm {
      * @param array $data - data like values - keys should match field names
      * @param bool  $echo defaults to true
      * 
-     * @since 2.1.0
      * 
-     * @since 12.2.13
+     * @since 2.4.14
      * 
-     * @see This does not currently work with mce editors
+     * @TODO find out why you have to click an image twice when using the imageUploadForm and Add Another
+     * 
      * @TODO Convert this to use the standard MvcMetaBox::metaBoxOutput like checking for arrays and retrieving field names etc
-     * @TODO Make this add the class to each field like it currently does with text
      * 
      */
     function repeater( $name, $args = array(), $data, $echo = true ){
-        global $MvcFramework;
         $data[] = array(); //Add another so there will be a new available row always
         $defaults = array(
                     'button_text'   => 'Add Another',
@@ -536,11 +532,11 @@ class MvcForm {
                 if( is_array( $field ) ){
                     if( strpos($key,'repeater') === false && strpos($key,'hidden') === false ){
                       $this_field = str_replace(array('select_','button_','image_'),array('',''), $key);
-                      $label = $MvcFramework->human_format_slug($this_field);
+                      $label = $this->human_format_slug($this_field);
                       $output .= sprintf('<label for="%s">%s</label> : ', $this_field, $label );
                     }
                 } else {
-                    $label = $MvcFramework->human_format_slug($field);
+                    $label = $this->human_format_slug($field);
                     $output .= sprintf('<label for="%s">%s</label> : ', $field, $label );
                 }
 
@@ -567,7 +563,6 @@ class MvcForm {
                     $field_name = str_replace('select_', '', $key);
                     if( !isset($data[$num][$field_name]) ) $data[$num][$field_name] = ''; 
                     $field['selected'] = $data[$num][$field_name];
-                    
                     $output .= $this->select($name.'['.$num.']['.$field_name.']', $field, false );
                 
                 } 
@@ -615,8 +610,7 @@ class MvcForm {
                    
                    $params = array(
                                     'value' => $data[$num][$field],
-                                    'id'    => $field,
-                                    'class' => $field
+                                    'id'    => $field
                                 );
                    $output .= $this->text($name.'['.$num.']['.$field.']', $params, false);
                 }
@@ -648,41 +642,44 @@ class MvcForm {
             jQuery(function($){
                 var newId;
                 var count = 1;
+                var self = $('#repeater-<?php echo $name; ?>');
+                
                 $('#repeater-add-<?php echo $name; ?>').click( function(){
                     var another = $('#repeater-<?php echo $name; ?> > li').last().clone();
                     another.find('[type="text"]').val('');
                     another.find('[type="checkbox"]').attr('checked', false);
-
+                    
+                    var oldId = another.find('input').attr('id');
                     another.filter('[id]').each( function(){
                         newId = this.id+count;
                         this.id = newId;
-                        var oldId = another.find('input').attr('id');
-                        another.find('input').attr('id', oldId+count);
+                        another.find('input').not('[type="button"]').attr('id', oldId+count);
                         another.find('input').attr('rel', oldId+count);
                         $(this).html( $(this).html().replace(/<?php echo $name; ?>\[/g,'<?php echo $name; ?>['+count) );
                         $(this).find('.delete').attr('remove',newId);
                         count++;
                     });
-                    
+
+                    //In case of the repeater being used with the image uploader
+                    jQuery('.repeater-item .image_upload').unbind('click');
+                    jQuery('.repeater-item .image_upload').click(function(e){
+                        handle_mvc_form_image_upload(jQuery(this));     
+                    });
                     
                     $('#repeater-<?php echo $name; ?> > li').last().after(another);
-                    $('.delete').click( function(){
-                        $('#'+$(this).attr('remove')).remove();
+                    self.find('.delete').click( function(){
+                        if( self.find('.delete').length > 1 ){
+                            $('#'+$(this).attr('remove')).remove();
+                        }
                     });
                     
-                    
-                  //In case of the repeater being used with the image uploader
-                    $(another).find('.image_upload').click(function() {
-                        formfield = $(this).attr('rel');
-                        tb_show('', 'media-upload.php?type=image&TB_iframe=true');
-                        return false;
-                    });
-                 
                     return false;
                 });
                 
-                $('.delete').click( function(){
-                    $('#'+$(this).attr('remove')).remove();
+                self.find('.delete').click( function(){
+                    if( self.find('.delete').length > 1 ){
+                        $('#'+$(this).attr('remove')).remove();
+                    }
                 });
                 
             });
