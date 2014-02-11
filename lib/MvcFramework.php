@@ -5,7 +5,7 @@
  * @uses automatically extended into the Model Views and Controllers and Bootstrap
  * @see Bootstrap.php
  * @author Mat Lipe <mat@matlipe.com>
- * @since 12.16.13
+ * @since 2.11.14
 
  * @TODO Create a fragment caching class - run tests database vs files
  * @TODO create an auto shortcode registering class - see NUSD theme
@@ -866,19 +866,28 @@ class MvcFramework{
     
     }
     
-    
-    /**
+     /**
      * Retrieves all data for a particluar image
      * @param  $image_id
      * @return array|boolean
      * @uses returns false if no image returned
      * @uses called by self::get_first_image()
-     * @since 11.6.12
+     * @since 2.11.14
      */
-    function get_image_data( $image_id, $size = 'thumbnail' ){
-    
+    function getImageData( $image_id, $size = 'thumbnail' ){
         $image['ID'] = $image_id;
-        $src = wp_get_attachment_image_src($image['ID'], $size);
+        $src = wp_get_attachment_image_src($image['ID'], $size);   
+        $image['url'] = wp_get_attachment_image_src($image['ID'], $size);
+        
+        
+        $image['meta'] = wp_get_attachment_metadata( $image['ID'], true);
+        $folder = explode('/', $image['meta']['file']);
+        array_pop($folder);
+        $folder = WP_CONTENT_URL.'/'.implode('/', $folder);
+        foreach( $image['meta']['sizes'] as $size => $data ){
+            $image[$size] = $folder.'/'.$data['file'];
+        }
+        
         if ($src){
             list($src, $width, $height) = $src;
             $hwstring = image_hwstring($width, $height);
@@ -902,12 +911,24 @@ class MvcFramework{
         } else {
             return false;
         }
-        //Add the meta data for full size image as well
-        $image['url'] = wp_get_attachment_image_src($image['ID'], $size);
+  
         $image['full_size_url'] = wp_get_attachment_image_src($image['ID'], 'full');
-        $image['meta'] = wp_get_attachment_metadata( $image['ID'], true);
-    
+        
         return $image;
+    }
+
+
+
+    /**
+     * Retrieves all data for a particluar image
+     * 
+     * @deprecated use self::getImageData();
+     *
+     * @since 2.11.14
+     */
+    function get_image_data( $image_id, $size = 'thumbnail' ){
+        
+        return $this->getImageData($image_id, $size);
     }
     
     
