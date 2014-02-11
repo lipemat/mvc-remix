@@ -866,7 +866,7 @@ class MvcFramework{
     
     }
     
-     /**
+   /**
      * Retrieves all data for a particluar image
      * @param  $image_id
      * @return array|boolean
@@ -875,6 +875,11 @@ class MvcFramework{
      * @since 2.11.14
      */
     function getImageData( $image_id, $size = 'thumbnail' ){
+        
+        if( !is_numeric( $image_id ) ){
+            $image_id = $this->getAttachmentIdbyUrl($image_id);   
+        }
+        
         $image['ID'] = $image_id;
         $src = wp_get_attachment_image_src($image['ID'], $size);   
         $image['url'] = wp_get_attachment_image_src($image['ID'], $size);
@@ -883,7 +888,9 @@ class MvcFramework{
         $image['meta'] = wp_get_attachment_metadata( $image['ID'], true);
         $folder = explode('/', $image['meta']['file']);
         array_pop($folder);
-        $folder = WP_CONTENT_URL.'/'.implode('/', $folder);
+        $dir = wp_upload_dir();
+        $folder = $dir['baseurl'].'/'.implode('/', $folder);
+        
         foreach( $image['meta']['sizes'] as $size => $data ){
             $image[$size] = $folder.'/'.$data['file'];
         }
