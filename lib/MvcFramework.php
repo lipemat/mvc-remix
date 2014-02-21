@@ -5,7 +5,7 @@
  * @uses automatically extended into the Model Views and Controllers and Bootstrap
  * @see Bootstrap.php
  * @author Mat Lipe <mat@matlipe.com>
- * @since 2.11.14
+ * @since 2.21.14
 
  * @TODO Create a fragment caching class - run tests database vs files
  * @TODO create an auto shortcode registering class - see NUSD theme
@@ -946,7 +946,7 @@ class MvcFramework{
     
     /**
      * Adds a classes to the body
-     * @since 8.1.13
+     * @since 2.21.14
      * @uses called by __construct()
      * @uses send a string to append to the body classes
      * 
@@ -962,14 +962,18 @@ class MvcFramework{
             $gAdditionalBodyClasses[] = $classes;
             return;
         } 
-        
-        if( has_post_thumbnail() ){
-            $gAdditionalBodyClasses[] = 'has-thumbnail';
+           
+        if( !empty( $post->ID ) ){   
+            if( has_post_thumbnail() ){
+                $gAdditionalBodyClasses[] = 'has-thumbnail';
+            }
         }
-        
+
         if( $this->isBlogPage() ){
             $gAdditionalBodyClasses[] = 'blog-page';   
         }
+        
+            return $classes;
         
         //Add device classes
         if( current_theme_supports('mobile_responsive') ){
@@ -984,6 +988,8 @@ class MvcFramework{
                $classes[] = 'desktop';   
             }
         }
+        
+    
         
         //Add an archive class for the blog template
         if( $this->getPageTemplateName() ==  'page_blog' ){
