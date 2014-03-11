@@ -1,10 +1,8 @@
 <?php
             /**
-             * The Meta Box Generator
-             * 
-             * @since 4.7.0
-             * 
-             * @since 10.21.13
+             * Mvc Meta Box
+			 * 
+			 * The Meta Box Generator
              * 
              * @uses construct as separate object per meta box
              *
@@ -100,12 +98,17 @@ class MvcMetaBox extends MvcFramework{
       
       
       /**
-       * Saves the Meta Data
+       * Save Meta Data
+	   * 
+	   * Saves the appropriate meta data after checking for 
+	   * nonce, revisions, and autosaving
+	   * 
+	   * @uses fully automatic, to save custom data use the save_meta_data_$this->id action
+	   * 
+	   * @param int $postId - id of post being saved
        * 
-       * @since 10.21.13
        */
       function saveMetaData($postId){
-        global $post;
 
         //Make sure this is valid
         if ( defined('DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
@@ -122,10 +125,10 @@ class MvcMetaBox extends MvcFramework{
             
             $data = apply_filters('mvc_meta_data_save_'.$field, $_POST[$field], $this );
             
-            update_post_meta( $post->ID, $field, $data );
+            update_post_meta( $postId, $field, $data );
         }
         
-        do_action( 'save_meta_data_'.$this->id, $this );
+        do_action( 'save_meta_data_'.$this->id, $this, $postId );
 
       }
       
