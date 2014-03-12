@@ -67,12 +67,12 @@ class MvcPostTypeTax{
                 'menu_position'        => null, //spot in admin menu
                 'menu_icon'            => null, //icon for admin menu
                 'capability_type'      => 'post', //custom caps map_meta_cap must be true
-                'capabilities'         => false, //can specify custom caps - not needed in most cases because capability_type does this for you
+                'capabilities'         => array(), //can specify custom caps - not needed in most cases because capability_type does this for you
                 'map_meta_cap'         => true, //to use specified caps    
                 'hierarchical'         => true,
                 'supports'             => array( 'title', 'editor', 'thumbnail', 'author', 'comments' , 'genesis-seo' , 'genesis-layouts' ,'excerpt', 'trackbacks' , 'custom-fields' , 'comments' , 'revisions' ,'page-attributes','post-formats' ),
                 'register_meta_box_cb' => null, //if a meta box generator shoudld be called
-                'taxonomies'           => false, //taxonomies to assign to this post type
+                'taxonomies'           => array(), //taxonomies to assign to this post type
                 'has_archive'          => true, //if can get a list by going to name               
                 'rewrite'              => array( 
                                             'slug' => $sanitizedTitle, //first part
