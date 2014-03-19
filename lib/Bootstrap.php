@@ -1,9 +1,11 @@
 <?php
 
                             /**
-                             * Pull the Whole Framework Together
-                             * @since 1.20.14
-                             * @author Mat Lipe <mat@matlipe.com>
+                             * Boot Strap
+							 * 
+							 * Pull the Whole Framework Together
+                             * 
+							 * @author Mat Lipe <mat@matlipe.com>
                              */
 
 
@@ -21,9 +23,9 @@ spl_autoload_register('_mvc_autoload');
 
 /** The Config for this Theme **/
 if ( file_exists(get_stylesheet_directory() . '/mvc-config.php')) {
-    load_template(get_stylesheet_directory() . '/mvc-config.php');
+    include( get_stylesheet_directory() . '/mvc-config.php');
 } elseif ( file_exists(get_template_directory() . '/mvc-config.php') ) {
-    load_template(get_template_directory() . '/mvc-config.php');
+    include( get_template_directory() . '/mvc-config.php');
 } else {
     include( MVC_DIR.'mvc-config.php' );
 }
