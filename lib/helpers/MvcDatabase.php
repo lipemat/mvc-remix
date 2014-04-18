@@ -76,7 +76,10 @@ class MvcDatabase {
     
     
     
- /**
+   /**
+     * 
+     * Get Count
+     * 
      * Get a count if items in this table with optional conditions
      *
      * @param  Array [$conditionValue] - A key value pair of the conditions you want to search on
@@ -84,15 +87,10 @@ class MvcDatabase {
      *
      * @return int
      * 
-     * @since 1.21.14
      */
     public function getCount(array $conditionValue = array(), $condition = '=' ) {
        global $wpdb;
-       
-        if( is_array( $fields ) ){
-            $fields = implode(',', $fields);
-        }
-        
+
         $sql = 'SELECT COUNT(*) FROM `' . $this->table_name . '`';
 
         if( !empty( $conditionValue ) ){
