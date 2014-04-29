@@ -1,10 +1,11 @@
 <?php
 
 /**
+ * Mvc Format
+ * 
  * Formatting for Genesis and Other WordPress outputs
  * 
- * 
- * @since 1.15.14
+ * @package MvcTheme
  * 
  * @uses add_theme_support('mvc_format');
  * 
@@ -49,9 +50,42 @@ class MvcFormat extends MvcFramework{
                 add_action('genesis_meta', array( $this, 'metaViewPoint') );   
             }
         }
-        
-        
+		
+		add_action( 'genesis_before', array( $this, 'outabody_open' ) );
+		add_action( 'genesis_after',  array( $this, 'outabody_close' ) );
     }
+
+	/**
+	 * Outabody Open
+	 * 
+	 * Open up the bg divs
+	 * 
+	 * @return void
+	 */
+	function outabody_open(){
+		?>
+			<div id="outabody">
+				<div id="outabody2">
+					<div id="outabody3">
+					<?php	
+	}
+	
+	
+	/**
+	 * Outabody Close
+	 * 
+	 * Close the bg divs
+	 * 
+	 * @return void
+	 */
+	function outabody_close(){
+					?>
+							
+					</div>
+				</div>
+			</div>
+		<?php	
+	}
 
 
    /** 
