@@ -104,11 +104,7 @@ class Custom_Post_Type {
 	 * 
 	 */
 	protected function hooks() {
-		if( doing_action( 'init' ) ){
-			$this->register_post_type();
-	    } else {
-			add_action( 'init', array($this, 'register_post_type' ), 10, 0 );
-		}
+		$this->register_post_type();
 	
 	}
 	
