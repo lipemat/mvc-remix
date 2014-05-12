@@ -7,14 +7,16 @@
              * * Widget
              * 
              * 
-             * @since 11.27.13
+             * @since 5.12.14
              * @author Mat Lipe
              * 
              * @TODO Add a Build for the Homepage Widget Structure
              */
 
 error_reporting(0);         
-$controller = ucfirst($argv[3]);                  
+$controller = ucfirst($argv[3]);  
+
+                
 /**----------------------------------------------------------------
      Main Array which will replace the %key% in all the template Files
      Add/Change Keys and Values Here
@@ -71,34 +73,35 @@ function replace_content( $content ){
 /**
  * Outputs a failure message then kills the script
  */
-function fail(){
-    echo "\r\n Build Failed";
+function fail( $m ){
+    echo "\r\n Build Failed $m" ;
     die();
 }
 
-if( !$controller ) fail();
-if( file_exists('../../../Controller/'.$controller.'Controller.php') ) fail();
+if( !$controller ) fail( 'no controller' );
+if( file_exists('../../../Controller/'.$controller.'Controller.php') ) fail( 'already exists' );
 
 /**
  * Build the Controller
  */
 $cont = file_get_contents('template/Controller.php'); 
-$success = file_put_contents('../../../Controller/'.$controller.'Controller.php', replace_content($cont) );
+$success = file_put_contents('../../Controller/'.$controller.'Controller.php', replace_content( $cont ) );
 
-if( $success === false ) fail();
+
+if( $success === false ) fail( 'could not build controller' );
  
 /**
  * Build the Model
  */
 $cont = file_get_contents('template/Model.php'); 
-$success = file_put_contents('../../../Model/'.$controller.'.php', replace_content($cont) );
+$success = file_put_contents('../../Model/'.$controller.'.php', replace_content($cont) );
 
-if( $success === false ) fail();
+if( $success === false ) fail( 'could not build model' );
  
 /**
  * Create the Views
  */
-echo mkdir('../../../View/'.$controller);
+echo mkdir('../../View/'.$controller);
 
 
 echo ' Build Completed';
