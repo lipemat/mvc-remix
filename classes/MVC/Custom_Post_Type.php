@@ -217,9 +217,7 @@ class Custom_Post_Type {
 		
 		$single = $single ? $single : $this->post_type_label( 'singular' );
 		$plural = $plural ? $plural : $this->post_type_label( 'plural' );
-		
-		_p( $single );
-		
+
 		$labels = array(
 			'name' => $plural,
 			'singular_name' => $single,
