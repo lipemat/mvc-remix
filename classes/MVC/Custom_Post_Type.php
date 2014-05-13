@@ -363,8 +363,9 @@ class Custom_Post_Type {
 		if ( !$singular ) {
 			$singular = ucwords( $this->post_type );
 		}
+		
 		if ( !$plural ) {
-	    	$end = substr( $title, -1 );
+	    	$end = substr( $singular, -1 );
         	if( $end == 's' ){
             	$plural = ucwords( $singular.'es' );
         	} elseif( $end == 'y' ){
