@@ -11,7 +11,8 @@
 
 
 //Require the proper files                      
-require('functions.php');
+require( 'functions.php' );
+require( 'template.php' );
 
 //Bring in the admin plugin functions
 //TODO Find a better way to do this

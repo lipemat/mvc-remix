@@ -1,20 +1,21 @@
 <?php
+if( class_exists('MvcInternalTax') ) return;  
 
 /**
  * The internal taxonomy Class
  * 
  * @uses for interacting with the hidden internal taxonomy
  * 
- * @example This is really just to solve the heavy meta query issue. This may be used to reuse terms and keep queries faster. It  is highly recommended you use this for checkboxes instead of meta data which will allow for much faster queries later.
+ * @uses This is really just to solve the heavy meta query issue. This may be used to reuse terms and keep queries faster. It  is highly recommended you use this for checkboxes instead of meta data which will allow for much faster queries later.
  * 
- * @since 5.6.0
+ * @example mvc_internal()->has_term( 'active' );
  * 
- * @since 9.25.13
+ * @package Mvc Theme
+ * @class MvcInternalTax
  * 
  * @author Mat Lipe
  * 
  */
-if( class_exists('MvcInternalTax') ) return;  
 class MvcInternalTax extends MvcPostTypeTax{
 
      public $terms = array(); //The previously retrieved terms
@@ -62,7 +63,6 @@ class MvcInternalTax extends MvcPostTypeTax{
     }
     
     
-    
     /**
      * Extract the post id from an object or string
      * 
@@ -70,19 +70,11 @@ class MvcInternalTax extends MvcPostTypeTax{
      * 
      * @since 8.21.13
      */
-    function getPostId($post = false){
-        if( !$post ){
-            global $post;
-            if( !isset( $post->ID ) ) return false;
-            $post_id = $post->ID;            
-        } else {
-            if( isset( $post->ID ) ){
-                $post_id = $post->ID;
-            } else {
-                $post_id = $post;
-            }
-        }
-        return $post_id; 
+    function getPostId( $post = false ){
+    	
+		$post = get_post( $post );
+		
+        return $post->ID; 
     }
     
     
@@ -126,10 +118,7 @@ class MvcInternalTax extends MvcPostTypeTax{
      */
     function hasTerm($term, $post = false ){
         
-        if( !$post ){
-            global $post;
-            if( !isset( $post->ID ) ) return false;
-        }
+		$post = get_post( $post );
         
         $term_id = $this->getTermId($term);
         
@@ -148,11 +137,9 @@ class MvcInternalTax extends MvcPostTypeTax{
      * 
      * @param int|obj [$post] - defaults to the current global post
      */
-    function checkbox($term, $echo = true, $post = false){
+    function checkbox($term, $echo = true, $post = null ){
         
-        if( !$post ){
-            global $post;
-        }
+		$post = get_post( $post );
         
         $term_id = $this->getTermId($term);
         
@@ -210,6 +197,28 @@ class MvcInternalTax extends MvcPostTypeTax{
            return $this->terms[$termName] = $term['term_id'];
         }
     }
-        
+	
+	
+	/********** SINGLETON FUNCTIONS **********/
+
+	/**
+	 * Instance of this class for use as singleton
+	 */
+	private static $instance;
+		
+
+	/**
+	 * Get (and instantiate, if necessary) the instance of the class
+	 *
+	 * @static
+	 * @return self
+	 */
+	 public static function get_instance() {
+		if ( !is_a( self::$instance, __CLASS__ ) ) {
+			self::$instance = new self();
+		}
+		return self::$instance;
+	}
+	   
 }
     
