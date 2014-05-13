@@ -104,8 +104,10 @@ class Custom_Post_Type {
 	 * 
 	 */
 	protected function hooks() {
-		$this->register_post_type();
-	
+		
+		//allow methods added to the init hook to customize the post type
+		add_action( 'wp_loaded', array( $this, 'register_post_type' ) );
+
 	}
 	
 	
@@ -213,8 +215,9 @@ class Custom_Post_Type {
 	 */
 	protected function post_type_labels( $single = '', $plural = '' ) {
 		
-		$single = $single? $single : $this->post_type_label( 'singular' );
-		$plural = $plural? $plural : $this->post_type_label( 'plural' );
+		$single = $single ? $single : $this->post_type_label( 'singular' );
+		$plural = $plural ? $plural : $this->post_type_label( 'plural' );
+
 		$labels = array(
 			'name' => $plural,
 			'singular_name' => $single,
@@ -329,6 +332,7 @@ class Custom_Post_Type {
 	 * @return string
 	 */
 	public function post_type_label( $quantity = 'singular' ) {
+
 		switch ( $quantity ) {
 			case 'plural':
 				if ( !$this->post_type_label_plural ) {
