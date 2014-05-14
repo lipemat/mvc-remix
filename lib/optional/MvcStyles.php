@@ -22,7 +22,7 @@ class MvcStyles extends MvcFramework{
             //Add Javascript to Site
          add_action('wp_enqueue_scripts', array( $this, 'add_js_css' ) );
             //Add Js and CSS to Admin
-         add_action( 'admin_print_scripts', array( $this, 'admin_js' ) );
+         add_action( 'admin_init', array( $this, 'admin_js' ) );
             //Add stylesheet to editor
          add_filter('mce_css',array( $this, 'editor_style' ) );
          add_filter( 'tiny_mce_before_init', array( $this, 'editorStyleColumns') );
