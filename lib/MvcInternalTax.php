@@ -122,8 +122,36 @@ class MvcInternalTax extends MvcPostTypeTax{
         
         $term_id = $this->getTermId($term);
         
-        return has_term($term_id, 'internal', $postId );
+        return has_term($term_id, 'internal', $post->ID );
     }
+	
+	
+	/**
+	 * Toggle Terms
+	 * 
+	 * Like a switch between two terms. If a post has the first one it will get the second one
+	 * etc.
+	 * 
+	 * @param string $term_one
+	 * @param string $term_two
+	 * 
+	 * @param WP_Post|int|false - defaults to global post
+	 * 
+	 * @return void
+	 * 
+	 */
+	public function toggle_terms( $term_one, $term_two, $post = false ){
+
+		if( $this->hasTerm( $term_one, $post ) ){
+			$this->removeTerm( $term_one, $post );
+			$this->assignTerm( $term_two, $post );
+			
+		} else {
+			$this->removeTerm( $term_two, $post );	
+			$this->assignTerm( $term_one, $post );	
+		}
+		
+	}
     
     
     
