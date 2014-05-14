@@ -45,7 +45,7 @@ class MvcFormat extends MvcFramework{
         add_filter('body_class', array( $this, 'body_class' ) );
         
                 //Add the meta Viewpoint for PHones
-        if( current_theme_supports('mobile_responsive') ){
+        if( current_theme_supports('mvc_mobile_responsive') ){
             if( $this->is_phone() ){
                 add_action('genesis_meta', array( $this, 'metaViewPoint') );   
             }
