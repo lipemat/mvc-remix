@@ -207,42 +207,9 @@ class MvcStyles extends MvcFramework{
      * @uses called by construct()
      * @uses to change the local admin css use the filter 'mat-local-admin-css'
      * 
-     * @since 12.10.13
      */
     function admin_js(){
         
-       //Some Styling to let you know you are local 
-       if( $_SERVER['SERVER_ADDR'] == '127.0.0.1' ){
-           ob_start();
-           ?>
-           <style type="text/css">
-            #adminmenuback, #adminmenuwrap {
-                background-color: #df01d7;
-                background-image: -ms-linear-gradient(180deg,#04b431,#df01d7);
-                background-image: -moz-linear-gradient(180deg,#619bbb,#df01d7);
-                background-image: -o-linear-gradient(180deg,#619bbb,#df01d7);
-                background-image: -webkit-linear-gradient(180deg,#619bbb,#df01d7);
-                background-image: linear-gradient(180deg,#619bbb,#df01d7)
-            }
-            #adminmenu li.wp-has-current-submenu a.wp-has-current-submenu, #adminmenu li.current a.menu-top, .folded #adminmenu li.wp-has-current-submenu, .folded #adminmenu li.current.menu-top, #adminmenu .wp-menu-arrow, #adminmenu .wp-has-current-submenu .wp-submenu .wp-submenu-head {
-                background-color: #777;
-                background-image: -ms-linear-gradient(bottom,#610b5e,#3b0b17);
-                background-image: -moz-linear-gradient(bottom,#610b5e,#3b0b17);
-                background-image: -o-linear-gradient(bottom,#610b5e,#3b0b17);
-                background-image: -webkit-linear-gradient(bottom,#610b5e,#3b0b17);
-                background-image: linear-gradient(bottom,#610b5e,#3b0b17);
-                transform: rotate(30deg)
-            }
-            #adminmenu li.wp-has-current-submenu {
-                -moz-box-shadow: 0 0 2px 2px black;
-                -webkit-box-shadow: 0 0 2px black;
-                box-shadow: 0 0 2px 2px black
-            }
-             </style>
-           <?php
-            echo apply_filters('mvc-local-admin-css', ob_get_clean());
-       }
-
         if( file_exists(MVC_THEME_DIR.'js/admin.js') ){
             wp_enqueue_script(
                 'mvc-admin-js',
