@@ -10,6 +10,23 @@
 
 
 /**
+ * Mvc Meta Box
+ * 
+ * @param string $post_type
+ * @param string $meta_box_class
+ * @param array $args
+ * 
+ * @return MVC\Meta_Box
+ */
+function mvc_meta_box( $post_type, $meta_box_class, $args = array() ) {
+	if ( !class_exists( $meta_box_class ) ) {
+		return FALSE;
+	}
+	return new $meta_box_class( $post_type, $args );
+} 
+ 
+
+/**
  * Mvc Internal
  * 
  * quick function for interacting with MvcInternalTax

@@ -12,7 +12,7 @@
 
 //Require the proper files                      
 require( 'functions.php' );
-require( 'template.php' );
+require( 'template-tags.php' );
 
 //Bring in the admin plugin functions
 //TODO Find a better way to do this

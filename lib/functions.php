@@ -65,9 +65,22 @@ function _mvc_autoload($class) {
 
 	if( file_exists( MVC_DIR . 'lib/' . $class . '.php' ) ) {
 		require (MVC_DIR . 'lib/' . $class . '.php');
+		return;
 	} elseif( file_exists( MVC_DIR . 'lib/helpers/' . $class . '.php' ) ) {
 		require (MVC_DIR . 'lib/helpers/' . $class . '.php');
+		return;
 	} elseif( file_exists( MVC_DIR . 'lib/optional/' . $class . '.php' ) ) {
 		require (MVC_DIR . 'lib/optional/' . $class . '.php');
+		return;
+	} 
+    
+	if( function_exists( 'apply_filters' ) ){
+		$dirs = apply_filters( 'mvc_theme_dirs', array( MVC_THEME_DIR ) );
+    	foreach( $dirs as $dir ){
+			if( file_exists( $dir . 'meta-boxes/' . $class . '.php' ) ){
+				require( $dir . 'meta-boxes/' . $class . '.php' );
+			}
+	 	}
 	}
+
 }
