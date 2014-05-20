@@ -5,7 +5,6 @@
  * @uses automatically extended into the Model Views and Controllers and Bootstrap
  * @see Bootstrap.php
  * @author Mat Lipe <mat@matlipe.com>
- * @since 2.21.14
 
  * @TODO Create a fragment caching class - run tests database vs files
  * @TODO create an auto shortcode registering class - see NUSD theme
@@ -21,6 +20,10 @@ class MvcFramework{
     public $browser     = false; //Keep track to the views browser
     private $mobile     = false; //Allows for constructing mobile detect class only once
     protected $controller; //Keep track of what controller is controlling to call stuff dynamically
+    
+    
+    private static $body_classes = array();
+    
 
     /** Placeholder to prevent issues **/
     function init(){
@@ -980,27 +983,25 @@ class MvcFramework{
      * 
      */
     function body_class( $classes ){
-        global $post, $gAdditionalBodyClasses;
+        global $post;
         
  
         //Handy little due for quick adding of classes
         if( is_string( $classes ) ){
-            $gAdditionalBodyClasses[] = $classes;
+            self::$body_classes[] = $classes;
             return;
         } 
            
         if( !empty( $post->ID ) ){   
             if( has_post_thumbnail() ){
-                $gAdditionalBodyClasses[] = 'has-thumbnail';
+                $classes[] = 'has-thumbnail';
             }
         }
 
         if( $this->isBlogPage() ){
-            $gAdditionalBodyClasses[] = 'blog-page';   
+            $classes[] = 'blog-page';   
         }
-        
-            return $classes;
-        
+
         //Add device classes
         if( current_theme_supports('mobile_responsive') ){
             if( self::is_mobile() ){
@@ -1033,11 +1034,11 @@ class MvcFramework{
         $classes[] = self::slug_format_human($post->post_title);
 
 
-        if( !is_array( $gAdditionalBodyClasses ) ){
+        if( !empty( self::$body_classes ) ){
             return $classes;
         }
 
-        return array_merge($classes, $gAdditionalBodyClasses);
+        return array_merge($classes, self::$body_classes );
     }
     
     
