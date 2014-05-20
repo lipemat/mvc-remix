@@ -319,6 +319,32 @@ class MvcFramework{
           add_action( 'genesis_after_content', array( $this, 'sidebar_'.$sidebar) );    
         
     }
+	
+	
+	/**
+     * Change Layout
+	 * 
+	 * Changes the pages layout
+	 * 
+     * @uses call this anytime before the get_head() hook
+     * @uses - defaults to 'full-width-content'
+	 * 
+     * @param string $layout - desired layout
+     *   -  'full-width-content'
+     *   -  'content-sidebar' 
+     *   -  'sidebar-content' 
+     *   -  'content-sidebar-sidebar' 
+     *   -  'sidebar-sidebar-content' 
+     *   -  'sidebar-content-sidebar'
+	 * 
+	 * @example may be used in the single() or before() hooks etc
+	 * 
+	 * @return void
+     */
+    function change_layout( $layout = 'full-width-content' ){
+        $this->layout = $layout; 
+        add_filter( 'genesis_site_layout' , array( $this, 'return_'.$layout) );
+    }
     
         
         
