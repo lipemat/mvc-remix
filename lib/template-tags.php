@@ -38,7 +38,22 @@ function mvc_meta_box( $post_type, $meta_box_class, $args = array() ) {
 function mvc_internal(){
 	return MvcInternalTax::get_instance(); 
 }
-                                                                     
+                    
+
+/**
+ * Mvc Format
+ * 
+ * quick function for interacting with MvcFormat
+ * 
+ * @example mvc_format()->change_sidebar( 'active' );
+ * 
+ * @return MvcFormat
+ */
+function mvc_format(){
+	return MvcFormat::get_instance(); 
+}					
+					
+					                                                 
                          
                          
 /**

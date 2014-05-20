@@ -16,7 +16,6 @@
  */
 if( class_exists('MvcFramework') ) return;  
 class MvcFramework{
-
     public $browser     = false; //Keep track to the views browser
     private $mobile     = false; //Allows for constructing mobile detect class only once
     protected $controller; //Keep track of what controller is controlling to call stuff dynamically
@@ -240,6 +239,17 @@ class MvcFramework{
         return false;
         
     }
+	
+	/**
+     * @deprecated use mvc_format()->changeSidebar()
+	 * 
+	 * @uses mvc_format()->changeSidebar();
+     */
+    function changeSidebar( $sidebar ){
+    	
+    	mvc_format()->changeSidebar( $sidebar );
+		
+    }
     
     
     /**
@@ -302,54 +312,7 @@ class MvcFramework{
       </script>
       <?php  
     }
-    
-    
-    /**
-     * Change the sidebar to another widget area
-     * 
-     * @since 5.22.0
-     * 
-     * @param string $sidebar - Name of widget area
-     * @uses must be called before the 'genesis_after_content' hook is run
-     * 
-     * @see Will not work if not using Genesis
-     */
-    function changeSidebar($sidebar){
-          global $Bootstrap;
-          $Bootstrap->sidebar_changed = true;
-          
-          remove_action( 'genesis_after_content', 'genesis_get_sidebar' );
-          add_action( 'genesis_after_content', array( $this, 'sidebar_'.$sidebar) );    
-        
-    }
-	
-	
-	/**
-     * Change Layout
-	 * 
-	 * Changes the pages layout
-	 * 
-     * @uses call this anytime before the get_head() hook
-     * @uses - defaults to 'full-width-content'
-	 * 
-     * @param string $layout - desired layout
-     *   -  'full-width-content'
-     *   -  'content-sidebar' 
-     *   -  'sidebar-content' 
-     *   -  'content-sidebar-sidebar' 
-     *   -  'sidebar-sidebar-content' 
-     *   -  'sidebar-content-sidebar'
-	 * 
-	 * @example may be used in the single() or before() hooks etc
-	 * 
-	 * @return void
-     */
-    function change_layout( $layout = 'full-width-content' ){
-        $this->layout = $layout; 
-        add_filter( 'genesis_site_layout' , array( $this, 'return_'.$layout) );
-    }
-    
-        
+     
         
     /**
      * Add a google font the head of the webpage in the front end and admin

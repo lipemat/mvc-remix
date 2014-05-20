@@ -13,7 +13,6 @@
 if( class_exists('MvcFormat') ) return;  
 class MvcFormat extends MvcFramework{
     
-    //to tell the framework the sidebar has been specified elsewhere
     public $sidebar_changed = false; 
     
     
@@ -54,6 +53,78 @@ class MvcFormat extends MvcFramework{
 		add_action( 'genesis_before', array( $this, 'outabody_open' ) );
 		add_action( 'genesis_after',  array( $this, 'outabody_close' ) );
     }
+
+
+		/**
+     * Removes the post meta and info from the output
+     * @since 3.5.13
+     * @uses can be called anywhere before the loop
+     */
+    function removePostData(){
+        add_action('genesis_before_loop', array( $this,'removePostDataHooks') );
+    }
+    
+    /**
+     * 
+	 * Unhooks the genesis_post_info and genesis_post_meta 
+     * 
+	 * @uses used by self::removePostData()
+	 * 
+     * @uses could be called wherever you like as well but used by removePostData
+	 * 
+	 * @return void
+     */
+    function removePostDataHooks(){
+    	remove_action( 'genesis_entry_header',        'genesis_post_info', 12 );
+		remove_action( 'genesis_entry_footer',        'genesis_post_meta'     );
+        remove_action( 'genesis_before_post_content', 'genesis_post_info'     );
+        remove_action( 'genesis_after_post_content',  'genesis_post_meta'     );
+    }
+	
+	 /**
+     * Change the sidebar to another widget area
+     * 
+     * @since 5.22.0
+     * 
+     * @param string $sidebar - Name of widget area
+     * @uses must be called before the 'genesis_after_content' hook is run
+     * 
+     * @see Will not work if not using Genesis
+     */
+    function changeSidebar($sidebar){
+          $this->sidebar_changed = true;
+          
+          remove_action( 'genesis_after_content', 'genesis_get_sidebar' );
+          add_action( 'genesis_after_content', array( $this, 'sidebar_'.$sidebar) );    
+        
+    }
+	
+	
+	/**
+     * Change Layout
+	 * 
+	 * Changes the pages layout
+	 * 
+     * @uses call this anytime before the get_head() hook
+     * @uses - defaults to 'full-width-content'
+	 * 
+     * @param string $layout - desired layout
+     *   -  'full-width-content'
+     *   -  'content-sidebar' 
+     *   -  'sidebar-content' 
+     *   -  'content-sidebar-sidebar' 
+     *   -  'sidebar-sidebar-content' 
+     *   -  'sidebar-content-sidebar'
+	 * 
+	 * @example may be used in the single() or before() hooks etc
+	 * 
+	 * @return void
+     */
+    function change_layout( $layout = 'full-width-content' ){
+        $this->layout = $layout; 
+        add_filter( 'genesis_site_layout' , array( $this, 'return_'.$layout) );
+    }
+
 
 	/**
 	 * Outabody Open
@@ -223,6 +294,25 @@ class MvcFormat extends MvcFramework{
     }
     
     
-    
+    /********** SINGLETON FUNCTIONS **********/
+
+		/**
+		 * Instance of this class for use as singleton
+		 */
+		private static $instance;
+		
+
+		/**
+		 * Get (and instantiate, if necessary) the instance of the class
+		 *
+		 * @static
+		 * @return self
+		 */
+		public static function get_instance() {
+			if ( !is_a( self::$instance, __CLASS__ ) ) {
+				self::$instance = new self();
+			}
+			return self::$instance;
+		}
     
 }
