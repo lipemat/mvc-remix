@@ -1079,23 +1079,15 @@ class MvcFramework{
     /**
      * Extract the post id from the global post or and object or int
      * 
-     * @param int|obj [$post] - (defaults to global $post );
+     * @param int|WP_Post [$post] - (defaults to global $post );
      * 
-     * @since 8.21.13
      */
     function getPostId($post = false){
-        if( !$post ){
-            global $post;
-            if( !isset( $post->ID ) ) return false;
-            $post_id = $post->ID;            
-        } else {
-            if( isset( $post->ID ) ){
-                $post_id = $post->ID;
-            } else {
-                $post_id = $post;
-            }
-        }
-        return $post_id; 
+        
+		$post = get_post( $post );
+		
+		return $post->ID;
+		
     }
     
     /**
@@ -1103,8 +1095,7 @@ class MvcFramework{
      * @param mixed $page can be a page name or an id
      * @since 7/24/12
      */
-    function is_subpage( $page = null )
-    {
+    function is_subpage( $page = null ){
         global $post;
         // does it have a parent?
         if ( ! isset( $post->post_parent ) OR $post->post_parent <= 0 )
@@ -1142,15 +1133,15 @@ class MvcFramework{
 	 * Retrives all the images attached to a post
 	 * 
 	 * 
-     * @param array $args - available params:
-     * *                   bool   'html' - to return pre formatted images - defaults to true
-     * *                   bool   'include_featured' - to include the featured image or not - defaults to false
-     * *                   string 'size' - the image size as specified in add_image_size()
-     * *                   string 'wrap_start' - if using html what to wrap the element it e.g  <div>
-     * *                   string 'wrap_end' -  the closing wrap e.g. </div>
-     * *                   bool   'include_content_images' - to include images which appear in content - default false
-     * *                   bool   'include_meta_images' -  to include images added to meta fields like tabs - default false
-     * *                   string 'mvc-gallery' - The name of the gallery used when constructing MvcGallery(, $gallery)
+     * @param array $args array(
+     * -  bool   'html' - to return pre formatted images ( defaults to true )
+     * -  bool   'include_featured' - to include the featured image or not ( defaults to false )
+     * -  string 'size' - the image size as specified in add_image_size()
+     * -  string 'wrap_start' - if using html what to wrap the element it e.g  <div>
+     * -  string 'wrap_end' -  the closing wrap e.g. </div>
+     * -  bool   'include_content_images' - to include images which appear in content - ( default false )
+     * -  bool   'include_meta_images' -  to include images added to meta fields like tabs  ( default false )
+     * -  string 'mvc-gallery' - The name of the gallery used when constructing MvcGallery(, $gallery)
      * 
      * @param WP_Post [$post] - ( defaults to global $post )
      * 
@@ -1193,14 +1184,14 @@ class MvcFramework{
              $all_images = $retrieved[$post->ID];
         } else {
             $img_args = array(
-                        'post_parent'    => $post->ID,
-                        'post_status'    => 'inherit',
-                        'post_type'      => 'attachment',
-                        'post_mime_type' => 'image',
-                        'order'          => 'ASC',
-                        'orderby'        => 'menu_order ID',
-                        'exclude'        => $exclude 
-                    );
+                 'post_parent'    => $post->ID,
+                 'post_status'    => 'inherit',
+                 'post_type'      => 'attachment',
+                 'post_mime_type' => 'image',
+                 'order'          => 'ASC',
+                 'orderby'        => 'menu_order ID',
+                 'exclude'        => $exclude 
+             );
   
             //Retrieve all the images in this posts gallery
             if( $mvc_gallery ){
@@ -1221,13 +1212,13 @@ class MvcFramework{
 
        //Retrieve the other possible sizes
        foreach( $all_images as $image ){
-                if( $size != 'default' ){
-                    $image->{$size} = wp_get_attachment_image_src( $image->ID, $size );
-                    $image->guid = $image->{$size}[0];
-                }
-                $image->thumb = wp_get_attachment_image_src( $image->ID, 'thumbnail' );
-                $image->medium = wp_get_attachment_image_src( $image->ID, 'medium' );
-                $image->large = wp_get_attachment_image_src( $image->ID, 'large' );
+       		if( $size != 'default' ){
+            	$image->{$size} = wp_get_attachment_image_src( $image->ID, $size );
+                $image->guid = $image->{$size}[0];
+            }
+            $image->thumb = wp_get_attachment_image_src( $image->ID, 'thumbnail' );
+            $image->medium = wp_get_attachment_image_src( $image->ID, 'medium' );
+            $image->large = wp_get_attachment_image_src( $image->ID, 'large' );
        }
 
         //for caching;
