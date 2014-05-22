@@ -38,6 +38,37 @@ function mvc_meta_box( $post_type, $meta_box_class, $args = array() ) {
 function mvc_internal(){
 	return MvcInternalTax::get_instance(); 
 }
+
+
+/**
+ * Mvc String
+ * 
+ * quick function for interacting with MvcString
+ * 
+ * @example  mvc_string()->theContentLimit();
+ * 
+ * @return MvcString
+ */
+function mvc_string(){
+	return MvcString::get_instance(); 
+}
+
+
+
+
+/**
+ * Mvc Util
+ * 
+ * quick function for interacting with MvcUtilities
+ * 
+ * @example mvc_util()->arrayFilterRecursive();
+ * 
+ * @return MvcUtilities
+ */
+function mvc_util(){
+	return MvcUtilites::get_instance(); 
+}
+
                     
 
 /**
