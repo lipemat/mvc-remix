@@ -1137,8 +1137,11 @@ class MvcFramework{
     
     
     /**
-     * Retrives all the images attached to a post
-     * @uses Must be called in the loop or with acccess to $post
+     * Get Post Images
+	 * 
+	 * Retrives all the images attached to a post
+	 * 
+	 * 
      * @param array $args - available params:
      * *                   bool   'html' - to return pre formatted images - defaults to true
      * *                   bool   'include_featured' - to include the featured image or not - defaults to false
@@ -1149,13 +1152,13 @@ class MvcFramework{
      * *                   bool   'include_meta_images' -  to include images added to meta fields like tabs - default false
      * *                   string 'mvc-gallery' - The name of the gallery used when constructing MvcGallery(, $gallery)
      * 
-     * 
-     * @since 4.5.0
-     * @since 7.24.13
+     * @param WP_Post [$post] - ( defaults to global $post )
      * 
      */
-    function getPostImages($args){
-        global $post;
+    function getPostImages( $args, $post = null ){
+        
+
+		$post = get_post( $post );
         
         //Caching of the retrived image per gallery in case of multiple gallery calls on same page
         static $retrieved;
