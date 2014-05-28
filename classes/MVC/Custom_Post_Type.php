@@ -19,15 +19,22 @@ class Custom_Post_Type {
 	}
 
 	/**
-	 * @static
-	 *
+	 * Check Rewrite Rules
+	 * 
 	 * If the post types registered through this API have changed,
 	 * rewrite rules need to be flushed.
+	 * 
+	 * @static
+	 * 
+	 * @return void
+	 * 
 	 */
 	public static function check_rewrite_rules() {
-		if ( get_option( 'tribe_cpt_registry' ) != self::$post_type_registry ) {
-			add_action( 'init', 'flush_rewrite_rules', 100, 0);
-			update_option( 'tribe_cpt_registry', self::$post_type_registry);
+		if ( get_option( 'mvc_cpt_registry' ) != self::$post_type_registry ) {
+			
+			flush_rewrite_rules();
+
+			update_option( 'mvc_cpt_registry', self::$post_type_registry );
 		}
 	}
 
@@ -197,8 +204,8 @@ class Custom_Post_Type {
 			'can_export' => $this->can_export,
 		);
 
-		$args = apply_filters( 'tribe_custom_post_type_args', $args, $this->post_type);
-		$args = apply_filters( 'tribe_custom_post_type_args_'.$this->post_type, $args);
+		$args = apply_filters( 'mvc_custom_post_type_args', $args, $this->post_type);
+		$args = apply_filters( 'mvc_custom_post_type_args_'.$this->post_type, $args);
 
 		return $args;
 	}
