@@ -71,7 +71,7 @@ if( current_theme_supports('mvc_styles') ){
 
 //For Output Formatting
 if( current_theme_supports('mvc_format') ){
-    $MvcImageResize = new MvcFormat();
+    $MvcFormat = MvcFormat::get_instance();
 }
 
 //For Output Formatting
