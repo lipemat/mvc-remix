@@ -323,7 +323,7 @@ abstract class Meta_Box {
 		}
 
 		// don't do anything on autosave, auto-draft, bulk edit, or quick edit
-		if( wp_is_post_autosave( $post_id ) || $post->post_status == 'auto-draft' || defined( 'DOING_AJAX' ) || isset( $_GET[ 'bulk_edit' ] ) ) {
+		if( wp_is_post_autosave( $post_id ) || $post->post_status == 'auto-draft' || defined( 'DOING_AJAX' ) || isset( $_GET[ 'bulk_edit' ] ) || wp_is_post_revision( $post_id ) ) {
 			return FALSE;
 		}
 
