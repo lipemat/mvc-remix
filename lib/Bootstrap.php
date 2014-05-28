@@ -65,7 +65,7 @@ if( current_theme_supports('mvc_image_resize') ){
 
 //For CSS and JS Files
 if( current_theme_supports('mvc_styles') ){
-    $MvcImageResize = new MvcStyles();
+    $MvcStyles = MvcStyles::get_instance();
 }
 
 
