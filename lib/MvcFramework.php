@@ -548,25 +548,6 @@ class MvcFramework{
     }
     
     
-
-    /**
-     * Wrapper for PHPQuery
-     * 
-     * @since 3.3.0
-     * @param string $content html content to turn into object
-     * @return phpQuery object
-     * @since 4.4.13
-     */
-    function phpQuery($content){
-        $required = false;
-        if( !$required ){
-            require_once(MVC_THEME_DIR.'lib/helpers/phpQuery.php');
-            $required = true;
-        }
-        return $phpQuery = phpQuery::newDocument($content);  
-    }
-    
-    
     /**
      * Returns the output of the proper View File to a filter
      * 
