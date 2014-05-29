@@ -96,7 +96,22 @@ function mvc_util(){
  */
 function mvc_format(){
 	return MvcFormat::get_instance(); 
+}			
+
+
+/**
+ * Mvc Form
+ * 
+ * quick function for interacting with MvcForm
+ * 
+ * @example mvc_form()->text( 'active' );
+ * 
+ * @return MvcForm
+ */
+function mvc_form(){
+	return MvcForm::get_instance(); 
 }					
+			
 					
 					                                                 
                          
