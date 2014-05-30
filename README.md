@@ -1,11 +1,6 @@
 MVC Theme - WordPress Plugin
 ==============================
-
-<<<<<<< HEAD
-~Current Version:1.15.0~
-=======
-~Current Version:1.14.1~
->>>>>>> 5065c6f83af1c06b1255be903252608af6275dc7
+~Current Version:1.16.0~
 
 ##MVC Framework written to work on top of WordPress Genesis theme
 
