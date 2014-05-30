@@ -1,9 +1,14 @@
 <?php 
 
 /**
+ * MvcFramework
+ * 
  * Adds Many enhancements to the Genesis Theme
+ * 
  * @uses automatically extended into the Model Views and Controllers and Bootstrap
+ * 
  * @see Bootstrap.php
+ * 
  * @author Mat Lipe <mat@matlipe.com>
 
  * @TODO Create a fragment caching class - run tests database vs files
@@ -12,6 +17,8 @@
  * @TODO enable revision support for post meta
  * @TODO Add the Custom Image Sizes to the Media Uploader. Ponder a way to decided which ones are requires so the user won't see like a billion of them
  * 
+ * @class MvcFramework
+ * @package MVC
  *
  */
 if( class_exists('MvcFramework') ) return;  
@@ -30,24 +37,26 @@ class MvcFramework{
     }
     
     
-        /**
-     * Allow special non existant calls 
-     * @uses $this->view_%name% will call $this->view with $file set to %name%
-     * @uses $this->fitler_%name% will return $this->view withe the $file set to %name%
-     * @uses $this->return_%string% will return %string% for filters which require simple string arguments
-     * @since 10.2.13
+    /**
+     * __call()
+	 * 
+	 * Allow special non existant calls 
+	 * 
+     * @example $this->view_%name% will call $this->view with $file set to %name%
+     * @example $this->fitler_%name% will return $this->view withe the $file set to %name%
+     * @example $this->return_%string% will return %string% for filters which require simple string arguments
+	 * 
+	 * @return void
+	 * 
      */
     function __call($func, $args){
-        
         
         //For Formatting Methods
         if( current_theme_supports('mvc_format') ){
             if( method_exists('MvcFormat', $func) ){
-                $this->MvcFormat->{$func}($args);       
+				mvc_format()->{$func}($args);    
             }
         }
-        
-
         
         
         //For Special Views
@@ -536,25 +545,6 @@ class MvcFramework{
         }
     
         return $output;
-    }
-    
-    
-
-    /**
-     * Wrapper for PHPQuery
-     * 
-     * @since 3.3.0
-     * @param string $content html content to turn into object
-     * @return phpQuery object
-     * @since 4.4.13
-     */
-    function phpQuery($content){
-        $required = false;
-        if( !$required ){
-            require_once(MVC_THEME_DIR.'lib/helpers/phpQuery.php');
-            $required = true;
-        }
-        return $phpQuery = phpQuery::newDocument($content);  
     }
     
     

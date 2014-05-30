@@ -53,7 +53,21 @@ function mvc_string(){
 	return MvcString::get_instance(); 
 }
 
-
+/**
+ * Mvc Styles
+ * 
+ * quick function for interacting with MvcStyles
+ * 
+ * @example  mvc_styles()->localize( %var%, %data% );
+ * 
+ * @return MvcStyles
+ */
+function mvc_styles(){
+	if( !current_theme_supports('mvc_styles') ){
+		throwException( 'To use mvc_styles, your theme must declare mvc_styles support!' );
+	}
+	return MvcStyles::get_instance(); 
+}
 
 
 /**
@@ -82,7 +96,22 @@ function mvc_util(){
  */
 function mvc_format(){
 	return MvcFormat::get_instance(); 
+}			
+
+
+/**
+ * Mvc Form
+ * 
+ * quick function for interacting with MvcForm
+ * 
+ * @example mvc_form()->text( 'active' );
+ * 
+ * @return MvcForm
+ */
+function mvc_form(){
+	return MvcForm::get_instance(); 
 }					
+			
 					
 					                                                 
                          

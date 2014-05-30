@@ -49,7 +49,7 @@ class MvcFormat extends MvcFramework{
                 add_action('genesis_meta', array( $this, 'metaViewPoint') );   
             }
         }
-		
+
 		add_action( 'genesis_before', array( $this, 'outabody_open' ) );
 		add_action( 'genesis_after',  array( $this, 'outabody_close' ) );
     }

@@ -14,19 +14,69 @@
 if( class_exists('MvcStyles') ) return; 
  
 class MvcStyles extends MvcFramework{
+	
+	public static $localize_admin = array();
+	public static $localize       = array();
+	
         
     function __construct(){
+    	
          add_action( 'init', array( $this, 'browser_support' ) );
+		 
              //Add the IE only Stylesheets
          add_action('wp_head', array( $this, 'ie_only'), 99 );
+		 
             //Add Javascript to Site
          add_action('wp_enqueue_scripts', array( $this, 'add_js_css' ) );
+		 
             //Add Js and CSS to Admin
-         add_action( 'admin_init', array( $this, 'admin_js' ) );
-            //Add stylesheet to editor
+         add_action( 'admin_enqueue_scripts', array( $this, 'admin_js' ) );
+           
+		    //Add stylesheet to editor
          add_filter('mce_css',array( $this, 'editor_style' ) );
+		 
          add_filter( 'tiny_mce_before_init', array( $this, 'editorStyleColumns') );
+		 
     }
+	
+	
+	/**
+	 * Localize
+	 * 
+	 * Quick function for adding variables available in the child.js
+	 * 
+	 * @param $name - name of var
+	 * @param $data - data attached to var
+	 * 
+	 * @uses wp_localize_script
+	 * 
+	 * @example must be called before wp_enqueue_scripts
+	 * 
+	 * @return void
+	 */
+	public function localize( $name, $data ){
+		self::$localize[ $name ] = $data;
+	}
+	
+	/**
+	 * Localize
+	 * 
+	 * Quick function for adding variables available in the admin.js
+	 * 
+	 * @param $name - name of var
+	 * @param $data - data attached to var
+	 * 
+	 * @uses wp_localize_script
+	 * 
+	 * @example must be called before admin_enqueue_scripts
+	 * 
+	 * @return void
+	 */
+	public function localize_admin( $name, $data ){
+		self::$localize_admin[ $name ] = $data;
+		
+	}
+	
     
     
      /**
@@ -221,7 +271,12 @@ class MvcStyles extends MvcFramework{
                            'LOADING_ICON' => MVC_IMAGE_URL.'loading.gif' 
             );
 
-            wp_localize_script('mvc-admin-js', 'DIRS', $dirs);
+            wp_localize_script( 'mvc-admin-js', 'DIRS', $dirs );
+
+			foreach( self::$localize_admin as $var => $data ){
+				wp_localize_script( 'mvc-admin-js', $var, $data );	
+			}
+			
 
             //to localize stuff
             do_action('mvc_admin_js', 'mvc-admin-js');
@@ -267,7 +322,11 @@ class MvcStyles extends MvcFramework{
                 'ADMIN_URL'    => get_admin_url()
             );
 
-            wp_localize_script('mvc-child-js', 'DIRS', $dirs);
+            wp_localize_script( 'mvc-child-js', 'DIRS', $dirs );
+			
+			foreach( self::$localize as $var => $data ){
+				wp_localize_script( 'mvc-child-js', $var, $data );	
+			}
 
             //to localize stuff
             do_action('mvc_child_js', 'mvc-child-js');
@@ -345,6 +404,27 @@ class MvcStyles extends MvcFramework{
         } //-- End if Mobile Responsive Theme Support
 
     }
+
+
+	/********** SINGLETON FUNCTIONS **********/
+
+	/**
+	 * Instance of this class for use as singleton
+	 */
+	private static $instance;
+
+	/**
+	 * Get (and instantiate, if necessary) the instance of the class
+	 *
+	 * @static
+	 * @return self
+	 */
+	public static function get_instance() {
+		if( !is_a( self::$instance, __CLASS__ ) ) {
+			self::$instance = new self();
+		}
+		return self::$instance;
+	}
 
 }
     

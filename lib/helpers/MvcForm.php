@@ -1,9 +1,17 @@
 <?php
         /**
-         * Form Helpers only available in Views
-         * @since 12.9.13
-         * @author Mat Lipe
-         * @uses this will be available in all views via the $MvcString Variable
+         * MvcForm
+		 * 
+		 * Form Helpers
+		 * 
+         * @author Mat Lipe <mat@matlipe.com>
+		 * 
+         * @uses this will be available in all views via the $MvcForm Variable
+		 * 
+		 * @class MvcForm
+		 * @package MVC
+		 * 
+		 * @example mvc_form()->text( 'help' );
          * 
          * @TODO Come up with a way to assign attributes to fields such as text
          * 
@@ -11,6 +19,7 @@
 if( class_exists('MvcForm') ) return;         
 class MvcForm {
     
+	private static $image_js_out = false;
     
     /**
      * Turns an array of attributes into a usable string
@@ -245,47 +254,42 @@ class MvcForm {
      *
      */
     function imageUploadForm( $name, $value = '', $args = array(), $echo = true ){
-       static $been_here = false;
+    	
        wp_enqueue_media();
          
        $defaults = array(
-                'value'        => $value,
-                'button_label' => 'Upload',
-                'name'         => $name,
-                'id'           => $name
-            );
+      		'value'        => $value,
+            'button_label' => 'Upload',
+            'name'         => $name,
+            'id'           => $name,
+            'size'         => 36
+       );
+       
        $args = wp_parse_args($args, $defaults);
        
+	   
+	   $atts = $args;
+	   unset( $atts[ 'button_label' ] );
        
-       ob_start();
+       $input  = sprintf( '<input type="text" %s />', $this->attributeFactory( $args ) );
+	   $input .= sprintf( '<input type="button" rel="%s" value="%s" class="button-secondary image_upload" />', $args['id'], $args['button_label'] );
+       
 
-       ?>
-       <input 
-            id="<?php echo $args['id']; ?>" 
-            type="text" 
-            size="36" 
-            name="<?php echo $args['name']; ?>" 
-            value="<?php echo $args['value']; ?>" 
-       />
-       
-       <input type="button" 
-            rel="<?php echo $args['id']; ?>" 
-            value="<?php echo $args['button_label']; ?>" 
-            class="button-secondary image_upload"
-       />
-       
-       <?php 
        //only display the js once
        if( $been_here ){
            if( $echo ){
-                echo ob_get_clean();
+                echo $input;
            } else {
-                return ob_get_clean();
+                return $input;
            }    
            return;
        }
        
-       $been_here = true;
+       self::$image_js_out = true;
+	   
+	   ob_start();
+	   
+	   echo $input;
        ?>
        
        <script type="text/javascript">
@@ -927,5 +931,26 @@ class MvcForm {
 
     return $button;
     }
+
+
+	/********** SINGLETON FUNCTIONS **********/
+
+	/**
+	 * Instance of this class for use as singleton
+	 */
+	private static $instance;
+
+	/**
+	 * Get (and instantiate, if necessary) the instance of the class
+	 *
+	 * @static
+	 * @return self
+	 */
+	public static function get_instance() {
+		if( !is_a( self::$instance, __CLASS__ ) ) {
+			self::$instance = new self();
+		}
+		return self::$instance;
+	}
 
 }
