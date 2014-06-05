@@ -8,7 +8,7 @@ namespace MVC;
  * 
  * @example mvc_versions()->add_update( %version%, %function% );
  * 
- * @uses You must add updates during the init hook, because this will run them on the wp hook
+ * @uses You must add updates during the init hook, because this will run them at the end of the init hook
  * @uses may retrieve current version via mvc_versions()->get_version()
  * 
  * @package MVC Theme
@@ -59,7 +59,7 @@ class Versions {
 	
 	
 	public function actions(){
-		add_action( 'wp', array( $this, 'run_updates' ) );	
+		add_action( 'init', array( $this, 'run_updates' ), 99999 );	
 		
 	}
 	
@@ -93,7 +93,6 @@ class Versions {
 	 * 
 	 */
 	public function add_update( $version, $function_to_run, $args = null ){
-
 		//if the version is higher than one in db, add to updates
 		if( version_compare( $version, self::$version, '>' ) == 1 ){
 			self::$updates[] = array( 'version' => $version, 'function' => $function_to_run, 'args' => $args );
