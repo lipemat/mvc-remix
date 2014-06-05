@@ -16,6 +16,28 @@
 if( class_exists( 'MvcString' ) )
 	return;
 class MvcString {
+	
+	
+	/**
+	 * Give me the plural version
+	 * 
+	 * @param string $label
+	 * 
+	 * @return string
+	 */
+	public function plural_label( $label ){
+		$end = substr( $label, -1 );
+        if( $end == 's' ){
+            $plural = ucwords( $label.'es' );
+        } elseif( $end == 'y' ){
+            $plural = ucwords( rtrim( $label, 'y' ) . 'ies' );
+        } else {
+        	$plural = ucwords( $label.'s' );
+		}
+		
+		return __( $plural, 'edspire' );
+		
+	}
 
 	/**
 	 * Returns the content of the current $post limited to a number of characters
