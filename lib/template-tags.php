@@ -5,8 +5,22 @@
  * 
  * @author Mat Lipe
  * 
- * @since 5.13.14
  */
+
+ 
+/**
+ * Mvc Versions
+ * 
+ * Quick function for interacting with MVC\Versions
+ * 
+ * @example mvc_versions()->add_update( 2.0, 'update_data' );
+ * 
+ * @return MVC\Versions
+ * 
+ */
+function mvc_versions(){
+	return MVC\Versions::get_instance(); 
+}
 
 
 /**
