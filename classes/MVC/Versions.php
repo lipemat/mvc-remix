@@ -6,8 +6,10 @@ namespace MVC;
  * 
  * Allow for running things only once and keeping track of the db version
  * 
+ * @example mvc_versions()->add_update( %version%, %function% );
  * 
- * 
+ * @uses You must add updates during the init hook, because this will run them on the wp hook
+ * @uses may retrieve current version via mvc_versions()->get_version()
  * 
  * @package MVC Theme
  * @namespace MVC
