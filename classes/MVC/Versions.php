@@ -52,7 +52,9 @@ class Versions {
 	 */
 	public function __construct(){
 		
-		self::$version = get_option( self::OPTION, 0.1 );	
+		self::$version = get_option( self::OPTION, 0.1 );
+		
+		$this->actions();	
 	}
 	
 	
@@ -83,17 +85,18 @@ class Versions {
 	 * 
 	 * @param float $version - the version to check against
 	 * @param mixed $function_to_run - method or function to run if the version checks out
+	 * @param mixed $args - args to pass to the function
 	 * 
 	 * @uses self::$updates
 	 * 
 	 * @return void
 	 * 
 	 */
-	public function add_update( $version, $function_to_run ){
-		
+	public function add_update( $version, $function_to_run, $args = null ){
+
 		//if the version is higher than one in db, add to updates
-		if( version_compare( self::$version, $version, '>' ) === -1 ){
-			self::$updates[ $version ][] = $function_to_run;
+		if( version_compare( $version, self::$version, '>' ) == 1 ){
+			self::$updates[] = array( 'version' => $version, 'function' => $function_to_run, 'args' => $args );
 		}
 		
 	}
@@ -109,20 +112,35 @@ class Versions {
 	 * @return void
 	 */
 	public function run_updates(){
-		
 		if( empty( self::$updates ) ) return;
 		
-		ksort( self::$updates );
+		usort( self::$updates, array( $this, 'sort_by_version')  );
 		
-		foreach( self::$updates as $version => $functions ){
-			self::$version = $version;
-			
-			foreach( $functions as $func ){
-				call_user_func( $func );	
-			}				
+		foreach( self::$updates as $func ){
+			self::$version = $func[ 'version' ];
+	
+			call_user_func( $func[ 'function' ], $func[ 'args' ] );	
+							
 		}
 		
 		update_option( self::OPTION, self::$version );
+		
+	}
+	
+	/**
+	 * Sort By Version
+	 * 
+	 * Make sure the updates run in order by version
+	 * 
+	 * @param array $a
+	 * @param array $b
+	 * 
+	 * @return bool
+	 * 
+	 */
+	public function sort_by_version( $a, $b ){
+		
+		return version_compare( $a[ 'version' ], $b[ 'version' ], '>' );	
 		
 	}
 	
