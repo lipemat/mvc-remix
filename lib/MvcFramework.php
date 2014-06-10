@@ -324,67 +324,21 @@ class MvcFramework{
      
         
     /**
-     * Add a google font the head of the webpage in the front end and admin
-     * 
-     * @since 7.1.0
-     * 
-     * @param mixed string|array $families - the family to include
-     * @example Raleway:400,700,600:latin
-     * 
-     * @see added array() capabilities on 7.1.13 per sugestion from Tyler
-     * @uses Must be called before the 'wp_head' hook fires
+     * @deprecated 6.10.14
+	 * @see MvcStyles::add_font()
      */
-    function addFont($families){
-        if( is_array($families) ){
-            $families = implode("','",$families);
-        }
-        
-        
-        ob_start();
-        ?><script type="text/javascript">
-            WebFontConfig = {
-                google: { families: [ '<?php echo $families; ?>' ] }
-            };
-            (function() {
-                var wf = document.createElement('script');
-                wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
-                '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
-                 wf.type = 'text/javascript';
-                wf.async = 'true';
-                var s = document.getElementsByTagName('script')[0];
-                s.parentNode.insertBefore(wf, s);
-            })(); </script>
-        <?php
-        
-        $output = ob_get_clean();
-        
-        add_action('wp_head', array( $this, 'echo_'.$output ) );
-        add_action('admin_print_scripts', array( $this, 'echo_'.$output ) );
+    function addFont( $families ){  	
+		mvc_styles()->add_font( $families );
     }
 
 
     /**
-     * Quick way to add a js file to the site from the child themes js file
-     * 
-     * @param string $file - the file name
-     * 
-     * @since 4.6.0
+     * @deprecated 6.10.14
+	 * @see MvcStyles::add_js()
      */
     function addJs($file){
-        if( !MVC_IS_ADMIN ){
-            wp_enqueue_script(
-                'mvc-'.$file,
-                MVC_JS_URL. $file.'.js',
-                array('jquery', 'mvc-child-js' )
-            );
-        } else {
-           wp_enqueue_script(
-                'mvc-'.$file,
-                MVC_JS_URL. $file.'.js',
-                array('jquery', 'mvc-admin-js' )
-            ); 
-            
-        }
+        mvc_styles()->add_js( $file );
+	
     }
 
 

@@ -77,7 +77,74 @@ class MvcStyles extends MvcFramework{
 		
 	}
 	
-    
+    /**
+     * 
+	 * Add Js
+	 * 
+	 * Quick way to add a js file to the site from the child themes js file
+     * 
+     * @param string $file - the file name
+     * 
+     */
+    function add_js($file){
+        if( !MVC_IS_ADMIN ){
+            wp_enqueue_script(
+                'mvc-'.$file,
+                MVC_JS_URL. $file.'.js',
+                array('jquery', 'mvc-child-js' )
+            );
+        } else {
+           wp_enqueue_script(
+                'mvc-'.$file,
+                MVC_JS_URL. $file.'.js',
+                array('jquery', 'mvc-admin-js' )
+            ); 
+            
+        }
+    }
+	
+	
+	/**
+     * Add Font
+	 * 
+	 * Add a google font the head of the webpage in the front end and admin
+     * 
+     * 
+     * @param mixed string|array $families - the family to include
+     * @example Raleway:400,700,600:latin
+     * 
+     * @see added array() capabilities on 7.1.13 per sugestion from Tyler
+     * @uses Must be called before the 'wp_head' hook fires
+     */
+    function add_font($families){
+        if( is_array($families) ){
+            $families = implode("','",$families);
+        }
+        
+        
+        ob_start();
+        ?><script type="text/javascript">
+            WebFontConfig = {
+                google: { families: [ '<?php echo $families; ?>' ] }
+            };
+            (function() {
+                var wf = document.createElement('script');
+                wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+                '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+                 wf.type = 'text/javascript';
+                wf.async = 'true';
+                var s = document.getElementsByTagName('script')[0];
+                s.parentNode.insertBefore(wf, s);
+            })(); </script>
+        <?php
+        
+        $output = ob_get_clean();
+        
+        add_action('wp_head', array( $this, 'echo_'.$output ) );
+        add_action('admin_print_scripts', array( $this, 'echo_'.$output ) );
+    }
+	
+	
     
      /**
      * Add column entries to the style dropdown.
