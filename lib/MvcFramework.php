@@ -927,23 +927,31 @@ class MvcFramework{
     
     
     /**
-     * Adds a classes to the body
-     * @since 2.21.14
-     * @uses called by __construct()
-     * @uses send a string to append to the body classes
-     * 
-     * @param array|string $classes  
-     * 
+     * Body Class
+	 * 
+	 * Adds a class to the body
+	 * 
+     * @example send a string to append to the body classes
+     * @uses will be called automatically on the body_class filter to add some classed automatically
+	 * 
+     * @param string $classes  
+     *
      */
-    function body_class( $classes ){
+    function body_class( $class ){
         global $post;
-        
- 
+
         //Handy little due for quick adding of classes
-        if( is_string( $classes ) ){
-            self::$body_classes[] = $classes;
+        if( is_string( $class ) ){
+            self::$body_classes[] = $class;
             return;
-        } 
+			
+        } elseif( is_array( $class ) ){
+			$classes = $class;	
+			
+		} else {
+			return;	
+			
+		}
            
         if( !empty( $post->ID ) ){   
             if( has_post_thumbnail() ){
@@ -975,8 +983,7 @@ class MvcFramework{
         if( $this->getPageTemplateName() ==  'page_blog' ){
             $classes[] = 'archive';
         }
-        
-        
+              
  
         //Add a class for sub pages
         if( !is_home() && (strpos( $this->getPageTemplateName(), 'home') === false) ){
@@ -987,7 +994,7 @@ class MvcFramework{
         $classes[] = self::slug_format_human($post->post_title);
 
 
-        if( !empty( self::$body_classes ) ){
+        if( empty( self::$body_classes ) ){
             return $classes;
         }
 
