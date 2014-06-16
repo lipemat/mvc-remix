@@ -1,20 +1,9 @@
 /**
  * Dark version of the menu css
  * 
- * @since 8.6.13
  * 
- * @author Mat Lipe
+ * @author Mat Lipe <mat@matlipe.com>
  */
-
-@media only screen and (max-width: 600px) {
-    #wrap #nav-button{
-        display: block;
-    }
-    
-    #wrap #nav{
-        display: none;
-    }   
-}
 
 
 /** https://github.com/lipemat/sidr/blob/master/dist/stylesheets/jquery.sidr.dark.css **/

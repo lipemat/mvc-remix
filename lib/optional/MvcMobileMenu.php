@@ -1,11 +1,12 @@
 <?php
 /**
+ * Mvc Mobile Menu
+ * 
  * Collapsible Mobile Menu Generator
  * 
- * @uses add_theme_support('mobile_menu');
+ * @uses add_theme_support( 'mobile_menu' );
  * 
- * @since 12.17.13
- * @author Mat Lipe
+ * @author Mat Lipe <mat@matlipe.com>
  * 
  */
 if( class_exists('MvcMobileMenu') ) return;    
@@ -13,18 +14,98 @@ class MvcMobileMenu extends MvcFramework{
      
      //Light or dark theme was specified
      public $theme_color;
+	 
+	 //default menu and button ids
+	 private $defaults = array(
+		'menu'        => '#nav',
+		'menu_button' => '#nav-button'
+	 
+	 );
         
      /**
-      * @since 8.6.13
+      * Constructor
+	  * 
       */
      function __construct(){
         if( !$this->is_mobile() ) return;
         $this->checkForLightOrDark();
-        add_action('wp_enqueue_scripts', array( $this, 'addJsCss') ); 
-        add_filter('current_theme_supports-mobile_menu', array( $this, 'checkForLightOrDark' ),99,3 );
-        add_action('genesis_after_header', array( $this, 'menuButton'),1 );
-  
+		$this->hooks();
      }
+	 
+	 
+	 /**
+	  * Hook me up
+	  * 
+	  */
+	 private function hooks(){
+	 	
+		//switch defaults if html5 support
+		add_action( 'after_setup_theme', array( $this, 'adjust_defaults' ) );
+	 	
+		//main js and css
+	 	add_action('wp_enqueue_scripts', array( $this, 'addJsCss') ); 
+		
+		//filterable styles
+		add_action( 'wp_head', array( $this, 'menu_css' ) );
+		
+		//check which theme is being used
+        add_filter('current_theme_supports-mobile_menu', array( $this, 'checkForLightOrDark' ),99,3 );
+		
+		//output
+        add_action('genesis_after_header', array( $this, 'menuButton'),1 );
+		
+	 }
+	 
+	 /**
+	  * Adjust Defaults
+	  * 
+	  * @sets the defaults based on html5 support and filters
+	  * @filter mvc-sidr
+	  * 
+	  */
+	 public function adjust_defaults(){
+	 	if( function_exists( 'genesis_html5' ) && genesis_html5() ){
+	 		$this->defaults[ 'menu' ] = '.nav-primary';	
+		}
+		
+	 	$this->defaults = apply_filters( 'mvc-sidr', $this->defaults );
+		
+	 }
+	 
+	 
+	 /**
+	  * Menu Css
+	  * 
+	  * Css which may be filtered therefore gets outputted manually in the head
+	  * 
+	  * @filter mvc-menu-css
+	  * 
+	  */
+	 public function menu_css(){
+	 	
+		//roll your own styles
+		if( apply_filters( 'mvc-menu-css', false, $this->defaults ) ){
+			return;
+		}
+		
+	
+	 	?>
+	 	<style type="text/css" marker="xxxx">
+	 	@media only screen and (max-width: 600px) {
+    		#wrap <?php echo $this->defaults[ 'menu_button' ]; ?>{
+        		display: block;
+    		}
+    
+    		#wrap <?php echo $this->defaults[ 'menu' ]; ?>{
+        		display: none;
+    		} 
+    	}
+    	</style>
+    	<?php  
+    	
+    	
+    	
+	 }
      
      
      /**
@@ -53,44 +134,56 @@ class MvcMobileMenu extends MvcFramework{
      
      
      /**
-      * Output a Menu Button before the Nav
+      * Menu Button
+	  * 
+	  * Output a Menu Button before the Nav
       * 
-      * @since 8.6.13
       * @uses added to the genesis_after_header hook by self::__constrcut()
+	  * 
+	  * @filter mvc-menu-button
       */
      function menuButton(){
         ?>
         <div id="nav-button">
-            <img src="<?php echo MVC_IMAGE_URL; ?>menu-button.png" />
+        	<?php
+        	echo apply_filters( 'mvc-menu-button', '<img src="' . MVC_IMAGE_URL . 'menu-button.png" />' );
+			?>   
         </div>
-       <?php
+     	<?php
            
      }
           
      
      /**
-      * Adds the js and css for the collapsible mobile menu
+      * Add Js Css
+	  * 
+	  * Adds the js and css for the collapsible mobile menu
       * 
-      * @since 12.17.13
       * @uses will enque the css file matching the color name specified during add_theme_support('mobile_menu', %color% )
       * 
       * @uses added to the wp_enqueue_scripts hook by self::construct()
+	  * 
+	  * @filter mvc-sidr
       */
      function addJsCss(){
          
         wp_enqueue_script(
-                'jquery-sidr',
-                 MVC_ASSETS_URL.'js/mobile_menu.js',
-                 array('jquery'),
-                 null,
-                 true
+        	'jquery-sidr',
+       		MVC_ASSETS_URL.'js/mobile_menu.js',
+           	array('jquery'),
+           	null,
+           	true
         );
+		
+		
+		
+		wp_localize_script( 'jquery-sidr', 'Sidr', apply_filters( 'mvc-sidr', $this->defaults ) );
 
         $css = MVC_ASSETS_URL.'css/mobile_menu_'.$this->theme_color.'.css';
 
         wp_enqueue_style(
-                'mvc-mobile-menu-css',
-                 $css
+        	'mvc-mobile-menu-css',
+        	$css
         );
      }
        

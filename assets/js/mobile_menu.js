@@ -1,18 +1,21 @@
-/*
+/**
  * Sidr - The Mobile Menu Creator
  * 
- * @author Mat Lipe
- * @since 12.17.13
+ * @author Mat Lipe <mat@matlipe.com>
  * 
  * https://github.com/lipemat/sidr  - forked
  * 
+ * @filter mvc-sidr
+ * 
  */
 
-jQuery(function($){
-   $('#nav-button').sidr({
+jQuery( function($){
+	
+   $( Sidr.menu_button ).sidr({
       name: 'the-main-menu',
-      source: '#nav'
+      source: Sidr.menu
     });
+    
 });
 
 //Below is compressed version https://github.com/lipemat/sidr/blob/master/dist/jquery.sidr.js
