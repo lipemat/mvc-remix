@@ -94,7 +94,7 @@ class Versions {
 	 */
 	public function add_update( $version, $function_to_run, $args = null ){
 		//if the version is higher than one in db, add to updates
-		if( version_compare( self::$version, $version ) == 1 ){
+		if( version_compare( self::$version, $version ) == -1 ){
 			self::$updates[] = array( 'version' => $version, 'function' => $function_to_run, 'args' => $args );
 		}
 		
