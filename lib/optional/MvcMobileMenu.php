@@ -18,7 +18,8 @@ class MvcMobileMenu extends MvcFramework{
 	 //default menu and button ids
 	 private $defaults = array(
 		'menu'        => '#nav',
-		'menu_button' => '#nav-button'
+		'menu_button' => '#nav-button',
+		'html5'       => false
 	 
 	 );
         
@@ -65,7 +66,8 @@ class MvcMobileMenu extends MvcFramework{
 	  */
 	 public function adjust_defaults(){
 	 	if( function_exists( 'genesis_html5' ) && genesis_html5() ){
-	 		$this->defaults[ 'menu' ] = '.nav-primary';	
+	 		$this->defaults[ 'menu'  ] = '.nav-primary';	
+			$this->defaults[ 'html5' ] = true;
 		}
 		
 	 	$this->defaults = apply_filters( 'mvc-sidr', $this->defaults );
