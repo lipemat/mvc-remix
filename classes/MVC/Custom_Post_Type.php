@@ -13,37 +13,11 @@ namespace MVC;
 class Custom_Post_Type {
 	
 	private static $post_type_registry = array();
+	private static $rewrite_checked = false;
 
-	public static function init() {
-		add_action( 'init', array(__CLASS__, 'check_rewrite_rules' ), 10000, 0);
-	}
-
-	/**
-	 * Check Rewrite Rules
-	 * 
-	 * If the post types registered through this API have changed,
-	 * rewrite rules need to be flushed.
-	 * 
-	 * @static
-	 * 
-	 * @return void
-	 * 
-	 */
-	public static function check_rewrite_rules() {
-		if ( get_option( 'mvc_cpt_registry' ) != self::$post_type_registry ) {
-			
-			flush_rewrite_rules();
-
-			update_option( 'mvc_cpt_registry', self::$post_type_registry );
-		}
-	}
-
-	/**
-	 * Hello. What's your name?
-	 * @var string
-	 */
 	public $post_type_label_singular = '';
 	public $post_type_label_plural = '';
+	
 	/**
 	 * @var string The label that will be shown on the front end title bar
 	 */
@@ -96,7 +70,11 @@ class Custom_Post_Type {
 	 * @return self()
 	 */
 	public function __construct( $post_type ) {
-		
+		if( !self::$rewrite_checked ){
+			add_action( 'init', array(__CLASS__, 'check_rewrite_rules' ), 10000, 0);
+			self::$rewrite_checked = true;
+			
+		}
 		$this->post_type = $post_type;
 		$this->hooks();
 		$this->filters();
@@ -116,6 +94,27 @@ class Custom_Post_Type {
 		add_action( 'wp_loaded', array( $this, 'register_post_type' ) );
 
 	}
+
+	/**
+	 * Check Rewrite Rules
+	 * 
+	 * If the post types registered through this API have changed,
+	 * rewrite rules need to be flushed.
+	 * 
+	 * @static
+	 * 
+	 * @return void
+	 * 
+	 */
+	public static function check_rewrite_rules() {
+		if ( get_option( 'mvc_cpt_registry' ) != self::$post_type_registry ) {
+			
+			flush_rewrite_rules();
+
+			update_option( 'mvc_cpt_registry', self::$post_type_registry );
+		}
+	}
+	
 	
 	
 	/**
@@ -268,32 +267,32 @@ class Custom_Post_Type {
         	'updated'   => _n( 
         		'%s '.$this->post_type_label_singular.' updated.', 
         		'%s '.$this->post_type_label_plural.' updated.', 
-        		$bulk_counts['updated'], 
-        		'tribe-cpt' ),
+        		$bulk_counts['updated']
+        	 ),
         		
         	'locked'    => _n( 
         		'%s '.$this->post_type_label_singular.' not updated, somebody is editing it.', 
         		'%s '.$this->post_type_label_plural.' not updated, somebody is editing them.', 
-        		$bulk_counts['locked'] , 
-        		'tribe-cpt' ),
+        		$bulk_counts['locked']  
+        	),
         		
         	'deleted'   => _n( 
         		'%s '.$this->post_type_label_singular.' permanently deleted.', 
         		'%s '.$this->post_type_label_plural.' permanently deleted.', 
-        		$bulk_counts['deleted'], 
-        		'tribe-cpt' ),
+        		$bulk_counts['deleted']
+        	),
         		
         	'trashed'   => _n( 
         		'%s '.$this->post_type_label_singular.' moved to the Trash.', 
         		'%s '.$this->post_type_label_plural.' moved to the Trash.', 
-        		$bulk_counts['trashed'], 
-        		'tribe-cpt' ),
+        		$bulk_counts['trashed']
+        	),
         		
         	'untrashed' => _n( 
         		'%s '.$this->post_type_label_singular.' restored from the Trash.', 
         		'%s '.$this->post_type_label_plural.' restored from the Trash.', 
-        		$bulk_counts['untrashed'], 
-        		'tribe-cpt' ),
+        		$bulk_counts['untrashed']
+        	),
     	);
 		
 		return $bulk_messages;
