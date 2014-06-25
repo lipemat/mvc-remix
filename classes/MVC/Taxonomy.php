@@ -125,7 +125,15 @@ namespace MVC;
 	}
 
 	
-
+	/**
+	 * Set Default Terms
+	 * 
+	 * Specify terms to be registered automatically when a taxonomy is created
+	 * 
+	 * @param array $terms = array( slug' => term, slug => term );
+	 * 
+	 * @return void
+	 */
 	public function set_default_terms( $terms = array() ) {
 		$this->default_terms = $terms;
 	}
