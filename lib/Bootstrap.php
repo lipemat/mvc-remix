@@ -31,7 +31,6 @@ if ( file_exists(get_stylesheet_directory() . '/mvc-config.php')) {
     include( MVC_DIR.'mvc-config.php' );
 }
 
-
 if( current_theme_supports('mvc_update') && is_admin() ){
     new MvcUpdate();   
 }
@@ -93,12 +92,12 @@ class MvcBootstrap extends MvcFramework{
     
     
     /**
-     * @since 11.27.13
+     * Constructor
      * 
      * @uses constructed at the bottom of this file
      */
     function __construct(){
-         $this->setupMvc();   
+    	add_action( 'plugins_loaded', array( $this, 'setupMvc' ) );  
         
        //Allow for achive and single methods to work at the correct time
        add_action('wp', array( $this, 'singleAndArchiveMethods') );
@@ -219,7 +218,16 @@ class MvcBootstrap extends MvcFramework{
      */
     function setupMvc(){
         global $mvc_theme;
-        
+		
+		if( !defined( 'MVC_THEME_URL' ) ){
+			define( 'MVC_THEME_URL', get_bloginfo( 'stylesheet_directory' ) . '/' );
+			define( 'MVC_IMAGE_URL', MVC_THEME_URL . 'images/' );
+			define( 'MVC_JS_URL', MVC_THEME_URL . 'js/' );
+			define( 'MVC_THEME_DIR', get_stylesheet_directory( ) . '/' );
+			define( 'MVC_MOBILE_URL', MVC_THEME_URL . 'mobile/' );
+			define( 'MVC_IS_ADMIN', is_admin( ) );
+		}
+		
         $mvc_theme['mvc_dirs'] = apply_filters( 'mvc_theme_dirs', array( MVC_THEME_DIR ) );
 
         foreach( $mvc_theme['mvc_dirs'] as $dir ){
