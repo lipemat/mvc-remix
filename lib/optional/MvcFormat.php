@@ -246,12 +246,13 @@ class MvcFormat extends MvcFramework{
 
     
     
-        /**
-     * Adds a class to the first and last item in every menu
+    /**
+     * Menu Classes
+	 * 
+	 * Adds a class to the first and last item in every menu
      * @param array $items the menu Items
      * @return array
      * @uses called by Bootstrap::__construct()
-     * @since 4.11.13
      */
     function menu_classes( $items ){
            $top_count = 1;
@@ -264,7 +265,9 @@ class MvcFormat extends MvcFramework{
                         $last_menu_item = $k;
                     }
            }
-            $items[$last_menu_item]->classes[] = 'last-menu-item';
+		   if( !empty( $last_menu_item ) ){
+            	$items[$last_menu_item]->classes[] = 'last-menu-item';
+		   }
             reset($items)->classes[] = 'first-menu-item';
             return $items;
     }

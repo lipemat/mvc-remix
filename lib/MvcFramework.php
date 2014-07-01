@@ -613,7 +613,6 @@ class MvcFramework{
     /**
      * Retreive data set in a controller with set()
      * 
-     * @since 11.18.13
      * 
      * @uses $this->get('key');
      *
@@ -623,10 +622,10 @@ class MvcFramework{
      * @param string [$controller] - the class to retrieve from default to current
      *
      */
-    function get($name = false){
+    function get($name = false, $controller = false){
         global $controllerViewGlobals;
         
-        if( !$controller ){
+        if( empty( $controller ) ){
             $controller =  $this->getController();  
         }
         
