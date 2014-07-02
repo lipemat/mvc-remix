@@ -74,7 +74,7 @@ function _mvc_autoload($class) {
 		return;
 	} 
     
-	if( function_exists( 'apply_filters' ) ){
+	if( defined( 'MVC_THEME_DIR' ) && function_exists( 'apply_filters' ) ){
 		$dirs = apply_filters( 'mvc_theme_dirs', array( MVC_THEME_DIR ) );
     	foreach( $dirs as $dir ){
 			if( file_exists( $dir . 'meta-boxes/' . $class . '.php' ) ){
