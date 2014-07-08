@@ -324,6 +324,11 @@ class MvcBootstrap extends MvcFramework{
                 if( method_exists(${$controller}, 'init') ){
                     add_action('init', array( ${$controller}, 'init' ) );
                 }
+				
+				//Admin method
+				if( method_exists( ${$controller}, 'admin' ) ){
+					add_action( 'admin_init', array( ${$controller}, 'admin' ) );	
+				}
             }
         } //End foreach dir
     }
