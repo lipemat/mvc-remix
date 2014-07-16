@@ -47,6 +47,11 @@ if( current_theme_supports('mvc_secure') ){
     $MvcLogin = new MvcLogin();   
 }
 
+//For Cache
+if( current_theme_supports( 'mvc_cache' ) ){
+	add_action( 'plugins_loaded', array( 'MVC\\Cache', 'get_instance' ) );
+}
+
 //For the Category Icons
 if( current_theme_supports('mvc_category_images') ){
     $MvcCategoryIcons = new MvcCategoryImage();   
