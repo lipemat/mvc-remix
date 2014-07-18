@@ -4,7 +4,7 @@ Plugin Name: Mvc Theme
 Plugin URI: http://matlipe.com 
 Description: Turns any Genesis theme into a Model View Controller driven framework.
 Author: Mat Lipe
-Version: 1.23.0
+Version: 1.24.0
 
 Author URI: http://matlipe.com
 */
