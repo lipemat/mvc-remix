@@ -294,7 +294,7 @@ abstract class Settings {
 		}	
 		
 		if( empty( $this->slug ) ){
-			$this->slug = get_parent_class();
+			$this->slug = strtolower( str_replace( '\\', '-', get_class( $this ) ) );
 		}
 		
 		if( empty( $this->menu_title ) ){
