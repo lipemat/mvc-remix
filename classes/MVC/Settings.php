@@ -147,7 +147,6 @@ abstract class Settings {
 	/**
 	 * Construct
 	 *
-	 * Runs when init() is called the first time
 	 */
 	function __construct() {	
 		$this->add_settings();
