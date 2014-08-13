@@ -7,6 +7,15 @@ namespace MVC;
  * Abstract starting point for a settings page
  *
  *
+ * @uses extend this with another class that does not have a __construct method or call parent::__construct()
+ *       Implement the abstract methods and set appropriate class vars. This will do the rest.
+ *
+ * @uses to have a description for a section create a public method %section_slug%_description and
+ *       it will automatically be used
+ *
+ * @uses to override the default text field create a protected method with same name as option and
+ *       it will be passed the value of the option as it only argument
+ *
  * @package MVC Theme
  * @namespace MVC
  *
@@ -111,7 +120,7 @@ abstract class Settings {
 	 * 
 	 * @example $this->settings = array(
 	 * 		'career-page' => array(
-	 * 			'title'  	=> 'Carreer Page',
+	 * 			'title'  	=> 'Career Page',
 	 *          'fields' 	=> array(
 	 * 				'career_heading_message' => 'Heading Message'
 	 * 				
