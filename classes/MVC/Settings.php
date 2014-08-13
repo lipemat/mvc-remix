@@ -7,6 +7,9 @@ namespace MVC;
  * Abstract starting point for a settings page
  *
  *
+ * @uses extend this with another class that does not have a __construct method or call parent::__construct()
+ *       Implement the abstract methods and set appropriate class vars. This will do the rest.
+ *
  * @package MVC Theme
  * @namespace MVC
  *
@@ -111,7 +114,7 @@ abstract class Settings {
 	 * 
 	 * @example $this->settings = array(
 	 * 		'career-page' => array(
-	 * 			'title'  	=> 'Carreer Page',
+	 * 			'title'  	=> 'Career Page',
 	 *          'fields' 	=> array(
 	 * 				'career_heading_message' => 'Heading Message'
 	 * 				
