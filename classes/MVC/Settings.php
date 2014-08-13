@@ -113,7 +113,7 @@ abstract class Settings {
 	 * 		'career-page' => array(
 	 * 			'title'  	=> 'Carreer Page',
 	 *          'fields' 	=> array(
-	 * 				'career_heading_message' => 'Heading Message
+	 * 				'career_heading_message' => 'Heading Message'
 	 * 				
 	 * 			)
 	 * 		)
@@ -125,7 +125,7 @@ abstract class Settings {
 	/**
 	 * Set Vars
 	 * 
-	 * Use this method to set the neccessary class vars
+	 * Use this method to set the necessary class vars
 	 * 
 	 * @see This classes vars
 	 * 
