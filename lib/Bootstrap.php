@@ -126,8 +126,7 @@ class MvcBootstrap extends MvcFramework{
      * Runs the single and archive methods for the classes
      * 
      * @since 5.5.0
-     * 
-     * @since 10.18.13
+     *
      * 
      * @uses works off of the $GLOBALS set earlier in the file
      * 
@@ -139,7 +138,8 @@ class MvcBootstrap extends MvcFramework{
             if( isset($GLOBALS['MvcClassesWithSingle']) ){
                 foreach( $GLOBALS['MvcClassesWithSingle'] as $name => $class ){
                     if( strtolower($name) == $type ){
-                        $GLOBALS[$class]->single();   
+                        $GLOBALS[$class]->single();
+	                    return;
                     }  
                 }
             }
@@ -148,12 +148,20 @@ class MvcBootstrap extends MvcFramework{
          if( is_page() ){
              if( isset( $GLOBALS['PageController'] ) ){
                 if( method_exists($GLOBALS['PageController'], 'single') ){
-                   $GLOBALS['PageController']->single();   
+                   $GLOBALS['PageController']->single();
+	                return;
                 }
              }
          }
         
-        
+         if( is_home() || is_front_page() ){
+	         if( isset( $GLOBALS['HomeController'] ) ){
+		         if( method_exists($GLOBALS['HomeController'], 'single') ){
+			         $GLOBALS['HomeController']->single();
+			         return;
+		         }
+	         }
+         }
         
          if( is_page_template('page_blog.php') ){
              $type = 'post';
@@ -163,7 +171,8 @@ class MvcBootstrap extends MvcFramework{
              if( isset($GLOBALS['MvcClassesWithArchive']) ){
                 foreach( $GLOBALS['MvcClassesWithArchive'] as $name => $class ){
                     if( strtolower($name) == $type ){
-                        $GLOBALS[$class]->archive();   
+                        $GLOBALS[$class]->archive();
+	                    return;
                     }  
                 }
              }
