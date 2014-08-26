@@ -47,6 +47,7 @@ class Custom_Post_Type {
 	public $show_in_nav_menus = NULL;
 	public $show_in_admin_bar = NULL;
 
+	public $rewrite = NULL;
 	public $permalink_epmask = EP_PERMALINK;
 	public $can_export = TRUE;
 	public $taxonomies = array();
@@ -193,10 +194,7 @@ class Custom_Post_Type {
 			'supports' => $this->supports,
 			'has_archive' => $this->has_archive,
 			'taxonomies' => $this->taxonomies,
-			'rewrite' => array(
-				'slug' => $this->get_slug(),
-				'with_front' => FALSE,
-			),
+			'rewrite' => $this->rewrites(),
 			'query_var' => $this->query_var,
 			'menu_position' => $this->menu_position,
 			'exclude_from_search' => $this->exclude_from_search,
@@ -208,6 +206,26 @@ class Custom_Post_Type {
 
 		return $args;
 	}
+
+
+	/**
+	 * Rewrites
+	 *
+	 * Build the rewrites param. Will send defaults if not set
+	 *
+	 * @return array
+	 */
+	protected function rewrites(){
+		if( empty( $this->rewrite ) ){
+			return array(
+				'slug' => $this->get_slug(),
+				'with_front' => FALSE,
+			);
+		} else {
+			return $this->rewrite;
+		}
+	}
+
 
 
 	/**
