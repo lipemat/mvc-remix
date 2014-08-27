@@ -591,7 +591,7 @@ class MvcFramework{
 	 *
 	 * @return bool|string - full path to file or false on failure to locate
 	 */
-	public function locate_template( $paths_relative_to_mvc_dir, $url = false ){
+	public function locate_template( $paths_relative_to_mvc_dir, $url = false, $load = false ){
 		foreach( self::get_mvc_dirs() as $dir ){
 			foreach ( (array) $paths_relative_to_mvc_dir as $path_relative_to_mvc_dir ) {
 				if( file_exists( $dir . $path_relative_to_mvc_dir ) ){
@@ -601,7 +601,13 @@ class MvcFramework{
 						$dir = str_replace('\\', '/', $dir );
 						$dir = str_replace( $content_dir, $content_url, $dir );
 					}
-					return $dir . $path_relative_to_mvc_dir;
+
+					if( $load ){
+						include( $dir . $path_relative_to_mvc_dir );
+						return true;
+					} else {
+						return $dir . $path_relative_to_mvc_dir;
+					}
 				}
 			}
 		}
