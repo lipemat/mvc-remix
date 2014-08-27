@@ -593,8 +593,11 @@ class MvcFramework{
 	 */
 	public function locate_template( $paths_relative_to_mvc_dir, $url = false, $load = false ){
 		foreach( self::get_mvc_dirs() as $dir ){
+
+			$dir = untrailingslashit( $dir );
+
 			foreach ( (array) $paths_relative_to_mvc_dir as $path_relative_to_mvc_dir ) {
-				if( file_exists( $dir . $path_relative_to_mvc_dir ) ){
+				if( file_exists( $dir . '/' . $path_relative_to_mvc_dir ) ){
 					if( $url ){
 						$content_url = untrailingslashit( dirname( dirname( get_stylesheet_directory_uri() ) ) );
 						$content_dir = str_replace('\\', '/', untrailingslashit( dirname( dirname( get_stylesheet_directory() ) ) ) );
@@ -603,10 +606,10 @@ class MvcFramework{
 					}
 
 					if( $load ){
-						include( $dir . $path_relative_to_mvc_dir );
+						include( $dir . '/' . $path_relative_to_mvc_dir );
 						return true;
 					} else {
-						return $dir . $path_relative_to_mvc_dir;
+						return $dir . '/' . $path_relative_to_mvc_dir;
 					}
 				}
 			}

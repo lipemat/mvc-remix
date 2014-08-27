@@ -75,7 +75,7 @@ function _mvc_autoload($class) {
 	} 
     
 	if( defined( 'MVC_THEME_DIR' ) && function_exists( 'apply_filters' ) ){
-		$dirs = apply_filters( 'mvc_theme_dirs', array( MVC_THEME_DIR ) );
+		$dirs = apply_filters( 'mvc_theme_dirs', MvcFramework::get_mvc_dirs() );
     	foreach( $dirs as $dir ){
 			if( file_exists( $dir . 'meta-boxes/' . $class . '.php' ) ){
 				require( $dir . 'meta-boxes/' . $class . '.php' );
