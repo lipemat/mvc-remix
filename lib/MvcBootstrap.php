@@ -15,11 +15,19 @@ if( !defined( 'MVC_THEME_DIR' ) ){
 	define( 'MVC_THEME_DIR', get_stylesheet_directory() . '/' );
 }
 
-define( 'MVC_MOBILE_URL', MVC_THEME_URL . 'mobile/' );
-define( 'MVC_IMAGE_URL', MVC_THEME_URL . 'images/' );
-define( 'MVC_JS_URL', MVC_THEME_URL . 'js/' );
-
-define( 'MVC_IS_ADMIN', is_admin() );
+/** Legacy */
+if( !defined( 'MVC_MOBILE_URL' ) ){
+	define( 'MVC_MOBILE_URL', MVC_THEME_URL . 'mobile/' );
+}
+if( !defined( 'MVC_IMAGE_URL' ) ){
+	define( 'MVC_IMAGE_URL', MVC_THEME_URL . 'images/' );
+}
+if( !defined( 'MVC_JS_URL' ) ){
+	define( 'MVC_JS_URL', MVC_THEME_URL . 'js/' );
+}
+if( !defined( 'MVC_IS_ADMIN' ) ){
+	define( 'MVC_IS_ADMIN', is_admin() );
+}
 
 
 $MvcFramework = new MvcFramework();
