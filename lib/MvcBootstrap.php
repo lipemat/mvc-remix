@@ -8,6 +8,18 @@
  * @author Mat Lipe <mat@matlipe.com>
  */
 
+$MvcFramework = new MvcFramework();
+
+/** The Config for this Theme **/
+if( $file = $MvcFramework->locate_template( 'mvc-config.php' ) ){
+	include( $file );
+
+} else {
+	include( MVC_DIR . 'mvc-config.php' );
+
+}
+
+
 if( !defined( 'MVC_THEME_URL' ) ){
 	define( 'MVC_THEME_URL', get_bloginfo( 'stylesheet_directory' ) . '/' );
 }
@@ -29,17 +41,6 @@ if( !defined( 'MVC_IS_ADMIN' ) ){
 	define( 'MVC_IS_ADMIN', is_admin() );
 }
 
-
-$MvcFramework = new MvcFramework();
-
-/** The Config for this Theme **/
-if( $file = $MvcFramework->locate_template( 'mvc-config.php' ) ){
-	include( $file );
-
-} else {
-	include( MVC_DIR . 'mvc-config.php' );
-
-}
 
 if( current_theme_supports( 'mvc_update' ) && is_admin() ){
 	new MvcUpdate();
@@ -199,7 +200,7 @@ class MvcBootstrap extends MvcFramework {
 	 * @filters mvc_theme_dirs - allows for other themes or plugins to have a widgets folder
 	 */
 	function registerWidgets(){
-		$dirs = apply_filters( 'mvc_theme_dirs', array( MVC_THEME_DIR ) );
+		$dirs = mvc_util()->get_mvc_dirs();
 
 		//Register Widgets from the theme's widget folder
 		if( !current_theme_supports( 'mvc_widgets' ) ){
@@ -246,7 +247,7 @@ class MvcBootstrap extends MvcFramework {
 	function setupMvc(){
 		global $mvc_theme;
 
-		$mvc_theme[ 'mvc_dirs' ] = apply_filters( 'mvc_theme_dirs', array( MVC_THEME_DIR ) );
+		$mvc_theme[ 'mvc_dirs' ] = mvc_util()->get_mvc_dirs();
 
 		foreach( $mvc_theme[ 'mvc_dirs' ] as $dir ){
 
