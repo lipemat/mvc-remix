@@ -15,7 +15,16 @@ $dir_name = explode('/', plugins_url('', __FILE__));
 define( 'MVC_DIR_NAME', end($dir_name) );
 define( 'MVC_SLUG', MVC_DIR_NAME.'/'.basename(__FILE__));
 
+require( 'functions.php' );
+require( 'template-tags.php' );
+
+
+//Allow for autoloading framework Classes
+spl_autoload_register('_mvc_autoload');
 
 #-- Bring in the Framework
-require( 'lib/Bootstrap.php' );
+add_action( 'plugins_loaded', 'mvc_load', 99999999 );
+function mvc_load(){
+	new MvcBootstrap();
+}
 

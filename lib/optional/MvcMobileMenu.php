@@ -28,7 +28,10 @@ class MvcMobileMenu extends MvcFramework{
 	  * 
       */
      function __construct(){
-        if( !$this->is_mobile() ) return;
+        if( !$this->is_mobile() ){
+	        return;
+        }
+
         $this->checkForLightOrDark();
 		$this->hooks();
      }

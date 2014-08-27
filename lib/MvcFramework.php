@@ -14,7 +14,6 @@
  * @TODO Create a fragment caching class - run tests database vs files
  * @TODO create an auto shortcode registering class - see NUSD theme
  * @TODO create a way to serve up all js or css files from one php file like mvc_add_style() and mvc_add_js() to prevent all the requests - maybe grunt.js
- * @TODO enable revision support for post meta
  * @TODO Add the Custom Image Sizes to the Media Uploader. Ponder a way to decided which ones are requires so the user won't see like a billion of them
  * 
  * @class MvcFramework
@@ -546,13 +545,15 @@ class MvcFramework{
         $MvcForm = $this->MvcForm;
         
         if( !$folder ){
-            
             $folder = $this->getController();
-            if( defined("MVC_CONTROLLER_PREFIX") && MVC_CONTROLLER_PREFIX ){
+            if( defined( "MVC_CONTROLLER_PREFIX" ) && MVC_CONTROLLER_PREFIX ){
                 $folder = str_replace(  MVC_CONTROLLER_PREFIX, "", $folder ); 
             }
         }
-        
+
+	    if( $folder != "" ){
+		    $folder .= "/";
+	    }
 
         if( !$file ){
             list(, $caller) = debug_backtrace(false);
@@ -563,12 +564,72 @@ class MvcFramework{
         
         //Any keys set for this view will also be extracted
         extract( $this->get() );
-        
+
         if( !$hideInfo ){
-            echo '<!-- View/'.$folder.'/'. $file . '.php -->';
+            echo '<!-- View/'.$folder . $file . '.php -->';
         }
-        include( MVC_THEME_DIR.'View/'.$folder.'/'. $file . '.php' );
+
+	    if( $file = $this->locate_template( 'View/'.$folder . $file . '.php' ) ){
+		    include( $file );
+	    } else {
+		    echo __( 'The file does not exist View/'.$folder . $file . '.php', 'mvc' );
+	    }
+
     }
+
+
+	/**
+	 * locate_template
+	 *
+	 * Check in each mvc_dir for a matching file
+	 * Starts with the 0 key in the mvc_theme_dirs array which is typically the active theme
+	 *
+	 * @param string $path_relative_to_mvc_dir
+	 * @param bool $url - return the url ( defaults to false )
+	 *
+	 * @example 'View/Product/title.php'
+	 *
+	 * @return bool|string - full path to file or false on failure to locate
+	 */
+	public function locate_template( $path_relative_to_mvc_dir, $url = false ){
+		foreach( self::get_mvc_dirs() as $dir ){
+			if( file_exists( $dir . $path_relative_to_mvc_dir ) ){
+				if( $url ){
+					$content_url = untrailingslashit( dirname( dirname( get_stylesheet_directory_uri() ) ) );
+					$content_dir = str_replace('\\', '/', untrailingslashit( dirname( dirname( get_stylesheet_directory() ) ) ) );
+					$dir = str_replace('\\', '/', $dir );
+					$dir = str_replace( $content_dir, $content_url, $dir );
+				}
+				return $dir . $path_relative_to_mvc_dir;
+			}
+		}
+
+		return false;
+	}
+
+
+	/**
+	 * get_mvc_dirs
+	 *
+	 * Retrieve the list of mvc_dirs based on theme, parent theme, and filter
+	 *
+	 * @static
+	 *
+	 * @return array|mixed|void
+	 */
+	public static function get_mvc_dirs(){
+		$dirs = array( MVC_THEME_DIR );
+
+		if( get_template_directory() != MVC_THEME_DIR ){
+			$dirs[] = get_template_directory();
+		}
+
+		$dirs = apply_filters( 'mvc_theme_dirs', $dirs );
+
+		return $dirs;
+
+	}
+
 
     
 
