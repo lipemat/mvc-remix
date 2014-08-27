@@ -584,23 +584,25 @@ class MvcFramework{
 	 * Check in each mvc_dir for a matching file
 	 * Starts with the 0 key in the mvc_theme_dirs array which is typically the active theme
 	 *
-	 * @param string $path_relative_to_mvc_dir
+	 * @param array|string $path_relative_to_mvc_dir
 	 * @param bool $url - return the url ( defaults to false )
 	 *
 	 * @example 'View/Product/title.php'
 	 *
 	 * @return bool|string - full path to file or false on failure to locate
 	 */
-	public function locate_template( $path_relative_to_mvc_dir, $url = false ){
+	public function locate_template( $paths_relative_to_mvc_dir, $url = false ){
 		foreach( self::get_mvc_dirs() as $dir ){
-			if( file_exists( $dir . $path_relative_to_mvc_dir ) ){
-				if( $url ){
-					$content_url = untrailingslashit( dirname( dirname( get_stylesheet_directory_uri() ) ) );
-					$content_dir = str_replace('\\', '/', untrailingslashit( dirname( dirname( get_stylesheet_directory() ) ) ) );
-					$dir = str_replace('\\', '/', $dir );
-					$dir = str_replace( $content_dir, $content_url, $dir );
+			foreach ( (array) $paths_relative_to_mvc_dir as $path_relative_to_mvc_dir ) {
+				if( file_exists( $dir . $path_relative_to_mvc_dir ) ){
+					if( $url ){
+						$content_url = untrailingslashit( dirname( dirname( get_stylesheet_directory_uri() ) ) );
+						$content_dir = str_replace('\\', '/', untrailingslashit( dirname( dirname( get_stylesheet_directory() ) ) ) );
+						$dir = str_replace('\\', '/', $dir );
+						$dir = str_replace( $content_dir, $content_url, $dir );
+					}
+					return $dir . $path_relative_to_mvc_dir;
 				}
-				return $dir . $path_relative_to_mvc_dir;
 			}
 		}
 
