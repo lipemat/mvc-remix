@@ -52,7 +52,7 @@ class Versions {
 	 */
 	public function __construct(){
 		
-		self::$version = get_option( self::OPTION, 0.1 );
+		self::$version = (float) get_option( self::OPTION, 0.1 );
 		
 		$this->actions();	
 	}
@@ -122,7 +122,7 @@ class Versions {
 							
 		}
 		
-		update_option( self::OPTION, self::$version );
+		update_option( self::OPTION, (float) self::$version );
 		
 	}
 	
