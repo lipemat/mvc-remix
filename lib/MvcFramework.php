@@ -559,17 +559,19 @@ class MvcFramework{
             list(, $caller) = debug_backtrace(false);
             $file = $caller['function'];
         }
-         //Any arguments will be available via variable
-        extract($args);
-        
-        //Any keys set for this view will also be extracted
-        extract( $this->get() );
+
 
         if( !$hideInfo ){
             echo '<!-- View/'.$folder . $file . '.php -->';
         }
 
 	    if( $file = $this->locate_template( 'View/'.$folder . $file . '.php' ) ){
+		    //Any arguments will be available via variable
+		    extract($args);
+
+		    //Any keys set for this view will also be extracted
+		    extract( $this->get() );
+		    
 		    include( $file );
 	    } else {
 		    echo __( 'The file does not exist View/'.$folder . $file . '.php', 'mvc' );
