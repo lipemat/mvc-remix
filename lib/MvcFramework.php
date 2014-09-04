@@ -639,8 +639,10 @@ class MvcFramework{
 			$dirs[] = get_template_directory();
 		}
 
-		if( MVC_THEME_DIR != get_stylesheet_directory() && MVC_THEME_DIR != get_template_directory() ){
-			$dirs[] = MVC_THEME_DIR;
+		if( defined( "MVC_THEME_DIR" ) ){
+			if( MVC_THEME_DIR != get_stylesheet_directory() && MVC_THEME_DIR != get_template_directory() ){
+				$dirs[] = MVC_THEME_DIR;
+			}
 		}
 
 		$dirs = apply_filters( 'mvc_theme_dirs', $dirs );
