@@ -95,7 +95,6 @@ if( current_theme_supports( 'mvc_ajax' ) ){
 /**
  * Put all the default stuff in motion
  *
- * @since  1.20.14
  *
  * @author Mat Lipe <mat@matlipe.com>
  *
@@ -113,14 +112,6 @@ class MvcBootstrap extends MvcFramework {
 
 		//Allow for achive and single methods to work at the correct time
 		add_action( 'wp', array( $this, 'singleAndArchiveMethods' ) );
-
-		//Move the genesis meta box below our special ones
-		if( function_exists( 'genesis_add_inpost_layout_box' ) ){
-			remove_action( 'admin_menu', 'genesis_add_inpost_layout_box' );
-			add_action( 'do_meta_boxes', 'genesis_add_inpost_layout_box' );
-			remove_action( 'admin_menu', 'genesis_add_inpost_seo_box' );
-			add_action( 'do_meta_boxes', 'genesis_add_inpost_seo_box' );
-		}
 
 		//register widgets
 		add_action( 'widgets_init', array( $this, 'registerWidgets' ) );

@@ -177,6 +177,22 @@ class MvcFramework{
         // YouTube - get the video code if this is an embed code (old embed)
         preg_match( '/youtube\.com\/v\/([\w\-]+)/', $embed, $match);
 
+	/**
+	 * Move Genesis Meta Boxes To Bottom
+	 *
+	 * Move the genesis layout and seo to bottom of post edit screen
+	 *
+	 *
+	 * @return void
+	 */
+	function move_genesis_meta_boxes_to_bottom(){
+		//Move the genesis meta box below our special ones
+		if( function_exists( 'genesis_add_inpost_layout_box' ) ){
+			remove_action( 'admin_menu', 'genesis_add_inpost_layout_box' );
+			add_action( 'do_meta_boxes', 'genesis_add_inpost_layout_box' );
+			remove_action( 'admin_menu', 'genesis_add_inpost_seo_box' );
+			add_action( 'do_meta_boxes', 'genesis_add_inpost_seo_box' );
+		}
         // YouTube - if old embed returned an empty ID, try capuring the ID from the new iframe embed
         if( !isset($match[1]) )
             preg_match( '/youtube\.com\/embed\/([\w\-]+)/', $embed, $match);
