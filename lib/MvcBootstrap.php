@@ -138,6 +138,9 @@ class MvcBootstrap extends MvcFramework {
 	 *
 	 */
 	function singleAndArchiveMethods(){
+
+		if( is_admin() ) return;
+
 		$type = get_post_type();
 
 		if( is_single() ){
