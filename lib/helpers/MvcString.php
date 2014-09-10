@@ -39,6 +39,41 @@ class MvcString {
 		
 	}
 
+
+	/**
+	 * getYoutubeImage
+	 *
+	 * @param string $embed
+	 *
+	 * @return string
+	 */
+	public function getYoutubeImage( $embed ){
+
+		$video_thumb = '';
+
+		// YouTube - get the video code if this is an embed code (old embed)
+		preg_match( '/youtube\.com\/v\/([\w\-]+)/', $embed, $match );
+
+		// YouTube - if old embed returned an empty ID, try capuring the ID from the new iframe embed
+		if( !isset( $match[ 1 ] ) ){
+			preg_match( '/youtube\.com\/embed\/([\w\-]+)/', $embed, $match );
+		}
+
+		// YouTube - if it is not an embed code, get the video code from the youtube URL
+		if( !isset( $match[ 1 ] ) ){
+			preg_match( '/v\=(.+)&/', $embed, $match );
+		}
+
+		// YouTube - get the corresponding thumbnail images
+		if( isset( $match[ 1 ] ) ){
+			$video_thumb = "http://img.youtube.com/vi/" . $match[ 1 ] . "/0.jpg";
+		}
+
+		// return whichever thumbnail image you would like to retrieve
+		return $video_thumb;
+	}
+
+
 	/**
 	 * Returns the content of the current $post limited to a number of characters
 	 *
