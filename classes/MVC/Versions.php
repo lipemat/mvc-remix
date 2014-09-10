@@ -52,7 +52,11 @@ class Versions {
 	 */
 	public function __construct(){
 		
-		self::$version = (float) get_option( self::OPTION, 0.1 );
+		$version = get_option( self::OPTION, "0.1" );
+		if( is_float( $version ) ){
+			$version = "$version";
+		}
+		self::$version = $version;
 		
 		$this->actions();	
 	}
@@ -93,6 +97,10 @@ class Versions {
 	 * 
 	 */
 	public function add_update( $version, $function_to_run, $args = null ){
+		if( is_float( $version ) ){
+			$version = "$version";
+		}
+
 		//if the version is higher than one in db, add to updates
 		if( version_compare( self::$version, $version ) == -1 ){
 			self::$updates[] = array( 'version' => $version, 'function' => $function_to_run, 'args' => $args );
