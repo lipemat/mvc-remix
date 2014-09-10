@@ -133,14 +133,8 @@ class MvcFramework{
     
     
      /**
-     * Registers a post type with default values which can be overridden as needed.
-     * @param $title the name of the post type
-     * @param [$args] the arguments to overwrite
-     * @example register_post_type( 'newtest' , array() );
-     * @since 0.3.1
-     *
-     *  @uses MvcPostTypeTax::register_post_type()
-     *
+     * @deprecated
+      * @see /classes/Custom_Post_Type.php
      **/
     function registerPostType($title, $args = array()){
         $this->MvcPostTypeTax->register_post_type($title, $args);
@@ -149,48 +143,42 @@ class MvcFramework{
     
     
      /**
-     * Registers a taxonomy with default values which can be overridden as needed.
-     * @param $title is the name of the taxonomy
-     * @param $post_type the post type to link it to
-     * @param $args an array to overwrite the defaults
-     * @example register_taxonomy( 'post-cat', 'custom-post-type', array( 'pluralTitle' => 'lots of cats' ) );
-     * 
-     * @since 0.3.1
-     * 
-     * @uses MvcPostTypeTax::register_taxonomy
+     * @deprecated
+     * @see /classes/Taxonomy.php
      */
     function registerTaxonomy( $title, $post_type = '', $args = array() ){
         $this->MvcPostTypeTax->register_taxonomy($title, $post_type, $args );
     }
+
+
+	/**
+	 * Move Genesis Meta Boxes To Bottom
+	 *
+	 * Move the genesis layout and seo to bottom of post edit screen
+	 *
+	 *
+	 * @return void
+	 */
+	function move_genesis_meta_boxes_to_bottom(){
+		//Move the genesis meta box below our special ones
+		if( function_exists( 'genesis_add_inpost_layout_box' ) ){
+			remove_action( 'admin_menu', 'genesis_add_inpost_layout_box' );
+			add_action( 'do_meta_boxes', 'genesis_add_inpost_layout_box' );
+			remove_action( 'admin_menu', 'genesis_add_inpost_seo_box' );
+			add_action( 'do_meta_boxes', 'genesis_add_inpost_seo_box' );
+		}
+
+	}
+
+
     
-    
-    
-    /* 
-     * Get thumbnail from an Embeded youtube video
-     * 
-     * @since 9.13.13
+    /**
+     * @deprecated
+     *
+     * @see mvc_string()->getYoutubeImage()
      */
     public function getYoutubeImage($embed) {
-    
-        $video_thumb = '';
-
-        // YouTube - get the video code if this is an embed code (old embed)
-        preg_match( '/youtube\.com\/v\/([\w\-]+)/', $embed, $match);
-
-        // YouTube - if old embed returned an empty ID, try capuring the ID from the new iframe embed
-        if( !isset($match[1]) )
-            preg_match( '/youtube\.com\/embed\/([\w\-]+)/', $embed, $match);
-
-        // YouTube - if it is not an embed code, get the video code from the youtube URL
-        if( !isset($match[1]) )
-            preg_match( '/v\=(.+)&/',$embed ,$match);
-
-        // YouTube - get the corresponding thumbnail images
-        if( isset($match[1]) )
-            $video_thumb = "http://img.youtube.com/vi/".$match[1]."/0.jpg";
-
-        // return whichever thumbnail image you would like to retrieve
-        return $video_thumb;
+	    return mvc_string()->getYoutubeImage( $embed );
     }
     
     
@@ -639,8 +627,10 @@ class MvcFramework{
 			$dirs[] = get_template_directory();
 		}
 
-		if( MVC_THEME_DIR != get_stylesheet_directory() && MVC_THEME_DIR != get_template_directory() ){
-			$dirs[] = MVC_THEME_DIR;
+		if( defined( "MVC_THEME_DIR" ) ){
+			if( MVC_THEME_DIR != get_stylesheet_directory() && MVC_THEME_DIR != get_template_directory() ){
+				$dirs[] = MVC_THEME_DIR;
+			}
 		}
 
 		$dirs = apply_filters( 'mvc_theme_dirs', $dirs );
