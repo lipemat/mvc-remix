@@ -152,6 +152,16 @@ class MvcBootstrap extends MvcFramework {
 			}
 		}
 
+
+		if( is_author() ){
+			if( !empty( $GLOBALS[ 'MvcClassesWithSingle' ][ 'Author' ] ) ){
+				$GLOBALS[ $GLOBALS[ 'MvcClassesWithSingle' ][ 'Author' ] ]->archive();
+			}
+
+			return;
+		}
+
+
 		if( is_page() ){
 			if( isset( $GLOBALS[ 'PageController' ] ) ){
 				if( method_exists( $GLOBALS[ 'PageController' ], 'single' ) ){
