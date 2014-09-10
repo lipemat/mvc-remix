@@ -133,14 +133,8 @@ class MvcFramework{
     
     
      /**
-     * Registers a post type with default values which can be overridden as needed.
-     * @param $title the name of the post type
-     * @param [$args] the arguments to overwrite
-     * @example register_post_type( 'newtest' , array() );
-     * @since 0.3.1
-     *
-     *  @uses MvcPostTypeTax::register_post_type()
-     *
+     * @deprecated
+      * @see /classes/Custom_Post_Type.php
      **/
     function registerPostType($title, $args = array()){
         $this->MvcPostTypeTax->register_post_type($title, $args);
@@ -149,15 +143,8 @@ class MvcFramework{
     
     
      /**
-     * Registers a taxonomy with default values which can be overridden as needed.
-     * @param $title is the name of the taxonomy
-     * @param $post_type the post type to link it to
-     * @param $args an array to overwrite the defaults
-     * @example register_taxonomy( 'post-cat', 'custom-post-type', array( 'pluralTitle' => 'lots of cats' ) );
-     * 
-     * @since 0.3.1
-     * 
-     * @uses MvcPostTypeTax::register_taxonomy
+     * @deprecated
+     * @see /classes/Taxonomy.php
      */
     function registerTaxonomy( $title, $post_type = '', $args = array() ){
         $this->MvcPostTypeTax->register_taxonomy($title, $post_type, $args );
