@@ -7,6 +7,8 @@
  * Updates this plugin from github
  * 
  * @see https://github.com/jkudish/WordPress-GitHub-Plugin-Updater - I borrowed a lot from there
+ *
+ * @TODO Take a look at forking and backing https://github.com/afragen/github-updater into a one file that does not scan or work with bitbucket
  * 
  * @since 10.18.13
  * @author Mat Lipe <mat@matlipe.com>
