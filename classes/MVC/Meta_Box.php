@@ -162,6 +162,52 @@ abstract class Meta_Box {
 		), $this->post_type, $this->get_context(), $this->get_priority(), $this->get_callback_args() );
 	}
 
+	/**
+	 * Save Meta Field
+	 *
+	 * Quick and dirty save a field what was sent via $_POST[ %field% ]
+	 * Can send array if desired
+	 * Will save the meta field to null if empty
+	 *
+	 *
+	 * @param int $post_id
+	 * @param string|array $field
+	 *
+	 * @return void
+	 */
+	public function save_meta_field( $post_id, $field ){
+
+		foreach( (array)$field as $this_field ){
+			if( ! empty( $_POST[ $this_field ] ) ){
+				update_post_meta( $post_id, $this_field, $_POST[ $this_field] );
+			} else {
+				update_post_meta( $post_id, $this_field, null );
+			}
+		}
+	}
+
+
+	/**
+	 * extractable_meta_fields
+	 *
+	 * Retrieve an array of key value pairs of the posts meta fields
+	 * Can be turned into variables with extract()
+	 *
+	 * @param int $post_id
+	 * @param string|array $field
+	 *
+	 * @return mixed
+	 */
+	public function extractable_meta_fields( $post_id, $field ){
+		$meta = array();
+
+		foreach( (array)$field as $this_field ){
+			$meta[ $this_field ] = get_post_meta( $post_id, $this_field, true );
+		}
+
+		return $meta;
+	}
+
 
 	/**
 	 * Return the ID of the meta box
