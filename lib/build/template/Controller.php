@@ -1,16 +1,21 @@
 <?php
-          /**
-           * Controller For the %controller%
-           * @since %date%
-           */
-    
 
+/**
+ * Controller For the %controller%
+ *
+ * @since %date%
+ */
 class %controller%Controller extends Controller{
-    
-     /**
-      * Init will always run on each page load
-      */
-     function init(){
-      
-     }         
+	
+	/**
+	 * @var %controller% $%controller%
+	 */
+	public $%controller%;
+
+	/**
+	 * Init will always run on each page load
+	 */
+	function init(){
+
+	}
 }
