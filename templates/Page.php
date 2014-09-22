@@ -1,12 +1,11 @@
 <?php
-                    /**
-                     * The Page Model
-                     * @since 1.13.13
-                     * @author Mat Lipe
-                     */
 
+/**
+ * The Page Model
+ *
+ * @author Mat Lipe
+ */
+class Page extends Model {
 
-class Page extends Model{
-    
 }
     

@@ -1,12 +1,12 @@
 <?php
-                    /**
-                     * The Basic Posts Model
-                     * @since 12.27.12
-                     * @author Mat Lipe
-                     */
+
+/**
+ * The Basic Posts Model
+ *
+ * @author Mat Lipe
+ */
+class Post extends Model {
 
 
-class Post extends Model{
-    
 }
     
