@@ -385,7 +385,8 @@ class Custom_Post_Type {
 	public function set_post_type_label( $singular = '', $plural = '' ) {
 		
 		if ( !$singular ) {
-			$singular = ucwords( $this->post_type );
+			$singular = str_replace( '_', ' ', $this->post_type );
+			$singular = ucwords( $singular );
 		}
 		
 		if ( !$plural ) {
