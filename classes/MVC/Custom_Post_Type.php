@@ -238,7 +238,6 @@ class Custom_Post_Type {
 	 * @return array
 	 */
 	protected function post_type_labels( $single = '', $plural = '' ) {
-		
 		$single = $single ? $single : $this->post_type_label( 'singular' );
 		$plural = $plural ? $plural : $this->post_type_label( 'plural' );
 
@@ -359,13 +358,13 @@ class Custom_Post_Type {
 
 		switch ( $quantity ) {
 			case 'plural':
-				if ( !$this->post_type_label_plural ) {
-					$this->set_post_type_label($this->post_type_label_singular);
+				if ( empty( $this->post_type_label_plural ) ) {
+					$this->set_post_type_label( $this->post_type_label_singular);
 				}
 				return $this->post_type_label_plural;
 			default:
-				if ( !$this->post_type_label_singular ) {
-					$this->set_post_type_label();
+				if ( empty( $this->post_type_label_singular ) ) {
+					$this->set_post_type_label( $this->post_type_label_singular, $this->post_type_label_plural );
 				}
 				return $this->post_type_label_singular;
 		}
