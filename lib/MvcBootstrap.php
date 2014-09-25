@@ -176,6 +176,16 @@ class MvcBootstrap extends MvcFramework {
 			}
 		}
 
+		if( is_search() ){
+			if( isset( $GLOBALS[ 'SearchController' ] ) ){
+				if( method_exists( $GLOBALS[ 'SearchController' ], 'single' ) ){
+					$GLOBALS[ 'SearchController' ]->single();
+					return;
+				}
+			}
+		}
+
+
 		if( is_page_template( 'page_blog.php' ) ){
 			$type = 'post';
 		}
