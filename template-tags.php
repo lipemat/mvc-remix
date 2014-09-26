@@ -7,7 +7,23 @@
  * 
  */
 
- 
+/**
+ * mvc
+ *
+ * Get an instance of the main class
+ *
+ * @return MvcFramework
+ */
+function mvc(){
+	static $mvc = null;
+	if( !empty( $mvc ) ){
+		return $mvc;
+	}
+
+	return $mvc = new MvcFramework();
+}
+
+
 /**
  * Mvc Versions
  * 
