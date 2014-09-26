@@ -158,6 +158,7 @@ class MvcImageResize extends MvcFramework {
             if ( is_array($size) ) {
                 $width = $size[0];
                 $height = $size[1];
+	            $crop   = empty( $size[ 2 ] ) ? false : $size[ 2 ];
             
             } elseif ( isset( $this->_image_sizes[$size] ) ) {
 
