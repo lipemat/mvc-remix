@@ -25,6 +25,7 @@ class MvcImageResize extends MvcFramework {
 		$this->hooks();
 	}
 
+
 	private function hooks(){
 		// convert other add_image_sizes from other plugin, to the attribute of the class
 		add_action( 'init', array( $this, 'add_other_image_sizes' ) );
@@ -34,16 +35,16 @@ class MvcImageResize extends MvcFramework {
 	}
 
 
-
 	/**
 	 * Populate image sizes
 	 *
 	 * @since 9.13.13
 	 */
 	public function add_image_size( $name, $width, $height, $crop = false ){
-		$this->_image_sizes[ $name ] = array( 'width'  => absint( $width ),
-		                                      'height' => absint( $height ),
-		                                      'crop'   => (bool) $crop
+		$this->_image_sizes[ $name ] = array(
+			'width'  => absint( $width ),
+			'height' => absint( $height ),
+			'crop'   => (bool) $crop
 		);
 	}
 
@@ -76,7 +77,7 @@ class MvcImageResize extends MvcFramework {
 	 *
 	 * @param array() $args = array(
 	 *                      'id' => null,   // the thumbnail ID
-	 *                      'post_id' => null,   // the thumbnail ID
+	 *                      'post_id' => null,   // thumbnail of specified post ID
 	 *                      'src' => '',
 	 *                      'alt' => '',
 	 *                      'class' => '',
@@ -93,12 +94,11 @@ class MvcImageResize extends MvcFramework {
 	 *                      );
 	 *
 	 *
-	 * @since 9.13.13
 	 */
 	public function image( $args = array(), $echo = true ){
 		$defaults = array(
-			'id'         => null, // the thumbnail ID
-			'post_id'    => null, // thumbnail of post_id
+			'id'         => null,
+			'post_id'    => null,
 			'src'        => '',
 			'alt'        => '',
 			'class'      => '',
@@ -107,11 +107,12 @@ class MvcImageResize extends MvcFramework {
 			'width'      => null,
 			'height'     => null,
 			'crop'       => false,
-			'image_scan' => false, // set if get the image from the first image of the post
-			'output'     => 'img', // how print: 'a', with anchor; 'img' without anchor; 'url' only url; 'array' array width 'url', 'width' and 'height'
-			'link'       => '', // the link of <a> tag. If empty, get from original image url
-			'link_class' => '', // the class of <a> tag
-			'link_title' => '', // the title of <a> tag. If empty, get it from "title" attribute.
+			'image_scan' => false,
+			'output'     => 'img',
+			'link'       => '',
+			'link_class' => '',
+			'link_title' => '',
+
 		);
 
 		extract( wp_parse_args( $args, $defaults ) );
@@ -161,12 +162,10 @@ class MvcImageResize extends MvcFramework {
 		// save original image url for the <a> tag
 		$full_image_url = $image_url;
 
-
 		// get the post attachment
 		if( ! empty( $image_id ) ){
 			$attachment = get_post( $image_id );
 		}
-
 
 		// get size from add_image_size
 		if( ! empty( $size ) ){
@@ -230,7 +229,6 @@ class MvcImageResize extends MvcFramework {
 			$height    = $image[ 'height' ];
 		}
 
-
 		/* BEGIN OUTPUT */
 		$attr = array();
 
@@ -238,7 +236,6 @@ class MvcImageResize extends MvcFramework {
 		if( empty( $image_url ) ){
 			return;
 		}
-
 
 		//if we only want an arry or url
 		if( $output == 'url' ){
@@ -251,7 +248,6 @@ class MvcImageResize extends MvcFramework {
 		} elseif( $output == 'array' ) {
 			return array( $image_url, $width, $height );
 		}
-
 
 		if( ! empty( $image_id ) ){
 			$size = empty( $size ) ? $size = array( $width, $height ) : $size;
