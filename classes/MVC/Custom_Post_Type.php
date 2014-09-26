@@ -314,34 +314,55 @@ class Custom_Post_Type {
 		
 		return $bulk_messages;
 	}
-	
+
 
 	/**
-	 * Add messaging for this custom post type.
+	 * Post Updated Messages
 	 *
-	 * @param array $messages list of alert messages
+	 * Filter the post updated messages so they match this post type
+	 * Smart enough to handle public and none public types
+	 *
+	 *
+	 * @param array $messages
+	 *
 	 * @return array
+	 *
 	 */
 	public function post_updated_messages( $messages = array() ) {
 		global $post, $post_ID;
 
-		$messages[$this->post_type] = array(
-			0 => '', // Unused. Messages start at index 1.
-			1 => sprintf( __( '%s updated. <a href="%s">View the %s...</a>' ), $this->post_type_label(), esc_url( get_permalink($post_ID) ), strtolower($this->post_type_label()) ),
-			2 => __( 'Custom field updated.' ),
-			3 => __( 'Custom field deleted.' ),
-			4 => sprintf( __( '%s updated.' ), $this->post_type_label() ),
-			5 => isset($_GET['revision']) ? sprintf( __( '%s restored to revision from %s' ), $this->post_type_label(), wp_post_revision_title( (int) $_GET['revision'], false ) ) : false,
-			6 => sprintf( __( '%s published. <a href="%s">View %s</a>' ), $this->post_type_label(), esc_url( get_permalink($post_ID) ), strtolower($this->post_type_label()) ),
-			7 => sprintf( __( '%s saved.' ), $this->post_type_label() ),
-			8 => sprintf( __( '%s submitted. <a target="_blank" href="%s">Preview %s</a>' ), $this->post_type_label(), esc_url( add_query_arg( 'preview', 'true', get_permalink($post_ID) ) ), strtolower($this->post_type_label()) ),
-			9 => sprintf( __( '%3$s scheduled for: <strong>%1$s</strong>. <a target="_blank" href="%2$s">Preview %s</a>' ),
-				// translators: Publish box date format, see http://php.net/date
-				date_i18n( __( 'M j, Y @ G:i' ), strtotime( $post->post_date ) ), esc_url( get_permalink($post_ID) ), strtolower($this->post_type_label()) ),
-			10 => sprintf( __( '%s draft updated. <a target="_blank" href="%s">Preview %s</a>' ), $this->post_type_label(), esc_url( add_query_arg( 'preview', 'true', get_permalink($post_ID) ) ), strtolower($this->post_type_label()) ),
+		$lower_label = strtolower( $this->post_type_label() );
+
+		if( $this->public === false || $this->publicly_queryable === false ){
+			$view_link = $preview_link = false;
+		} else {
+			$url = esc_url( get_permalink( $post_ID ) );
+			$preview_url = add_query_arg( 'preview', 'true', $url );
+			$view_link = '<a href="'. $url . '">' . sprintf( __( 'View the %s...' ), $this->post_type_label(),  $lower_label ) . '</a>';
+			$preview_link = '<a target="_blank" href="' . $preview_url . '">' . sprintf( 'Preview %s', $lower_label ) . '</a>';
+
+		}
+
+		$messages[ $this->post_type ] = array(
+			0  => null,
+			1  => sprintf( __( '%s updated. %s' ), $this->post_type_label(), $view_link ),
+			2  => __( 'Custom field updated.' ),
+			3  => __( 'Custom field deleted.' ),
+			4  => sprintf( __( '%s updated.' ), $this->post_type_label() ),
+			5  => isset( $_GET[ 'revision' ] ) ? sprintf( __( '%s restored to revision from %s' ),
+				$this->post_type_label(), wp_post_revision_title( (int) $_GET[ 'revision' ], false ) ) : false,
+			6  => sprintf( __( '%s published. %s' ), $this->post_type_label(),
+				$view_link ),
+			7  => sprintf( __( '%s saved.' ), $this->post_type_label() ),
+			8  => sprintf( __( '%s submitted. %s' ), $this->post_type_label(), $preview_link ),
+			9  => sprintf( __( '%3$s scheduled for: %1$s. %2$s') ,
+				'<strong>' . date_i18n( __( 'M j, Y @ G:i' ) . '</strong>', strtotime( $post->post_date ) ), $preview_link, $this->post_type_label() ),
+			10 => sprintf( __( '%s draft updated. %s' ), $this->post_type_label(), $preview_link ),
+
 		);
 
 		return $messages;
+
 	}
 
 
