@@ -71,7 +71,7 @@ if( current_theme_supports( 'mvc_mobile_menu', 'color' ) ){
 
 //For On the Fly Image Resize
 if( current_theme_supports( 'mvc_image_resize' ) ){
-	$MvcImageResize = new MvcImageResize();
+	$MvcImageResize = MvcImageResize::get_instance();
 }
 
 
