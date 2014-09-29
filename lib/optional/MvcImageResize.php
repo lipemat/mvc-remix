@@ -354,6 +354,9 @@ class MvcImageResize extends MvcFramework {
 			} else {
 				$file_path = str_replace( $uploads_dir[ 'baseurl' ], $uploads_dir[ 'basedir' ], $img_url );
 			}
+			if( !file_exists( $file_path ) ){
+				return;
+			}
 			$orig_size = getimagesize( $file_path );
 
 			$image_src[ 0 ] = $img_url;
