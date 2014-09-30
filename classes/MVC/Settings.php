@@ -110,6 +110,26 @@ abstract class Settings {
 	 */
 	protected $settings = array();
 
+	/**
+	 * tabs
+	 *
+	 * Put the settings sections into tabs
+	 *
+	 * @var bool
+	 */
+	protected $tabs = false;
+
+
+	/**
+	 * form_url
+	 *
+	 * The url the form submits
+	 * Set automatically only adjust in extreme cases
+	 *
+	 * @var string
+	 */
+	protected $form_url;
+
 
 	/**
 	 * Add Settings
@@ -347,6 +367,14 @@ abstract class Settings {
 				$this->parent_menu_slug = 'settings.php';
 			}
 		}
+
+		if( $this->network ){
+			$this->form_url = network_admin_url( 'edit.php?action=' . $this->slug );
+		} else {
+			$this->form_url = admin_url( 'options.php' );
+		}
+
+
 	}
 
 
@@ -358,25 +386,107 @@ abstract class Settings {
 	 * @return void
 	 */
 	public function display_settings_page(){
-		if( $this->network ){
-			$url = network_admin_url( 'edit.php?action=' . $this->slug );
-		} else {
-			$url = admin_url( 'options.php' );
-		}
-
 		?>
 		<div class="wrap">
 			<h2><?php echo $this->title; ?></h2>
 
-			<form action="<?php echo $url; ?>" method="post">
-				<?php
-				settings_fields( $this->slug );
-				do_settings_sections( $this->slug );
-				submit_button();
+			<?php
+			if( $this->tabs ){
+				$this->tabbed_form();
+
+			} else {
 				?>
-			</form>
+				<form action="<?php echo $this->form_url; ?>" method="post">
+					<?php
+					settings_fields( $this->slug );
+					do_settings_sections( $this->slug );
+					submit_button();
+					?>
+				</form>
+			<?php
+			}
+			?>
 		</div>
 	<?php
+
+	}
+
+
+	/**
+	 * tabbed_form
+	 *
+	 * Generate a settings page with the settings sections placed into tabs
+	 * Set $this->tabs to true and it will happen automatically
+	 *
+	 * @uses $this->settings
+	 * @uses $this->tabs
+	 *
+	 * @return void
+	 */
+	private function tabbed_form(){
+		reset( $this->settings );
+
+		$tab = isset( $_GET['tab'] ) ? $_GET['tab'] : key(  $this->settings  );
+
+		?>
+		<h2 class="nav-tab-wrapper">
+			<?php
+			foreach( $this->settings as $section => $params ){
+				printf( '<a id="nav-%s" href="%s" class="nav-tab%s">%s</a>',
+					$section,
+					add_query_arg( 'tab', $section ),
+					$tab == $section ? ' nav-tab-active' : '',
+					$params[ 'title' ]
+				);
+			}
+			?>
+		</h2>
+
+		<form action="<?php echo $this->form_url; ?>" method="post">
+			<?php
+			settings_fields( $this->slug );
+
+			foreach( $this->settings as $section => $params ){
+				printf( '<div class="tab-content" id="tab-%s" %s>',
+					$section,
+					$section == $tab ? 'style="display:none;"' : ''
+				);
+
+				?>
+				<h3><?php echo $params[ 'title' ]; ?></h3>
+
+				<?php
+				$func = $section . '_description';
+				$this->{$func}();
+				?>
+
+				<table class="form-table">
+					<?php
+					do_settings_fields( $this->slug, $section );
+					?>
+				</table>
+				<?php
+
+				submit_button();
+
+				?>
+				</div>
+				<?php
+			}
+			?>
+		</form>
+		<script type="text/javascript">
+			jQuery( 'a.nav-tab' ).click( function( e ){
+				e.preventDefault();
+				var id = e.target.id.substr( 4 );
+				jQuery( 'div.tab-content' ).hide();
+				jQuery( 'div#tab-' + id ).show();
+				jQuery( 'a.nav-tab-active' ).removeClass( 'nav-tab-active' );
+				jQuery( e.target ).addClass( 'nav-tab-active' );
+			} );
+		</script>
+		<?php
+
 
 	}
 
