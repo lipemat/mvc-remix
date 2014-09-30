@@ -426,7 +426,7 @@ abstract class Settings {
 	private function tabbed_form(){
 		reset( $this->settings );
 
-		$tab = isset( $_GET['tab'] ) ? $_GET['tab'] : key(  $this->settings  );
+		$tab = isset( $_GET['tab'] ) ? $_GET['tab'] : key( $this->settings );
 
 		?>
 		<h2 class="nav-tab-wrapper">
@@ -449,7 +449,7 @@ abstract class Settings {
 			foreach( $this->settings as $section => $params ){
 				printf( '<div class="tab-content" id="tab-%s" %s>',
 					$section,
-					$section == $tab ? 'style="display:none;"' : ''
+					$section != $tab ? 'style="display:none;"' : ''
 				);
 
 				?>
