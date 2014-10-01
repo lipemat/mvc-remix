@@ -331,7 +331,6 @@ class MvcImageResize extends MvcFramework {
 	 * @param int    $height
 	 * @param bool   $crop
 	 *
-	 * @since 11.10.13
 	 *
 	 * @return array
 	 */
@@ -433,15 +432,21 @@ class MvcImageResize extends MvcFramework {
 			}
 
 			// no cache files - let's finally resize it
-			if( function_exists( 'wp_get_image_editor' ) ){
-				$image = wp_get_image_editor( $file_path );
-				if( ! is_wp_error( $image ) ){
-					$image->resize( $width, $height, $crop );
-					$save_data    = $image->save();
-					$new_img_path = ( !is_wp_error( $save_data ) && !empty( $save_data[ 'path' ] ) ) ? $save_data[ 'path' ] : $file_path;
+			$image = wp_get_image_editor( $file_path );
+			if( !is_wp_error( $image ) ){
+				$image->resize( $width, $height, $crop );
+				$save_data = $image->save();
+				if( is_wp_error( $save_data ) || empty( $save_data[ 'path' ] ) ){
+					$new_img_path = $file_path;
+				} else {
+					$new_img_path = $save_data[ 'path' ];
 				}
-			} else {
-				$new_img_path = image_resize( $file_path, $width, $height, $crop );
+
+			}
+
+
+			if( !file_exists( $new_img_path ) ){
+				return;
 			}
 
 			$new_img_size = getimagesize( $new_img_path );
