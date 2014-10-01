@@ -438,7 +438,7 @@ class MvcImageResize extends MvcFramework {
 				if( ! is_wp_error( $image ) ){
 					$image->resize( $width, $height, $crop );
 					$save_data    = $image->save();
-					$new_img_path = ( isset( $save_data[ 'path' ] ) && ! is_wp_error( $save_data[ 'path' ] ) ) ? $save_data[ 'path' ] : $file_path;
+					$new_img_path = ( !is_wp_error( $save_data ) && !empty( $save_data[ 'path' ] ) ) ? $save_data[ 'path' ] : $file_path;
 				}
 			} else {
 				$new_img_path = image_resize( $file_path, $width, $height, $crop );
