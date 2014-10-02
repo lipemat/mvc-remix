@@ -15,27 +15,6 @@
  if( class_exists('MvcMobileDetect') ) return; 
 class MvcMobileDetect {
 
-   /**
-     * Mobile detection type.
-     *
-     * @deprecated since version 2.6.9
-     */
-    const DETECTION_TYPE_MOBILE     = 'mobile';
-
-    /**
-     * Extended detection type.
-     *
-     * @deprecated since version 2.6.9
-     */
-    const DETECTION_TYPE_EXTENDED   = 'extended';
-
-    /**
-     * A frequently used regular expression to extract version #s.
-     *
-     * @deprecated since version 2.6.9
-     */
-    const VER                       = '([\w._\+]+)';
-
     /**
      * Top-level device.
      */

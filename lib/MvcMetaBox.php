@@ -1,14 +1,7 @@
 <?php
-            /**
-             * Mvc Meta Box
-			 * 
-			 * The Meta Box Generator
-             * 
-             * @uses construct as separate object per meta box
-             *
-             * @TODO Come up with a way to assign attributes to fields such as text
-             * @TODO Ponder a way to allow for revision of meta data as well
-             */
+/**
+ * @deprecated
+ */
 if( class_exists('MvcMetaBox') ) return;             
 class MvcMetaBox extends MvcFramework{
       public $id; //Id of the meta box
@@ -20,22 +13,12 @@ class MvcMetaBox extends MvcFramework{
 
         
       /**
-       * Sets everything in motion. Should construct for each meta box
-       * 
-       * @param string $label - label of meta box
-       * @param array $postTypes - post types to automatically show up on
-       * 
-       * @param array $args = 
-       *             'priority'     => 'high',
-       *             'position'     => 'normal',
-       *             'fields'       => array(),
-       *             'descriptions' => array(),
-       *             'auto_generate => true //Allows for manually outputing the content via $this->metaBoxOutput()
-       *  
-       * @since 6.3.13
-       * 
+       * @deprecated
        */
       function __construct($label, $postTypes = array(), $args = array()){
+
+	      _deprecated_function( __FUNCTION__, '1.25.0', 'classes/Meta_Box')' );
+
           $defaults = array(
                  'priority'      => 'high',
                  'position'      => 'normal',

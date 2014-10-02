@@ -38,8 +38,8 @@ class MvcGallery extends MvcFramework{
              
              add_action('admin_menu', array($this, 'metaBoxSetup'), 99 );
 
-             add_action('save_post', array($this, 'save_post'), 99 );       
-          //   add_filter('the_post', array($this, 'the_post'));  -- Deprecated until I find a use for it        
+             add_action('save_post', array($this, 'save_post'), 99 );
+
        }
        
  
@@ -109,34 +109,6 @@ class MvcGallery extends MvcFramework{
               return $post_id;
        }
 
-
-
-       /**
-       * Add Attachments to Post
-       * 
-        * @deprecated
-       */
-       function the_post($post ){
-              if( !in_array( $post->post_type, $this->post_types ) ) return;
-     
-              foreach($this->groups as $group){
-                     $d = new WP_Query(array (
-                           'post_type '          => 'attachment',
-                           'post_status '        => 'inherit',
-                           'post__in '           =>  (array)get_post_meta($post->ID, 'mvc-gallery-'. $group, true)
-                     ));   
-                     $imgs = $d->query['post__in'];
-                     foreach($d->posts as $p){
-                           @$imgs[array_search($p->ID, $imgs)] = $p ;
-                     }
-                     $d->posts = $imgs;  
-                     $d->rewind_posts();
-                     $post->{$group} = $d;
-              }               
-              
-      
-             
-       }
        
        
               /**

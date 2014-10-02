@@ -137,6 +137,7 @@ class MvcFramework{
       * @see /classes/Custom_Post_Type.php
      **/
     function registerPostType($title, $args = array()){
+	    _deprecated_function( __FUNCTION__, '1.25.0', '/classes/Custom_Post_Type.php' );
         $this->MvcPostTypeTax->register_post_type($title, $args);
         
     }
@@ -147,6 +148,7 @@ class MvcFramework{
      * @see /classes/Taxonomy.php
      */
     function registerTaxonomy( $title, $post_type = '', $args = array() ){
+	    _deprecated_function( __FUNCTION__, '1.25.0', '/classes/Taxonomy.php' );
         $this->MvcPostTypeTax->register_taxonomy($title, $post_type, $args );
     }
 
@@ -178,6 +180,7 @@ class MvcFramework{
      * @see mvc_string()->getYoutubeImage()
      */
     public function getYoutubeImage($embed) {
+	    _deprecated_function( __FUNCTION__, '1.25.0', 'mvc_string()->getYoutubeImage()' );
 	    return mvc_string()->getYoutubeImage( $embed );
     }
     
@@ -242,7 +245,7 @@ class MvcFramework{
 	 * @uses mvc_format()->changeSidebar();
      */
     function changeSidebar( $sidebar ){
-    	
+	    _deprecated_function( __FUNCTION__, '1.25.0', 'mvc_format()->changeSidebar()' );
     	mvc_format()->changeSidebar( $sidebar );
 		
     }
@@ -314,7 +317,8 @@ class MvcFramework{
      * @deprecated 6.10.14
 	 * @see MvcStyles::add_font()
      */
-    function addFont( $families ){  	
+    function addFont( $families ){
+	    _deprecated_function( __FUNCTION__, '1.25.0', 'mvc_styles()->add_font()' );
 		mvc_styles()->add_font( $families );
     }
 
@@ -324,6 +328,7 @@ class MvcFramework{
 	 * @see MvcStyles::add_js()
      */
     function addJs($file){
+	    _deprecated_function( __FUNCTION__, '1.25.0', 'mvc_styles()->add_js()' );
         mvc_styles()->add_js( $file );
 	
     }
@@ -531,6 +536,7 @@ class MvcFramework{
     function view( $file = false, $folder = false, $args = array(), $hideInfo = false ){
 	    global $posts, $post, $wp_did_header, $wp_query, $wp_rewrite, $wpdb, $wp_version, $wp, $id, $comment, $user_ID;
 
+	    //@deprected - remove these when going to +
 	    $MvcString = $this->MvcString;
         $MvcForm = $this->MvcForm;
         
@@ -556,13 +562,10 @@ class MvcFramework{
         }
 
 	    if( $path = $this->locate_template( 'View/'.$folder . $file . '.php' ) ){
-		    //Any arguments will be available via variable
-		    extract($args);
-
-		    //Any keys set for this view will also be extracted
+		    extract( $args );
 		    extract( $this->get() );
-		    
 		    include( $path );
+
 	    } else {
 		    echo __( 'The file does not exist View/'.$folder . $file . '.php', 'mvc' );
 	    }
@@ -943,7 +946,7 @@ class MvcFramework{
      * @since 2.11.14
      */
     function get_image_data( $image_id, $size = 'thumbnail' ){
-        
+	    _deprecated_function( __FUNCTION__, '1.25.0', '$this->getImageData()' );
         return $this->getImageData($image_id, $size);
     }
     
@@ -1070,29 +1073,22 @@ class MvcFramework{
             print_r( $wp_filter[$hook] );
         print '</pre>';
     }
-    
-    /**
-     * Returns a human readable slug with the _ remove and words uppercase
-     * @param string $slug
-     * @return string
-     * @since 3.11.13
-     * 
-     * @deprecated Use MvcString
 
+
+    /**
+     * @deprecated Use MvcString
      */
     public function human_format_slug( $slug ){
+	    _deprecated_function( __FUNCTION__, '1.25.0', 'mvc_string()->human_format_slug()' );
         return $this->MvcString->human_format_slug($slug);
     }
-    
+
+
     /**
-     * Turns and human readable phrase into a slug
-     * @param string $human
-     * @return string
-     * @since 3.11.13
-     * 
      * @deprecated Use MvcString
      */
     public function slug_format_human( $human ){
+	    _deprecated_function( __FUNCTION__, '1.25.0', 'mvc_string()->slug_format_human()' );
         return $this->MvcString->slug_format_human($human);
     }
 
@@ -1303,13 +1299,12 @@ class MvcFramework{
     
     
     /**
-     * Retreives all the image from a post
      * @deprecated in favor of self::getPostImages
-     * @see self::getPostImages
-     * @since 5.9.13
      */
     function get_images( $html = true, $include_featured = false, $size = 'default', $wrap_start = '', $wrap_end = '', $include_content_images = false, $include_meta_images = false ){
-       
+
+	    _deprecated_function( __FUNCTION__, '1.25.0', '$this->getPostImages()' );
+
        $args = array(
                     'html' => $html,
                     'include_featured' => $include_featured,

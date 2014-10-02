@@ -1,16 +1,7 @@
 <?php 
 /**
- * Register a Post Type and/or taxonomy
- * 
- * @uses This fills in all the defaults for you
- * 
- * @author Mat Lipe <mat@matlipe.com>
- * 
- * @since 12.2.13
- * 
- * 
- * @package MVC
- * 
+ * @deprecated
+ *
  * 
  */     
 if( class_exists('MvcPostTypeTax') ) return;              
@@ -25,6 +16,8 @@ class MvcPostTypeTax{
      *
      **/
     function register_post_type( $title, $args = array() ){
+
+	    _deprecated_function( __FUNCTION__, '1.25.0', 'classes/Custom_Post_type()' );
 
         $sanitizedTitle = sanitize_title( $title );
     
