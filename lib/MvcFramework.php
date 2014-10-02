@@ -529,7 +529,9 @@ class MvcFramework{
      * @return void
      */
     function view( $file = false, $folder = false, $args = array(), $hideInfo = false ){
-        $MvcString = $this->MvcString;
+	    global $posts, $post, $wp_did_header, $wp_query, $wp_rewrite, $wpdb, $wp_version, $wp, $id, $comment, $user_ID;
+
+	    $MvcString = $this->MvcString;
         $MvcForm = $this->MvcForm;
         
         if( !$folder ){
