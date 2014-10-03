@@ -1019,7 +1019,7 @@ class MvcFramework{
         }
 
         //Add the page title as a class
-        $classes[] = self::slug_format_human($post->post_title);
+        $classes[] = mvc_string()->slug_format_human($post->post_title);
 
 
         if( empty( self::$body_classes ) ){
