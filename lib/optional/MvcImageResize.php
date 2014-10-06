@@ -530,6 +530,8 @@ class MvcImageResize extends MvcFramework {
 		if( ! is_a( self::$instance, __CLASS__ ) ){
 			self::$instance = new self();
 		}
+
+		return self::$instance;
 	}
 
 }
