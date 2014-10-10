@@ -7,15 +7,17 @@ namespace MVC;
  * Abstract starting point for a settings page
  * Retrieve option from proper location by using $this->get_option()
  *
+ * Extend this with another class that does not have a __construct method or call parent::__construct()
+ * Implement the abstract methods and set appropriate class vars. This will do the rest.
  *
- * @uses      extend this with another class that does not have a __construct method or call parent::__construct()
- *       Implement the abstract methods and set appropriate class vars. This will do the rest.
+ * To have a description for a section create a public method %section_slug%_description and
+ * it will automatically be used
  *
- * @uses      to have a description for a section create a public method %section_slug%_description and
- *       it will automatically be used
+ * To sanitize a field create a method named %field_slug%_sanitize and it wll automatically
+ * receive the value to sanitize
  *
- * @uses      to override the default text field create a protected method with same name as option and
- *       it will be passed the value of the option as it only argument
+ * To override the default text field create a protected method with same name as option and
+ * it will be passed the value of the option as it only argument
  *
  *
  * @package   MVC Theme
@@ -239,7 +241,12 @@ abstract class Settings {
 
 		foreach( $this->settings as $section => $params ){
 			foreach( $params[ 'fields' ] as $field => $title ){
-				update_site_option( $field, $_POST[ $field ] );
+				if( method_exists( $this, $field . "_sanitize" ) ){
+					$value = $this->{$field."_sanitize"}( $_POST[ $field ] );
+				} else {
+					$value = $_POST[ $field ];
+				}
+				update_site_option( $field, $value );
 			}
 		}
 
@@ -302,8 +309,13 @@ abstract class Settings {
 				);
 
 				if( !$this->network ){
-					register_setting( $this->slug, $field );
+					if( method_exists( $this, $field . "_sanitize" ) ){
+						register_setting( $this->slug, $field, array( $this, $field . '_sanitize' ) );
+					} else {
+						register_setting( $this->slug, $field );
+					}
 				}
+
 			}
 		}
 
@@ -471,7 +483,7 @@ abstract class Settings {
 
 				?>
 				</div>
-				<?php
+			<?php
 			}
 			?>
 		</form>
@@ -485,7 +497,7 @@ abstract class Settings {
 				jQuery( e.target ).addClass( 'nav-tab-active' );
 			} );
 		</script>
-		<?php
+	<?php
 
 
 	}
