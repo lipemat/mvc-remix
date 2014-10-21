@@ -44,7 +44,7 @@ class MvcMobileMenu extends MvcFramework{
 	 private function hooks(){
 	 	
 		//switch defaults if html5 support
-		add_action( 'after_setup_theme', array( $this, 'adjust_defaults' ) );
+		add_action( 'after_setup_theme', array( $this, 'adjust_defaults' ), 999 );
 	 	
 		//main js and css
 	 	add_action('wp_enqueue_scripts', array( $this, 'addJsCss') ); 
@@ -68,7 +68,7 @@ class MvcMobileMenu extends MvcFramework{
 	  * 
 	  */
 	 public function adjust_defaults(){
-	 	if( function_exists( 'genesis_html5' ) && genesis_html5() ){
+	 	if( current_theme_supports( 'html5' ) ){
 	 		$this->defaults[ 'menu'  ] = '.nav-primary';	
 			$this->defaults[ 'html5' ] = true;
 		}
