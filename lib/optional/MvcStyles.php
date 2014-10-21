@@ -378,7 +378,11 @@ class MvcStyles extends MvcFramework {
 	/**
 	 * Add the child.js file to the site
 	 *
-	 * @since 12.5.13
+	 * If SCRIPT_DEBUG is defined and true this will check for a chid.min.js file
+	 * If not defined or false will check for a child.js file
+	 *
+	 * Will check in the %theme%/js dir first then the %theme%/resources/js dir next
+	 * 
 	 *
 	 * @uses  called by __construct()
 	 * @uses  also add a global js variable with includes the commonly used dirs called 'DIR'
@@ -387,7 +391,21 @@ class MvcStyles extends MvcFramework {
 	 */
 	function add_js_css(){
 
-		if( $file = $this->locate_template( 'js/child.js', true ) ){
+		if( !defined( 'SCRIPT_DEBUG' ) || SCRIPT_DEBUG == false ){
+			if( !$file = $this->locate_template( 'js/child.js', true ) ){
+				$file = $this->locate_template( 'resources/js/child.js', true );
+			}
+		} else {
+			if( !$file = $this->locate_template( 'js/child.min.js', true ) ){
+				if( !$file = $this->locate_template( 'resources/js/min/child.min.js', true ) ){
+					if( !$file = $this->locate_template( 'js/child.js', true ) ){
+						$file = $this->locate_template( 'resources/js/child.js', true );
+					}
+				}
+			}
+		}
+
+		if( $file ){
 			wp_enqueue_script(
 				'mvc-child-js',
 				$file,
