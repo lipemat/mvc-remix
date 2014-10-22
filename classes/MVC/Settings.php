@@ -17,7 +17,7 @@ namespace MVC;
  * receive the value to sanitize
  *
  * To override the default text field create a protected method with same name as option and
- * it will be passed the value of the option as it only argument
+ * it will be passed the ( %value%, %field% ) as its argument.
  *
  *
  * @package   MVC Theme
@@ -236,7 +236,7 @@ abstract class Settings {
 	 * @return mixed|void
 	 */
 	public function get_option( $field ){
-		$field = $this->get_namespaced_field( $field );
+		$field = $this->get_field_name( $field );
 
 		if( $this->network ){
 			return get_site_option( $field, null );
@@ -263,15 +263,15 @@ abstract class Settings {
 			foreach( $params[ 'fields' ] as $field => $title ){
 
 				if( method_exists( $this, $field . "_sanitize" ) ){
-					$value = $this->{$field . "_sanitize"}( $_POST[ $this->get_namespaced_field( $field ) ] );
+					$value = $this->{$field . "_sanitize"}( $_POST[ $this->get_field_name( $field ) ] );
 
-				} elseif( method_exists( $this, $this->get_namespaced_field( $field ) . "_sanitize" ) ){
-					$value = $this->{$this->get_namespaced_field( $field )."_sanitize"}( $_POST[ $this->get_namespaced_field( $field ) ] );
+				} elseif( method_exists( $this, $this->get_field_name( $field ) . "_sanitize" ) ){
+					$value = $this->{$this->get_field_name( $field )."_sanitize"}( $_POST[ $this->get_field_name( $field ) ] );
 				} else {
-					$value = $_POST[ $this->get_namespaced_field( $field ) ];
+					$value = $_POST[ $this->get_field_name( $field ) ];
 
 				}
-				update_site_option( $this->get_namespaced_field( $field ), $value );
+				update_site_option( $this->get_field_name( $field ), $value );
 			}
 		}
 
@@ -301,7 +301,7 @@ abstract class Settings {
 
 
 	/**
-	 * Get Namespaced Field
+	 * Get Field Name
 	 *
 	 * Return a field with the namespace prepended to the name
 	 * Will check if we have a namespace and if already appended
@@ -310,7 +310,7 @@ abstract class Settings {
 	 *
 	 * @return string
 	 */
-	protected function get_namespaced_field( $field ){
+	protected function get_field_name( $field ){
 		if( empty( $this->namespace ) ){
 			return $field;
 		}
@@ -366,7 +366,7 @@ abstract class Settings {
 
 			foreach( $params[ 'fields' ] as $field => $title ){
 				add_settings_field(
-					$this->get_namespaced_field( $field ),
+					$this->get_field_name( $field ),
 					$title,
 					array( $this, 'field' ),
 					$this->slug,
@@ -376,11 +376,11 @@ abstract class Settings {
 
 				if( !$this->network ){
 					if( method_exists( $this, $field . "_sanitize" ) ){
-						register_setting( $this->slug, $this->get_namespaced_field( $field ), array( $this, $field . '_sanitize' ) );
-					} elseif( method_exists( $this, $this->get_namespaced_field( $field ) . "_sanitize" ) ){
-						register_setting( $this->slug, $this->get_namespaced_field( $field ), array( $this, $this->get_namespaced_field( $field ) . '_sanitize' ) );
+						register_setting( $this->slug, $this->get_field_name( $field ), array( $this, $field . '_sanitize' ) );
+					} elseif( method_exists( $this, $this->get_field_name( $field ) . "_sanitize" ) ){
+						register_setting( $this->slug, $this->get_field_name( $field ), array( $this, $this->get_field_name( $field ) . '_sanitize' ) );
 					} else {
-						register_setting( $this->slug, $this->get_namespaced_field( $field ) );
+						register_setting( $this->slug, $this->get_field_name( $field ) );
 					}
 				}
 
@@ -404,7 +404,7 @@ abstract class Settings {
 	 */
 	public function field( $field ){
 
-		$field = $this->get_namespaced_field( $field );
+		$field = $this->get_field_name( $field );
 
 		if( $this->network ){
 			$value = get_site_option( $field, '' );
@@ -413,11 +413,11 @@ abstract class Settings {
 		}
 
 		if( method_exists( $this, $field ) ){
-			$this->{$field}( $value );
+			$this->{$field}( $value, $field );
 			return;
 
 		} elseif( method_exists( $this, $this->get_non_namespaced_field( $field ) ) ){
-			$this->{$this->get_non_namespaced_field( $field )}($value);
+			$this->{$this->get_non_namespaced_field( $field )}( $value, $field );
 			return;
 		}
 
