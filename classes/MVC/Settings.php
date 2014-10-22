@@ -47,6 +47,15 @@ abstract class Settings {
 	protected $menu_title;
 
 	/**
+	 * Description
+	 *
+	 * Will display directly under the settings page's title
+	 *
+	 * @var string
+	 */
+	protected $description;
+
+	/**
 	 * Slug
 	 *
 	 * Settings slug
@@ -401,8 +410,11 @@ abstract class Settings {
 		?>
 		<div class="wrap">
 			<h2><?php echo $this->title; ?></h2>
-
 			<?php
+			if( !empty( $this->description ) ){
+				echo $this->description;
+			}
+
 			if( $this->tabs ){
 				$this->tabbed_form();
 
