@@ -412,7 +412,11 @@ abstract class Settings {
 			<h2><?php echo $this->title; ?></h2>
 			<?php
 			if( !empty( $this->description ) ){
-				echo $this->description;
+				?>
+				<p class="description">
+					<?php echo $this->description; ?>
+				</p>
+				<?php
 			}
 
 			if( $this->tabs ){
