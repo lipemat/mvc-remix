@@ -13,7 +13,7 @@ namespace MVC;
  * To have a description for a section create a public method %section_slug%_description and
  * it will automatically be used
  *
- * To sanitize a field create a method named %field_slug%_sanitize and it wll automatically
+ * To sanitize a field create a "public" method named %field_slug%_sanitize and it wll automatically
  * receive the value to sanitize
  *
  * To override the default text field create a protected method with same name as option and
@@ -63,6 +63,15 @@ abstract class Settings {
 	 * @var string
 	 */
 	protected $slug;
+
+	/**
+	 * Namespace
+	 *
+	 * Auto namespace the options during rendering, saving, and retrieval
+	 *
+	 * @var bool
+	 */
+	protected $namespace = null;
 
 	/**
 	 * Parent menu Slug
@@ -227,6 +236,8 @@ abstract class Settings {
 	 * @return mixed|void
 	 */
 	public function get_option( $field ){
+		$field = $this->get_namespaced_field( $field );
+
 		if( $this->network ){
 			return get_site_option( $field, null );
 		} else {
@@ -250,12 +261,17 @@ abstract class Settings {
 
 		foreach( $this->settings as $section => $params ){
 			foreach( $params[ 'fields' ] as $field => $title ){
+
 				if( method_exists( $this, $field . "_sanitize" ) ){
-					$value = $this->{$field."_sanitize"}( $_POST[ $field ] );
+					$value = $this->{$field . "_sanitize"}( $_POST[ $this->get_namespaced_field( $field ) ] );
+
+				} elseif( method_exists( $this, $this->get_namespaced_field( $field ) . "_sanitize" ) ){
+					$value = $this->{$this->get_namespaced_field( $field )."_sanitize"}( $_POST[ $this->get_namespaced_field( $field ) ] );
 				} else {
-					$value = $_POST[ $field ];
+					$value = $_POST[ $this->get_namespaced_field( $field ) ];
+
 				}
-				update_site_option( $field, $value );
+				update_site_option( $this->get_namespaced_field( $field ), $value );
 			}
 		}
 
@@ -263,6 +279,47 @@ abstract class Settings {
 
 		exit();
 
+	}
+
+
+	/**
+	 * Get Non Namespaced Field
+	 *
+	 * Remove the namespace if exists from a field and return the value
+	 *
+	 * @param string $field - possibly namespaced field
+	 *
+	 * @return string
+	 */
+	protected function get_non_namespaced_field( $field ){
+		if( empty( $this->namespace ) ){
+			return $field;
+		}
+
+		return str_replace( $this->namespace . '_' , '',  $field );
+	}
+
+
+	/**
+	 * Get Namespaced Field
+	 *
+	 * Return a field with the namespace prepended to the name
+	 * Will check if we have a namespace and if already appended
+	 *
+	 * @param string $field - possibly non namespaced field
+	 *
+	 * @return string
+	 */
+	protected function get_namespaced_field( $field ){
+		if( empty( $this->namespace ) ){
+			return $field;
+		}
+
+		if( strpos( $field, $this->namespace ) !== false ){
+			return $field;
+		}
+
+		return $this->namespace . '_' . $field;
 	}
 
 
@@ -309,7 +366,7 @@ abstract class Settings {
 
 			foreach( $params[ 'fields' ] as $field => $title ){
 				add_settings_field(
-					$field,
+					$this->get_namespaced_field( $field ),
 					$title,
 					array( $this, 'field' ),
 					$this->slug,
@@ -319,9 +376,11 @@ abstract class Settings {
 
 				if( !$this->network ){
 					if( method_exists( $this, $field . "_sanitize" ) ){
-						register_setting( $this->slug, $field, array( $this, $field . '_sanitize' ) );
+						register_setting( $this->slug, $this->get_namespaced_field( $field ), array( $this, $field . '_sanitize' ) );
+					} elseif( method_exists( $this, $this->get_namespaced_field( $field ) . "_sanitize" ) ){
+						register_setting( $this->slug, $this->get_namespaced_field( $field ), array( $this, $this->get_namespaced_field( $field ) . '_sanitize' ) );
 					} else {
-						register_setting( $this->slug, $field );
+						register_setting( $this->slug, $this->get_namespaced_field( $field ) );
 					}
 				}
 
@@ -345,6 +404,8 @@ abstract class Settings {
 	 */
 	public function field( $field ){
 
+		$field = $this->get_namespaced_field( $field );
+
 		if( $this->network ){
 			$value = get_site_option( $field, '' );
 		} else {
@@ -353,7 +414,10 @@ abstract class Settings {
 
 		if( method_exists( $this, $field ) ){
 			$this->{$field}( $value );
+			return;
 
+		} elseif( method_exists( $this, $this->get_non_namespaced_field( $field ) ) ){
+			$this->{$this->get_non_namespaced_field( $field )}($value);
 			return;
 		}
 
