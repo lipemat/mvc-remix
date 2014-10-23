@@ -93,11 +93,12 @@ abstract class Db {
 	 *                         row depending on the number of columns set in
 	 *                         $columns, instead of an array of results
 	 *
+	 * @param string [ $order_by ] - an orderby value used verbatim in query
 	 *
 	 * @return array|string
 	 *
 	 */
-	public function get( $columns, $id_or_wheres = null, $count = null ){
+	public function get( $columns, $id_or_wheres = null, $count = null, $order_by = null ){
 		global $wpdb;
 
 		if( is_array( $columns ) ){
@@ -122,6 +123,10 @@ abstract class Db {
 
 		$sql = "SELECT $columns FROM $this->table WHERE " . implode( ' AND ', $wheres );
 		$sql = $wpdb->prepare( $sql, $values );
+
+		if( $order_by != null ){
+			$sql .= " ORDER BY $order_by";
+		}
 
 		if( $count != null ){
 			$sql .= " LIMIT $count";
