@@ -409,7 +409,9 @@ class MvcStyles extends MvcFramework {
 			wp_enqueue_script(
 				'mvc-child-js',
 				$file,
-				array( 'jquery' )
+				array( 'jquery' ),
+				false,
+				true
 			);
 
 			$dirs = array(
@@ -459,7 +461,9 @@ class MvcStyles extends MvcFramework {
 					wp_enqueue_script(
 						'mvc-non-mobile-script',
 						$file,
-						array( 'jquery' )
+						array( 'jquery' ),
+						false,
+						true
 					);
 
 				}
@@ -479,7 +483,9 @@ class MvcStyles extends MvcFramework {
 						wp_enqueue_script(
 							'mvc-tablet-script',
 							$file,
-							array( 'jquery' )
+							array( 'jquery' ),
+							false,
+							true
 						);
 					}
 				}
@@ -497,7 +503,9 @@ class MvcStyles extends MvcFramework {
 						wp_enqueue_script(
 							'mvc-phone-script',
 							$file,
-							array( 'jquery' )
+							array( 'jquery' ),
+							false,
+							true
 						);
 					}
 				}
