@@ -8,12 +8,15 @@ namespace MVC;
  * @package   MVC Theme
  * @namespace MVC
  *
- * @todo      Cleanup the phpdocs and all around code
  *
  */
 class Custom_Post_Type {
 
-	private static $post_type_registry = array();
+	const REGISTRY_OPTION = 'mvc_cpt_registry';
+	const CUSTOM_CAPS_OPTION = 'mvc_cpt_caps';
+
+
+	private static $registry = array();
 
 	private static $rewrite_checked = false;
 
@@ -116,8 +119,6 @@ class Custom_Post_Type {
 		add_filter( 'post_updated_messages', array( $this, 'post_updated_messages' ), 10, 1 );
 		add_filter( 'post_type_archive_title', array( $this, 'get_post_type_archive_title' ), 10, 1 );
 		add_filter( 'bulk_post_updated_messages', array( $this, 'bulk_edit_messages' ), 10, 2 );
-
-
 	}
 
 
@@ -133,13 +134,44 @@ class Custom_Post_Type {
 	 *
 	 */
 	public static function check_rewrite_rules(){
-		if( get_option( 'mvc_cpt_registry' ) != self::$post_type_registry ){
+		$previous = get_option( self::REGISTRY_OPTION );
+		if( $previous != self::$registry ){
 			flush_rewrite_rules();
-			add_action( 'wp_loaded', array( __CLASS__, 'check_capabilities' ), 9, 0 );
-			update_option( 'mvc_cpt_registry', self::$post_type_registry );
+			update_option( self::REGISTRY_OPTION, self::$registry );
 		}
 	}
-	
+
+
+	/**
+	 * Add Administrator Capabilities
+	 *
+	 * If the capability_type is not post it has custom cababilites
+	 * We need to add these to the administrators of the site
+	 *
+	 * This gets called during $this->register_post_type()
+	 *
+	 * Checks to make sure we have not done this already
+	 *
+	 * @param object $post_type
+	 *
+	 * @return void
+	 */
+	private function add_administrator_capabilities( $post_type ){
+		$previous  = get_option( self::CUSTOM_CAPS_OPTION, array() );
+		if( in_array( $post_type->capability_type, $previous ) ){
+			return;
+		}
+
+		$admin = get_role( 'administrator' );
+		foreach( $post_type->cap as $cap ){
+			$admin->add_cap( $cap );
+		}
+
+		$previous[] = $post_type->capability_type;
+		update_option( self::CUSTOM_CAPS_OPTION, $previous );
+
+	}
+
 
 	/**
 	 * Register this post type with WordPress
@@ -149,9 +181,9 @@ class Custom_Post_Type {
 	public function register_post_type(){
 		$post_type = register_post_type( $this->post_type, $this->post_type_args() );
 		if( !is_wp_error( $post_type ) ){
-			self::$post_type_registry[ $this->post_type ] = get_class( $this );
+			self::$registry[ $this->post_type ] = get_class( $this );
 			if( $post_type->capability_type != "post" ){
-				//$this->add_administrator_capabilities( $post_type );
+				$this->add_administrator_capabilities( $post_type );
 			}
 
 		}
