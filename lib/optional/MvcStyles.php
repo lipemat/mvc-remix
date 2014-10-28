@@ -4,7 +4,6 @@
  * Optional CSS and JS handler for the theme
  * Allow for targeting specific browsers and such with css file names
  *
- * @since 1.7.14
  *
  * @uses  add_theme_support('mvc_styles');
  *
@@ -318,7 +317,7 @@ class MvcStyles extends MvcFramework {
 	 * @uses  called by browser_support() and used the class var $browser
 	 */
 	function browser_style(){
-		if( $file = $this->locate_template( $this->browser . '.css', true ) ){
+		if( $file = $this->locate_css_file( $this->browser . '.css' ) ){
 			wp_enqueue_style(
 				$this->browser . '-child-css',
 				$file
@@ -338,7 +337,9 @@ class MvcStyles extends MvcFramework {
 	 */
 	function admin_js(){
 
-		if( $file = $this->locate_template( 'js/admin.js', true ) ){
+		$file = $this->locate_js_file( 'admin' );
+
+		if( !empty( $file ) ){
 			wp_enqueue_script(
 				'mvc-admin-js',
 				$file,
@@ -360,17 +361,78 @@ class MvcStyles extends MvcFramework {
 			do_action( 'mvc_admin_js', 'mvc-admin-js' );
 		}
 
-		if( $file = $this->locate_template( 'admin.css', true ) ){
+		if( $file = $this->locate_css_file( 'admin.css' ) ){
 			wp_enqueue_style(
 				'mvc-admin-styles',
-				$file //The location of the style
-			);
-		} elseif( $file = $this->locate_template( 'css/admin.css', true ) ) {
-			wp_enqueue_style(
-				'mvc-admin-styles',
-				$file //The location of the style
+				$file
 			);
 		}
+
+	}
+
+
+	/**
+	 * locate_css_file
+	 *
+	 * Locates the proper css file based on SCRIPT_DEBUG
+	 *
+	 * Will check in the root of the theme then the /css folder
+	 *
+	 * If !SCRIPT_DEBUG will look for .min.css file
+	 *
+	 * @param $file_name
+	 *
+	 * @return bool|string
+	 */
+	public function locate_css_file( $file_name ){
+		$file_name = str_replace( '.css', '', $file_name );
+
+		if( !defined( 'SCRIPT_DEBUG' ) || !SCRIPT_DEBUG ){
+			if( !$file = $this->locate_template( "$file_name.min.css", true ) ){
+				$file = $this->locate_template( "css/$file_name.min.css", true );
+			}
+		}
+
+		if( empty( $file ) ){
+			if( !$file = $this->locate_template( "$file_name.css", true ) ){
+				$file = $this->locate_template( "css/$file_name.css", true );
+			}
+		}
+
+		return $file;
+	}
+
+
+	/**
+	 * locate_js_file
+	 *
+	 * Locates the proper js file based on SCRIPT_DEBUG
+	 * And theme structure
+	 *
+	 * Will look in a /js folder first then /resources/js
+	 *
+	 * if !SCRIPT_DEBUG will look for a $file_name.min.js file
+	 *
+	 * @param $file_name
+	 *
+	 * @return bool|string
+	 */
+	public function locate_js_file( $file_name ){
+		$file_name = str_replace( '.js', '', $file_name );
+
+		if( !defined( 'SCRIPT_DEBUG' ) || !SCRIPT_DEBUG ){
+			if( !$file = $this->locate_template( "js/$file_name.min.js", true ) ){
+				$file = $this->locate_template( "resources/js/min/$file_name.min.js", true );
+			}
+		}
+
+		if( empty( $file ) ){
+			if( !$file = $this->locate_template( "js/$file_name.js", true ) ){
+				$file = $this->locate_template( "resources/js/$file_name.js", true );
+			}
+		}
+
+		return $file;
 
 	}
 
@@ -391,19 +453,7 @@ class MvcStyles extends MvcFramework {
 	 */
 	function add_js_css(){
 
-		if( !defined( 'SCRIPT_DEBUG' ) || SCRIPT_DEBUG == false ){
-			if( !$file = $this->locate_template( 'js/child.js', true ) ){
-				$file = $this->locate_template( 'resources/js/child.js', true );
-			}
-		} else {
-			if( !$file = $this->locate_template( 'js/child.min.js', true ) ){
-				if( !$file = $this->locate_template( 'resources/js/min/child.min.js', true ) ){
-					if( !$file = $this->locate_template( 'js/child.js', true ) ){
-						$file = $this->locate_template( 'resources/js/child.js', true );
-					}
-				}
-			}
-		}
+		$file = $this->locate_js_file( 'child' );
 
 		if( $file ){
 			wp_enqueue_script(
@@ -432,23 +482,19 @@ class MvcStyles extends MvcFramework {
 		}
 
 
+		$file = $this->locate_css_file( 'child' );
 		//For custom css files when using with plugins
-		if( $file = $this->locate_template( 'child.css', true ) ){
+		if( $file  ){
 			wp_enqueue_style(
 				'mvc-child-styles',
-				$file //The location of the style
-			);
-		} elseif( $file = $this->locate_template(  'css/child.css', true ) ) {
-			wp_enqueue_style(
-				'mvc-child-styles',
-				$file //The location of the style
+				$file
 			);
 		}
 
 
 		//Add the mobile Style if required
 		if( current_theme_supports( 'mobile_responsive' ) ){
-			if( $file = $this->locate_template( 'mobile/mobile-responsive.css', true ) ){
+			if( $file = $this->locate_css_file( 'mobile/mobile-responsive.css' ) ){
 				wp_enqueue_style(
 					'mvc-mobile-styles',
 					$file //The location of the style
@@ -457,7 +503,7 @@ class MvcStyles extends MvcFramework {
 
 			//Add the mobile script or the non mobile script based on device
 			if( !self::is_mobile() ){
-				if( $file = $this->locate_template( 'mobile/desktop.js', true ) ){
+				if( $file = $this->locate_js_file( 'mobile/desktop.js' ) ){
 					wp_enqueue_script(
 						'mvc-non-mobile-script',
 						$file,
@@ -471,7 +517,7 @@ class MvcStyles extends MvcFramework {
 
 				//Add the tablet stuff
 				if( self::is_tablet() ){
-					if( $file = $this->locate_template( 'mobile/tablet.css', true ) ){
+					if( $file = $this->locate_css_file( 'mobile/tablet.css' ) ){
 						wp_enqueue_style(
 							'mvc-tablet-styles',
 							$file
@@ -479,7 +525,7 @@ class MvcStyles extends MvcFramework {
 					}
 
 
-					if( $file = $this->locate_template(  'mobile/tablet.js', true ) ){
+					if( $file = $this->locate_js_file(  'mobile/tablet.js' ) ){
 						wp_enqueue_script(
 							'mvc-tablet-script',
 							$file,
@@ -492,14 +538,14 @@ class MvcStyles extends MvcFramework {
 
 				//Add the phone stuff
 				if( self::is_phone() ){
-					if( $file = $this->locate_template(  'mobile/phone.css', true ) ){
+					if( $file = $this->locate_css_file(  'mobile/phone.css' ) ){
 						wp_enqueue_style(
 							'mvc-phone-styles',
 							$file //The location of the style
 						);
 					}
 
-					if( $file = $this->locate_template( 'mobile/phone.js', true ) ){
+					if( $file = $this->locate_js_file( 'mobile/phone.js' ) ){
 						wp_enqueue_script(
 							'mvc-phone-script',
 							$file,
