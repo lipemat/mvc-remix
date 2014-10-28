@@ -12,68 +12,52 @@ namespace MVC;
  */
 class Custom_Post_Type {
 
+	/**
+	 * Private properties
+	 */
 	const REGISTRY_OPTION = 'mvc_cpt_registry';
 	const CUSTOM_CAPS_OPTION = 'mvc_cpt_caps';
-
-
 	private static $registry = array();
-
 	private static $rewrite_checked = false;
-
 	public $post_type_label_singular = '';
-
 	public $post_type_label_plural = '';
 
+
 	/**
-	 * @var string The label that will be shown on the front end title bar
+	 * Label used when retrieving the post type archive title
+	 *
+	 * @var string
 	 */
-	public $front_end_label = '';
+	public $archive_label = '';
 
-	protected $supports = array( 'title', 'editor', 'author', 'thumbnail', 'excerpt' );
-
+	/**
+	 * Public properties
+	 * These match the arguments used with register_post_type()
+	 */
 	public $description = 'A custom post type';
-
 	public $hierarchical = false;
-
 	public $capability_type = 'post';
-
 	public $capabilities = array();
-
+	public $supports = array( 'title', 'editor', 'author', 'thumbnail', 'excerpt' );
 	public $map_meta_cap = false;
-
 	public $menu_icon = null;
-
 	public $menu_position = 5;
-
 	public $public = true;
-
 	public $publicly_queryable = null;
-
 	public $exclude_from_search = null;
-
 	public $has_archive = true;
-
 	public $slug = '';
-
 	public $query_var = true;
-
 	public $show_ui = null;
-
 	public $show_in_menu = null;
-
 	public $show_in_nav_menus = null;
-
 	public $show_in_admin_bar = null;
-
 	public $rewrite = null;
-
 	public $permalink_epmask = EP_PERMALINK;
-
 	public $can_export = true;
-
 	public $taxonomies = array();
-
 	public $labels;
+
 
 	/**
 	 * Post Type
@@ -117,7 +101,7 @@ class Custom_Post_Type {
 		add_action( 'wp_loaded', array( $this, 'register_post_type' ) );
 
 		add_filter( 'post_updated_messages', array( $this, 'post_updated_messages' ), 10, 1 );
-		add_filter( 'post_type_archive_title', array( $this, 'get_post_type_archive_title' ), 10, 1 );
+		add_filter( 'post_type_archive_title', array( $this, 'get_post_type_archive_label' ), 10, 1 );
 		add_filter( 'bulk_post_updated_messages', array( $this, 'bulk_edit_messages' ), 10, 2 );
 	}
 
@@ -467,36 +451,24 @@ class Custom_Post_Type {
 
 
 	/**
-	 * Get Public Label
-	 *
-	 * Get the label to display for this post type on public-facing pages
-	 *
-	 * @return string
-	 */
-	public function get_public_label(){
-		if( $this->front_end_label ){
-			return $this->front_end_label;
-		} else {
-			return $this->get_post_type_label( 'plural' );
-		}
-	}
-
-
-	/**
 	 * Get Post Type Archive Label
 	 *
 	 * Used when retrieving the post type archive title
 	 * Makes it match any customization done here
 	 *
-	 * Automatically added to the get_post_type_archive_title filter
+	 * Automatically added to the get_post_type_archive_label filter
 	 *
 	 * @param $title
 	 *
 	 * @return string
 	 */
-	public function get_post_type_archive_title( $title ){
+	public function get_post_type_archive_label( $title ){
 		if( is_post_type_archive( $this->post_type ) ){
-			$title = $this->get_public_label();
+			if( $this->archive_label ){
+				$title = $this->archive_label;
+			} else {
+				$title = $this->get_post_type_label( 'plural' );
+			}
 		}
 
 		return $title;
