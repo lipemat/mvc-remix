@@ -293,6 +293,9 @@ abstract class Db {
 	 */
 	protected function run_updates(){
 		$this->create_table();
+		if( method_exists( $this, 'update_table' ) ){
+			$this->update_table();
+		}
 
 		update_option( $this->db_option, $this->db_version );
 
