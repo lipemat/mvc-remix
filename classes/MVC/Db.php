@@ -116,8 +116,10 @@ abstract class Db {
 
 		$where_formats = $this->get_formats( $id_or_wheres );
 		foreach( $id_or_wheres as $column => $value ){
-			$wheres[ $column ] = "`$column` = " . array_shift( $where_formats );
-			$values[] = $value;
+			if( !empty( $value ) ){
+				$wheres[ $column ] = "`$column` = " . array_shift( $where_formats );
+				$values[ ]         = $value;
+			}
 		}
 
 
