@@ -15,11 +15,13 @@ $dir_name = explode('/', plugins_url('', __FILE__));
 define( 'MVC_DIR_NAME', end($dir_name) );
 define( 'MVC_SLUG', MVC_DIR_NAME.'/'.basename(__FILE__));
 
+require( 'MVC/Autoloader.php' );
+\MVC\Autoloader::add( "MVC\\", __DIR__ . '/MVC' );
+
 require( 'functions.php' );
 require( 'template-tags.php' );
 
-
-//Allow for autoloading framework Classes
+//Allow for auto-loading framework Classes
 spl_autoload_register('_mvc_autoload');
 
 #-- Bring in the Framework

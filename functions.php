@@ -56,13 +56,6 @@ if( !function_exists( '_p' ) ) {
 function _mvc_autoload($class) {
 	$parts = explode( '\\', $class );
 
-	if( $parts[ 0 ] == 'MVC' ) {
-		if( file_exists( MVC_DIR . '/classes/' . implode( DIRECTORY_SEPARATOR, $parts ) . '.php' ) ) {
-			require_once (MVC_DIR . '/classes/' . implode( DIRECTORY_SEPARATOR, $parts ) . '.php');
-			return;
-		}
-	}
-
 	if( file_exists( MVC_DIR . 'lib/' . $class . '.php' ) ) {
 		require (MVC_DIR . 'lib/' . $class . '.php');
 		return;
