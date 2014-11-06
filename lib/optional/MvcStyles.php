@@ -87,22 +87,34 @@ class MvcStyles extends MvcFramework {
 	 * Quick way to add a js file to the site from the child themes js file
 	 *
 	 * @param string $file - the file name
+	 * @param bool $debug_only - set to true to only add the js_file when SCRIPT_DEBUG is true
 	 *
 	 */
-	function add_js( $file ){
+	function add_js( $file, $debug_only = false ){
+		if( $debug_only ){
+			if( !defined( 'SCRIPT_DEBUG' ) || !SCRIPT_DEBUG ){
+				return;
+			}
+		}
+
+		$url = $this->locate_js_file( $file );
+
+		if( empty( $file ) ){
+			return;
+		}
 		if( !MVC_IS_ADMIN ){
 			wp_enqueue_script(
 				'mvc-' . $file,
-				MVC_JS_URL . $file . '.js',
-				array( 'jquery', 'mvc-child-js' )
+				$url,
+				array( 'jquery' )
 			);
 		} else {
+
 			wp_enqueue_script(
 				'mvc-' . $file,
-				MVC_JS_URL . $file . '.js',
-				array( 'jquery', 'mvc-admin-js' )
+				$url,
+				array( 'jquery' )
 			);
-
 		}
 	}
 
