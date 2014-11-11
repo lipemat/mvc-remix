@@ -22,6 +22,16 @@ class Custom_Post_Type {
 	public $post_type_label_singular = '';
 	public $post_type_label_plural = '';
 
+	/**
+	 * auto_admin_caps
+	 *
+	 * if true, will auto add custom capability type caps to administrator
+	 * Defaults to true
+	 *
+	 * @var bool
+	 */
+	public $auto_admin_caps = true;
+
 
 	/**
 	 * Label used when retrieving the post type archive title
@@ -141,6 +151,10 @@ class Custom_Post_Type {
 	 * @return void
 	 */
 	private function add_administrator_capabilities( $post_type ){
+		if( !$this->auto_admin_caps ){
+			return;
+		}
+
 		$previous  = get_option( self::CUSTOM_CAPS_OPTION, array() );
 		if( in_array( $post_type->capability_type, $previous ) ){
 			return;
