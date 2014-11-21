@@ -49,7 +49,7 @@ class Custom_Post_Type {
 	public $capability_type = 'post';
 	public $capabilities = array();
 	public $supports = array( 'title', 'editor', 'author', 'thumbnail', 'excerpt' );
-	public $map_meta_cap = false;
+	public $map_meta_cap = null;
 	public $menu_icon = null;
 	public $menu_position = 5;
 	public $public = true;
