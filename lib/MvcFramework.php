@@ -624,7 +624,10 @@ class MvcFramework{
 	 * @return array|mixed|void
 	 */
 	public static function get_mvc_dirs(){
-		$dirs = array();
+		static $dirs = array();
+		if( !empty( $dirs ) ){
+			return $dirs;
+		}
 
 		$dirs[] = get_stylesheet_directory();
 
