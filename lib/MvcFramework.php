@@ -1022,7 +1022,9 @@ class MvcFramework{
         }
 
         //Add the page title as a class
-        $classes[] = mvc_string()->slug_format_human($post->post_title);
+	    if( !empty( $post ) ){
+		    $classes[ ] = mvc_string()->slug_format_human( $post->post_title );
+	    }
 
 
         if( empty( self::$body_classes ) ){
@@ -1043,8 +1045,11 @@ class MvcFramework{
      * @return string | false in in admin
      */
     function getPageTemplateName(){
-        global $post;    
-        if( MVC_IS_ADMIN ) return false; 
+        if( MVC_IS_ADMIN ) return false;
+	    $post = get_post();
+	    if( empty( $post ) ){
+		    return;
+	    }
         return str_replace('.php', '', get_post_meta($post->ID, '_wp_page_template', true));
     }
         
