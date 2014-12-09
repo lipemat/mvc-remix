@@ -13,6 +13,9 @@ namespace MVC;
  * To have a description for a section create a public method %section_slug%_description and
  * it will automatically be used
  *
+ * To have a description for a field create a protected method %field_slug%_description and it will
+ * automatically be called under the field output
+ *
  * To sanitize a field create a "public" method named %field_slug%_sanitize and it wll automatically
  * receive the value to sanitize
  *
@@ -159,6 +162,10 @@ abstract class Settings {
 	 *
 	 * @uses    $this->settings
 	 *
+	 *
+	 * @example $this->add_settings_section( %slug%, %title% );
+	 * @example $this->add_setting( %section%, %field_slug%, %field_title% );
+	 *
 	 * @example $this->settings = array(
 	 *        'career-page' => array(
 	 *            'title'    => 'Career Page',
@@ -223,6 +230,49 @@ abstract class Settings {
 
 		}
 
+	}
+
+
+	/**
+	 * add_setting_section
+	 *
+	 * If you prefer the use the method approach vs the set class var approach
+	 * Use this method to create or update a section of settings
+	 *
+	 * @param string $slug
+	 * @param string $title
+	 *
+	 * @uses $this->settings ( may be set independently )
+	 * @see $this->add_setting()
+	 *
+	 * @return void
+	 */
+	protected function add_setting_section( $slug, $title ){
+		$this->settings[ $slug ][ 'title' ] = $title;
+		if( empty( $this->settings[ $slug ][ 'fields' ] ) ){
+			$this->settings[ $slug ][ 'fields' ] = array();
+		}
+
+	}
+
+
+	/**
+	 * add_setting
+	 *
+	 * If you prefer to use the method approach vs the set class var approach
+	 * Use this method to add a single setting to a section
+	 *
+	 * @param string $section
+	 * @param string $field
+	 * @param string $label
+	 *
+	 * @uses $this->settings ( may be set independently )
+	 * @see $this->add_settings_section()
+	 *
+	 * @return void
+	 */
+	protected function add_setting( $section, $field, $label ){
+		$this->settings[ $section ][ 'fields' ][ $field ] = $label;
 	}
 
 
@@ -419,9 +469,20 @@ abstract class Settings {
 		} elseif( method_exists( $this, $this->get_non_namespaced_field( $field ) ) ){
 			$this->{$this->get_non_namespaced_field( $field )}( $value, $field );
 			return;
+
+		} else {
+			printf( '<input name="%1$s" value="%2$s" />', $field, $value );
 		}
 
-		printf( '<input name="%1$s" value="%2$s" />', $field, $value );
+
+		if( method_exists( $this, $this->get_non_namespaced_field( $field ) . '_description' ) ){
+			?>
+			<p class="description">
+				<?php $this->{$this->get_non_namespaced_field( $field ) . '_description'}( $value ); ?>
+			</p>
+			<?php
+		}
+
 
 	}
 
