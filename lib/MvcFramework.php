@@ -670,7 +670,7 @@ class MvcFramework{
      */
     function getController(){
         if( $this->controller ) return $this->controller;
-        $this->controller = str_replace('Controller', '', get_class($this));
+        $this->controller = str_replace( array( '_Controller','Controller' ), '', get_class( $this ) );
         return $this->controller;
     }
     
