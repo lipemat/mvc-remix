@@ -214,7 +214,7 @@ class MvcBootstrap extends MvcFramework {
 	 * @filters mvc_theme_dirs - allows for other themes or plugins to have a widgets folder
 	 */
 	function registerWidgets(){
-		$dirs = mvc_util()->get_mvc_dirs();
+		$dirs = mvc()->get_mvc_dirs();
 
 		//Register Widgets from the theme's widget folder
 		if( !current_theme_supports( 'mvc_widgets' ) ){
@@ -261,7 +261,7 @@ class MvcBootstrap extends MvcFramework {
 	function setupMvc(){
 		global $mvc_theme;
 
-		$mvc_theme[ 'mvc_dirs' ] = mvc_util()->get_mvc_dirs();
+		$mvc_theme[ 'mvc_dirs' ] = mvc()->get_mvc_dirs();
 
 		foreach( $mvc_theme[ 'mvc_dirs' ] as $dir ){
 
@@ -292,7 +292,7 @@ class MvcBootstrap extends MvcFramework {
 				if( !in_array( $file, array( '.', '..', 'Controller.php' ) ) ){
 					//Add the Controller
 					require( $dir . 'Controller/' . $file );
-					$name = str_replace( array( 'Controller', '.php' ), array( '', '' ), $file );
+					$name = str_replace( array( '_Controller', 'Controller', '.php',  ), '', $file );
 
 					if( in_array( $name, array( 'Admin', 'admin' ) ) && !MVC_IS_ADMIN ){
 						continue;

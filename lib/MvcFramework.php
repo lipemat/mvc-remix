@@ -629,10 +629,10 @@ class MvcFramework{
 			return $dirs;
 		}
 
-		$dirs[] = get_stylesheet_directory();
+		$dirs[] = trailingslashit( get_stylesheet_directory() );
 
 		if( get_template_directory() != get_stylesheet_directory() ){
-			$dirs[] = get_template_directory();
+			$dirs[] = trailingslashit( get_template_directory() );
 		}
 
 		if( defined( "MVC_THEME_DIR" ) ){

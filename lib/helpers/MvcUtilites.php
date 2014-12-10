@@ -16,7 +16,7 @@
 if( class_exists( 'MvcUtilites' ) )
 	return;
 
-class MvcUtilites extends MvcFramework{
+class MvcUtilites {
 
 	/**
 	 * Filters an array on every level
