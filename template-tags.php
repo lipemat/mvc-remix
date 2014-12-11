@@ -38,14 +38,19 @@ function mvc_versions(){
 	return MVC\Versions::get_instance(); 
 }
 
-
 /**
  * Mvc Meta Box
- * 
+ *
  * @param string $post_type
  * @param string $meta_box_class
- * @param array $args
- * 
+ * @param array  $args = array(
+ *                     'title'   => '',
+ *                     'context'   => 'advanced',
+ *                     'priority'   => 'default',
+ *                     'callback_args'   => NULL,
+ *                     'defaults'   => array()
+ *               )
+ *
  * @return MVC\Meta_Box
  */
 function mvc_meta_box( $post_type, $meta_box_class, $args = array() ) {
