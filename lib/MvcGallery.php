@@ -42,11 +42,13 @@ class MvcGallery extends MvcFramework {
 		$this->post_types = $postTypes;
 		$this->groups     = $groups;
 
+		$this->hooks();
+
+	}
+
+	private function hooks(){
 		add_action( 'admin_print_scripts', array( $this, 'js' ), 999 );
-		wp_enqueue_script( 'jquery-ui-sortable' );
-
 		add_action( 'add_meta_boxes', array( $this, 'metaBoxSetup' ), 1 );
-
 		add_action( 'save_post', array( $this, 'save_post' ), 99 );
 
 	}
@@ -129,7 +131,7 @@ class MvcGallery extends MvcFramework {
 	 * @param array $group - the gallery group data
 	 */
 	function metaBoxOutput( $post, $group ){
-		$tbody = '';
+		wp_enqueue_script( 'jquery-ui-sortable' );
 
 		$images = get_post_meta( $post->ID, 'mvc-gallery-' . $group[ 'id' ], true );
 
