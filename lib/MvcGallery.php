@@ -45,7 +45,7 @@ class MvcGallery extends MvcFramework {
 		add_action( 'admin_print_scripts', array( $this, 'js' ), 999 );
 		wp_enqueue_script( 'jquery-ui-sortable' );
 
-		add_action( 'admin_menu', array( $this, 'metaBoxSetup' ), 99 );
+		add_action( 'add_meta_boxes', array( $this, 'metaBoxSetup' ), 1 );
 
 		add_action( 'save_post', array( $this, 'save_post' ), 99 );
 
@@ -55,15 +55,11 @@ class MvcGallery extends MvcFramework {
 	/**
 	 * Register Meta Boxes
 	 *
-	 * @since 10.1.13
 	 **/
 	function metaBoxSetup(){
 		foreach( $this->post_types as $pt ){
 			foreach( $this->groups as $group ){
-				add_meta_box( $group, ucwords( str_replace( '_', ' ', $group ) ), array(
-					$this,
-					'metaBoxOutput'
-				), $pt, 'advanced', 'high' );
+				add_meta_box( $group, ucwords( str_replace( '_', ' ', $group ) ), array( $this, 'metaBoxOutput' ), $pt, 'normal', 'high' );
 			}
 		}
 
