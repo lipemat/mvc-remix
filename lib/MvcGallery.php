@@ -337,7 +337,7 @@ class MvcGallery extends MvcFramework{
         if( $html ){
             return wp_get_attachment_image($gallery_images[0], $size );         
         } else {
-            $imageData = $this->get_image_data($gallery_images[0], $size );
+            $imageData = $this->getImageData( $gallery_images[0], $size );
             return $imageData;
         }
     }
