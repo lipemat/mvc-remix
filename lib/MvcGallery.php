@@ -155,6 +155,9 @@ class MvcGallery extends MvcFramework {
 					if( !empty ( $images ) ){
 						foreach( $images as $image ){
 							$image = get_post( $image );
+							if( empty( $image ) ){
+								continue;
+							}
 							?>
 							<li>
 								<img src="<?php echo $this->getAttachmentUrl( $image ); ?>"/>
