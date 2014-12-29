@@ -55,7 +55,9 @@ function mvc_versions(){
  */
 function mvc_meta_box( $post_type, $meta_box_class, $args = array() ) {
 	if ( !class_exists( $meta_box_class ) ) {
-		return FALSE;
+        if( !defined( 'WP_DEBUG' ) || !WP_DEBUG ){
+            return FALSE;
+        }
 	}
 	return new $meta_box_class( $post_type, $args );
 } 
