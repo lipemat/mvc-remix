@@ -337,7 +337,7 @@ class MvcGallery extends MvcFramework {
 					return get_the_post_thumbnail( $postId, $size );
 				} else {
 					$image[ 'ID' ] = get_post_thumbnail_id( $postId );
-					$imageData     = $this->get_image_data( $image[ 'ID' ], $size );
+					$imageData     = $this->getImageData( $image[ 'ID' ], $size );
 
 					return $imageData;
 				}
