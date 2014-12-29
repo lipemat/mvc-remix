@@ -914,7 +914,7 @@ class MvcFramework{
             $hwstring = image_hwstring($width, $height);
             if ( is_array($size) )
                 $size = join('x', $size);
-            $attachment =& get_post($image['ID']);
+            $attachment = get_post($image['ID']);
             $data = array(
                     'src'   => $src,
                     'class' => "attachment-$size",
