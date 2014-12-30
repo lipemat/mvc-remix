@@ -111,7 +111,7 @@ class MvcForm {
         
         //Save new Data
         if( isset( $_POST[$name.'-submit']) && wp_verify_nonce($_POST[$name.'_form'], $name.'_form') ){
-            $_POST = MvcUtilites::arrayFilterRecursive($_POST);
+            $_POST = mvc_util()->arrayFilterRecursive( $_POST );
             update_option($args['data_option_name'], $_POST);
         }
         

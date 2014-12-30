@@ -243,7 +243,7 @@ class MvcMetaBox extends MvcFramework{
             
             $data = $this->getMetaData();
       
-            $output .= '<ul>';
+            $output = '<ul>';
     
             //Go through all the fields
             foreach( $this->fields as $key => $field ){
