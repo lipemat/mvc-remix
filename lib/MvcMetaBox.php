@@ -17,7 +17,7 @@ class MvcMetaBox extends MvcFramework{
        */
       function __construct($label, $postTypes = array(), $args = array()){
 
-	      _deprecated_function( __FUNCTION__, '1.25.0', 'classes/Meta_Box')' );
+	      _deprecated_function( __FUNCTION__, '1.25.0', 'classes/Meta_Box');
 
           $defaults = array(
                  'priority'      => 'high',
