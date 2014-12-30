@@ -16,9 +16,9 @@ if( class_exists( 'MvcImageResize' ) ){
 }
 
 
-class MvcImageResize extends MvcFramework {
+class MvcImageResize {
 
-	protected $_image_sizes = array(); //Keeps track of all theme and plugins image sizes
+	private $_image_sizes = array(); //Keeps track of all theme and plugins image sizes
 
 
 	private function __construct(){
@@ -32,6 +32,19 @@ class MvcImageResize extends MvcFramework {
 
 		// use this class to resize on the fly instead of making a copy of each image
 		add_filter( 'image_downsize', array( $this, 'convert_image_downsize' ), 10, 3 );
+	}
+
+
+	/**
+	 * get_image_sizes
+	 *
+	 * Get a list of the image sizes from here
+	 * because they no longer exist in standard WP global
+	 *
+	 * @return array
+	 */
+	public function get_image_sizes(){
+		return $this->_image_sizes;
 	}
 
 
@@ -140,7 +153,7 @@ class MvcImageResize extends MvcFramework {
 			$image_url = wp_get_attachment_url( $image_id );
 
 			// get the first image of the post
-		} elseif( $image_scan ) {
+		} elseif( $image_scan && function_exists( 'mvc' )) {
 			$image_id  = null;
 			$image_url = mvc()->getFirstContentImage( $post_id );
 
