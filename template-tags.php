@@ -41,7 +41,7 @@ function mvc_versions(){
 /**
  * Mvc Meta Box
  *
- * @param string $post_type
+ * @param string [$post_type] - null will add it to all post types
  * @param string $meta_box_class
  * @param array  $args = array(
  *                     'title'   => '',
@@ -51,14 +51,20 @@ function mvc_versions(){
  *                     'defaults'   => array()
  *               )
  *
- * @return MVC\Meta_Box
+ * @return null|MVC\Meta_Box
  */
-function mvc_meta_box( $post_type, $meta_box_class, $args = array() ) {
+function mvc_meta_box( $post_type = null, $meta_box_class, $args = array() ) {
 	if ( !class_exists( $meta_box_class ) ) {
         if( !defined( 'WP_DEBUG' ) || !WP_DEBUG ){
             return FALSE;
         }
 	}
+    if( $post_type == null ){
+        foreach( get_post_types() as $_post_type ){
+            new $meta_box_class( $_post_type, $args );
+        }
+        return;
+    }
 	return new $meta_box_class( $post_type, $args );
 } 
  
