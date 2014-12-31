@@ -124,7 +124,6 @@ class MvcBootstrap extends MvcFramework {
 	 *
 	 * @since 5.5.0
 	 *
-	 *
 	 * @uses  works off of the $GLOBALS set earlier in the file
 	 *
 	 */
@@ -156,6 +155,23 @@ class MvcBootstrap extends MvcFramework {
 		}
 
 
+
+		if( is_page_template( 'page_blog.php' ) ){
+			$type = 'post';
+		}
+
+		if( is_archive() || is_page_template( 'page_blog.php' ) ){
+			if( isset( $GLOBALS[ 'MvcClassesWithArchive' ] ) ){
+				foreach( $GLOBALS[ 'MvcClassesWithArchive' ] as $name => $class ){
+					if( strtolower( $name ) == $type ){
+						$GLOBALS[ $class ]->archive();
+
+						return;
+					}
+				}
+			}
+		}
+
 		if( is_page() ){
 			if( isset( $GLOBALS[ 'PageController' ] ) ){
 				if( method_exists( $GLOBALS[ 'PageController' ], 'single' ) ){
@@ -186,21 +202,6 @@ class MvcBootstrap extends MvcFramework {
 		}
 
 
-		if( is_page_template( 'page_blog.php' ) ){
-			$type = 'post';
-		}
-
-		if( is_archive() || is_page_template( 'page_blog.php' ) ){
-			if( isset( $GLOBALS[ 'MvcClassesWithArchive' ] ) ){
-				foreach( $GLOBALS[ 'MvcClassesWithArchive' ] as $name => $class ){
-					if( strtolower( $name ) == $type ){
-						$GLOBALS[ $class ]->archive();
-
-						return;
-					}
-				}
-			}
-		}
 	}
 
 
