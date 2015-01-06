@@ -49,7 +49,7 @@ class MvcGallery extends MvcFramework {
 	private function hooks(){
 		add_action( 'admin_print_scripts', array( $this, 'js' ), 999 );
 		add_action( 'add_meta_boxes', array( $this, 'metaBoxSetup' ), 1 );
-		add_action( 'save_post', array( $this, 'save_post' ), 99 );
+		add_action( 'save_post', array( $this, 'save_post' ) );
 
 	}
 
