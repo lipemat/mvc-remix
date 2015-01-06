@@ -139,7 +139,7 @@ class MvcFramework{
       * @see /classes/Custom_Post_Type.php
      **/
     function registerPostType($title, $args = array()){
-	    _deprecated_function( __FUNCTION__, '1.25.0', '/classes/Custom_Post_Type.php' );
+	    _deprecated_function( __FUNCTION__, '1.25.0', '/MVC/Custom_Post_Type.php' );
         $this->MvcPostTypeTax->register_post_type($title, $args);
         
     }
@@ -150,7 +150,7 @@ class MvcFramework{
      * @see /classes/Taxonomy.php
      */
     function registerTaxonomy( $title, $post_type = '', $args = array() ){
-	    _deprecated_function( __FUNCTION__, '1.25.0', '/classes/Taxonomy.php' );
+	    _deprecated_function( __FUNCTION__, '1.25.0', '/MVC/Taxonomy.php' );
         $this->MvcPostTypeTax->register_taxonomy($title, $post_type, $args );
     }
 
