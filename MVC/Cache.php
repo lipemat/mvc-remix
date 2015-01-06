@@ -19,6 +19,7 @@ namespace MVC;
 class Cache {
 	const OPTION_GROUP_KEYS = 'mvc_cache_group_keys';
 	const DEFAULT_GROUP = 'mvc';
+	const FLUSH_ON_SAVE_POST_GROUP = 'mvc_cache_flush_save_post';
 
 	/**
 	 * Constructor
@@ -41,8 +42,13 @@ class Cache {
 		if ( current_user_can( 'manage_options' ) ) {
 			add_action( 'admin_bar_menu', array( $this, 'add_admin_bar_button' ), 100, 1 );
 		}
+
+		add_action( 'save_post', array( $this, 'clear_save_post_group' ), 9911, 0 );
 	}
 
+	public function clear_save_post_group(){
+		self::flush_group( self::FLUSH_ON_SAVE_POST_GROUP );
+	}
 
 
 	public function maybe_clear_cache() {
