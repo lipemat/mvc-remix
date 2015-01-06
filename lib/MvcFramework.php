@@ -240,6 +240,45 @@ class MvcFramework{
         return false;
         
     }
+
+
+    /**
+     * getBlogPage
+     *
+     * Retrieve the post_id of the page with the page_blog.php template
+     * Will return 0 if no page is set to blog page
+     *
+     * @cached
+     *
+     * @return int
+     */
+    public function getBlogPage(){
+        $page_id = \MVC\Cache::get( 'getBlogPage', \MVC\Cache::FLUSH_ON_SAVE_POST_GROUP );
+        if( $page_id !== false ){
+            return $page_id;
+        }
+
+        $args = array(
+            'post_type'   => 'page',
+            'meta_key'    => '_wp_page_template',
+            'meta_value'  => 'page_blog.php',
+            'numberposts' => 1,
+            'fields'      => 'ids'
+        );
+
+        $pages = get_posts( $args );
+        if( !empty( $pages[ 0 ] ) ){
+            $page_id = $pages[ 0 ];
+        } else {
+            $page_id = 0;
+        }
+
+        \MVC\Cache::set( 'getBlogPage', $page_id, \MVC\Cache::FLUSH_ON_SAVE_POST_GROUP );
+
+        return $page_id;
+
+    }
+
 	
 	/**
      * @deprecated use mvc_format()->changeSidebar()
