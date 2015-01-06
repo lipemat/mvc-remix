@@ -22,6 +22,8 @@
  */
 if( class_exists('MvcFramework') ) return;  
 class MvcFramework{
+    const CACHE_GROUP = "MvcFramework";
+
     public $browser     = false; //Keep track to the views browser
     private $mobile     = false; //Allows for constructing mobile detect class only once
     protected $controller; //Keep track of what controller is controlling to call stuff dynamically
