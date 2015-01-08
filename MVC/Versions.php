@@ -130,7 +130,7 @@ class Versions {
 							
 		}
 		
-		update_option( self::OPTION, (float) self::$version );
+		update_option( self::OPTION, self::$version );
 		
 	}
 	
