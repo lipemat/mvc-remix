@@ -50,6 +50,7 @@ class Custom_Post_Type {
 	public $capabilities = array();
 	public $supports = array( 'title', 'editor', 'author', 'thumbnail', 'excerpt' );
 	public $map_meta_cap = null;
+	public $menu_name = null;
 	public $menu_icon = null;
 	public $menu_position = 5;
 	public $public = true;
@@ -295,7 +296,7 @@ class Custom_Post_Type {
 			'search_items'       => sprintf( __( 'Search %s' ), $plural ),
 			'not_found'          => sprintf( __( 'No %s Found' ), $plural ),
 			'not_found_in_trash' => sprintf( __( 'No %s Found in Trash' ), $plural ),
-			'menu_name'          => $plural,
+			'menu_name'          => empty( $this->menu_name ) ? $plural : $this->menu_name,
 		);
 
 		if( !empty( $this->labels ) ){
