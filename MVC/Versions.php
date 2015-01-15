@@ -47,7 +47,7 @@ class Versions {
 	/**
 	 * Constructor
 	 * 
-	 * Set neccessary values
+	 * Set necessary values
 	 * 
 	 */
 	public function __construct(){
@@ -63,7 +63,7 @@ class Versions {
 	
 	
 	public function actions(){
-		add_action( 'init', array( $this, 'run_updates' ), 99999 );	
+		add_action( 'wp_loaded', array( $this, 'run_updates' ), 99999 );
 		
 	}
 	
