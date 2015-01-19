@@ -324,6 +324,11 @@ abstract class Settings {
 		if( $option === null ){
 			if( !empty( $this->defaults[ $field ] ) ){
 				return $this->defaults[ $field ];
+			} else {
+				$non_namespaced = $this->get_non_namespaced_field( $field );
+				if( !empty( $this->defaults[ $non_namespaced ] ) ){
+					return $this->defaults[ $non_namespaced ];
+				}
 			}
 		}
 
@@ -491,11 +496,7 @@ abstract class Settings {
 
 		$field = $this->get_field_name( $field );
 
-		if( $this->network ){
-			$value = get_site_option( $field, '' );
-		} else {
-			$value = get_option( $field, '' );
-		}
+		$value = $this->get_option( $field );
 
 		if( method_exists( $this, $field ) ){
 			$this->{$field}( $value, $field );
