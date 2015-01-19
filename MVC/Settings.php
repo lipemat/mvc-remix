@@ -123,7 +123,6 @@ abstract class Settings {
 	 */
 	protected $network = false;
 
-
 	/**
 	 * Settings
 	 *
@@ -132,6 +131,18 @@ abstract class Settings {
 	 * @var array
 	 */
 	protected $settings = array();
+
+	/**
+	 * defaults
+	 *
+	 * Hold default values if desired for options
+	 * Can be set manually or by using $this->set_default( %field%, %value )
+	 *
+	 * @example array( %field% => %default_value% )
+	 *
+	 * @var array
+	 */
+	protected $defaults = array();
 
 	/**
 	 * tabs
@@ -277,9 +288,26 @@ abstract class Settings {
 
 
 	/**
+	 * set_default
+	 *
+	 * Set a default value for any field
+	 *
+	 * @param $field
+	 * @param $value
+	 *
+	 * @return void
+	 */
+	public function set_default( $field, $value ){
+		$this->defaults[ $field ] = $value;
+	}
+
+
+	/**
 	 * Get Option
 	 *
 	 * Get a site option or regular depending if we are network or not
+	 * Will return the default value for this field if set and the option
+	 * has not been set
 	 *
 	 * @param string $field
 	 *
@@ -287,12 +315,19 @@ abstract class Settings {
 	 */
 	public function get_option( $field ){
 		$field = $this->get_field_name( $field );
-
 		if( $this->network ){
-			return get_site_option( $field, null );
+			$option = get_site_option( $field, null );
 		} else {
-			return get_option( $field, null );
+			$option = get_option( $field, null );
 		}
+
+		if( $option === null ){
+			if( !empty( $this->defaults[ $field ] ) ){
+				return $this->defaults[ $field ];
+			}
+		}
+
+		return $option;
 	}
 
 
