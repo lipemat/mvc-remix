@@ -43,7 +43,6 @@ class Taxonomy {
 	 */
 	public $post_types = array();
 	public $public = true;
-	public $publicly_queryable = null;
 	public $show_ui = null;
 	public $show_in_nav_menus = null;
 	public $show_tagcloud = null;
@@ -352,7 +351,6 @@ class Taxonomy {
 		$args = array(
 			'labels'                => $this->taxonomy_labels(),
 			'public'                => $this->public,
-			'publicly_queryable'    => $this->publicly_queryable,
 			'show_ui'               => $this->show_ui,
 			'show_in_nav_menus'     => $this->show_in_nav_menus,
 			'show_tagcloud'         => $this->show_tagcloud,
