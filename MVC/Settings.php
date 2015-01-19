@@ -231,7 +231,7 @@ abstract class Settings {
 	 *
 	 * @return void
 	 */
-	private function hooks(){
+	protected function hooks(){
 		if( $this->network ){
 			add_action( 'network_admin_menu', array( $this, 'register_settings_page' ), 10, 0 );
 			add_action( 'network_admin_edit_' . $this->slug, array( $this, 'save_network_settings' ), 10, 0 );
