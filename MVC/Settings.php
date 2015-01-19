@@ -22,6 +22,9 @@ namespace MVC;
  * To override the default text field create a protected method with same name as option and
  * it will be passed the ( %value%, %field% ) as its argument.
  *
+ * To run a method when the settings are saved create on named on_settings_save() and it
+ * will be called autmatically
+ *
  *
  * @package   MVC Theme
  * @namespace MVC
@@ -238,9 +241,29 @@ abstract class Settings {
 
 		} else {
 			add_action( 'admin_menu', array( $this, 'register_settings_page' ), 10, 0 );
+			add_action( 'admin_action_update', array( $this, 'maybe_run_settings_save' ) );
 
 		}
 
+	}
+
+
+	/**
+	 * maybe_run_settings_save
+	 *
+	 * Run a method when the settings are saved
+	 * To use create a method title on_settings_saved() in the extending class
+	 *
+	 * @return void
+	 */
+	public function maybe_run_settings_save(){
+		if( !empty( $_POST[ 'settings_page_slug' ] ) ){
+			if( $_POST[ 'settings_page_slug' ] == $this->slug ){
+				if( method_exists( $this, 'on_settings_save' ) ){
+					$this->on_settings_save();
+				}
+			}
+		}
 	}
 
 
@@ -347,6 +370,10 @@ abstract class Settings {
 	public function save_network_settings(){
 		if( !isset( $_POST[ '_wpnonce' ] ) || !wp_verify_nonce( $_POST[ '_wpnonce' ], $this->slug . '-options' ) ){
 			return;
+		}
+
+		if( method_exists( $this, 'on_settings_save' ) ){
+			$this->on_settings_save();
 		}
 
 		foreach( $this->settings as $section => $params ){
@@ -591,6 +618,7 @@ abstract class Settings {
 					do_settings_sections( $this->slug );
 					submit_button();
 					?>
+					<input type="hidden" name="settings_page_slug" value="<?php echo esc_attr( $this->slug ); ?>" />
 				</form>
 			<?php
 			}
