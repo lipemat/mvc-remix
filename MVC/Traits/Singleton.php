@@ -13,12 +13,12 @@ namespace MVC\Traits;
 
 trait Singleton {
 
-	private function __construct(){
+	protected function __construct(){
 		$this->hooks();
 	}
 
 
-	private function hooks(){
+	protected function hooks(){
 
 	}
 
