@@ -422,7 +422,57 @@ class MvcForm {
            }
            echo $output;
     }
-    
+
+
+    /**
+     * meta_checkbox
+     *
+     * Quick checkbox based on the current posts meta
+     * Really all you need is the name and this will take care of everything else
+     *
+     * @see $this->update_meta_checkbox() for saving the checkbox
+     *
+     * @param      $name
+     * @param null $post_id
+     *
+     * @return void
+     */
+    function meta_checkbox( $name, $post_id = null ){
+        $post = get_post( $post_id );
+        ?>
+        <input
+            type="checkbox"
+            name="<?php echo $name; ?>"
+            <?php checked( get_post_meta( $post->ID, $name, true ) ); ?>
+            value="1"
+            />
+        <?php
+    }
+
+
+    /**
+     * update_meta_checkbox
+     *
+     * Quick save a checkbox that is using a value of 1 and post
+     * meta data to keep track
+     *
+     * @see $this->meta_checkbox() for generating the checkbox
+     *
+     * @param      $name
+     * @param null $post_id
+     *
+     * @return void
+     */
+    function update_meta_checkbox( $name, $post_id = null ){
+        $post_id = get_post( $post_id )->ID;
+        if( empty( $_POST[ $name ] ) ){
+            update_post_meta( $post_id, $name, 0 );
+        } else {
+            update_post_meta( $post_id, $name, 1 );
+        }
+    }
+
+
     /**
      * Outputs a Checkbox 
      * 
