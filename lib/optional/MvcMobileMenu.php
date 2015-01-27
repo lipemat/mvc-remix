@@ -144,9 +144,8 @@ class MvcMobileMenu extends MvcFramework {
 	function checkForLightOrDark(){
 		global $_wp_theme_features;
 
-		$features = $_wp_theme_features[ 'mobile_menu' ];
-		if( isset( $features[ 0 ] ) ){
-			$this->theme_color = $features[ 0 ];
+		if( isset( $_wp_theme_features[ 'mobile_menu' ][ 0 ] ) ){
+			$this->theme_color = $_wp_theme_features[ 'mobile_menu' ][ 0 ];
 		} else {
 			$this->theme_color = 'dark';
 		}
