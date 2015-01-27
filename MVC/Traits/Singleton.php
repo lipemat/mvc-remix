@@ -14,12 +14,9 @@ namespace MVC\Traits;
 trait Singleton {
 
 	protected function __construct(){
-		$this->hooks();
-	}
-
-
-	protected function hooks(){
-
+		if( method_exists( $this, 'hooks' ) ){
+			$this->hooks();
+		}
 	}
 
 	//********** SINGLETON FUNCTIONS **********/
@@ -46,7 +43,7 @@ trait Singleton {
 	 * class
 	 *
 	 * @static
-	 * @return self
+	 * @return $this
 	 */
 	public static function get_instance(){
 		if( !is_a( self::$instance, __CLASS__ ) ){
