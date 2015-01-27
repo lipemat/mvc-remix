@@ -434,13 +434,18 @@ class MvcStyles extends MvcFramework {
 
 		if( !defined( 'SCRIPT_DEBUG' ) || !SCRIPT_DEBUG ){
 			if( !$file = $this->locate_template( "js/$file_name.min.js", true ) ){
-				$file = $this->locate_template( "resources/js/min/$file_name.min.js", true );
+				if( !$file = $this->locate_template( "js/min/$file_name.min.js", true ) ){
+					$file = $this->locate_template( "resources/js/min/$file_name.min.js", true );
+				}
+
 			}
 		}
 
 		if( empty( $file ) ){
 			if( !$file = $this->locate_template( "js/$file_name.js", true ) ){
-				$file = $this->locate_template( "resources/js/$file_name.js", true );
+				if( !$file = $this->locate_template( "js/min/$file_name.js", true ) ){
+					$file = $this->locate_template( "resources/js/$file_name.js", true );
+				}
 			}
 		}
 
