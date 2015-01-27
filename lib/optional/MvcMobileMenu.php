@@ -11,6 +11,18 @@
  */
 if( class_exists('MvcMobileMenu') ) return;    
 class MvcMobileMenu extends MvcFramework{
+
+	/**
+	 * display_on_all_devices
+	 *
+	 * Override to have it always display and use your own
+	 * media queries to hide. Comes in handy when serving
+	 * page cache to all devices
+	 *
+	 * @static
+	 * @var bool
+	 */
+	public static $display_on_all_devices = false;
      
      //Light or dark theme was specified
      public $theme_color;
@@ -28,7 +40,7 @@ class MvcMobileMenu extends MvcFramework{
 	  * 
       */
      function __construct(){
-        if( !$this->is_mobile() ){
+        if( !self::$display_on_all_devices && !$this->is_mobile() ){
 	        return;
         }
 
