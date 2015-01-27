@@ -598,7 +598,7 @@ class MvcFramework{
         }
 
 
-        if( !$hideInfo ){
+        if( ( defined( 'WP_DEBUG' ) && WP_DEBUG ) && !$hideInfo ){
             echo '<!-- View/'.$folder . $file . '.php -->';
         }
 
