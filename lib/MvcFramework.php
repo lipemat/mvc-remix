@@ -84,13 +84,13 @@ class MvcFramework{
         
         //For Widget Areas
         if( (strpos($func,'widget') !== false) || (strpos($func,'Widget') !== false) ){
-            $this->widgetArea( self::human_format_slug(str_replace(array('Widget_','widget_'),array('',''), $func)) ); 
+            $this->widgetArea( mvc_string()->human_format_slug(str_replace(array('Widget_','widget_'),array('',''), $func)) ); 
             return;  
         }
         
         //For Sidebars
         if( (strpos($func,'sidebar') !== false) || (strpos($func,'Sidebar') !== false) ){
-            $this->sidebar( self::human_format_slug(str_replace(array('Sidebar_','sidebar_'),array('',''), $func)) ); 
+            $this->sidebar( mvc_string()->human_format_slug(str_replace(array('Sidebar_','sidebar_'),array('',''), $func)) ); 
             return;  
         }
         
@@ -1398,8 +1398,8 @@ class MvcFramework{
             mvc_dynamic_sidebar($name);
         } else {
             genesis_markup( array(
-                'html5'   => '<aside '. genesis_attr( self::slug_format_human($name) ) .'>',
-                'xhtml'   => '<div id="sidebar" class="sidebar widget-area '.self::slug_format_human($name).'">',
+                'html5'   => '<aside '. genesis_attr( mvc_string()->human_format_slug($name) ) .'>',
+                'xhtml'   => '<div id="sidebar" class="sidebar widget-area '. mvc_string()->slug_format_human($name).'">',
                 'context' => 'sidebar-primary',
             ) );
 
@@ -1430,7 +1430,7 @@ class MvcFramework{
      * @since 4.16.13
      */
      function widgetArea($name, $echo = true){
-        $output = '<div id="'.self::slug_format_human($name).'" class="widget-area">';
+        $output = '<div id="'.mvc_string()->slug_format_human($name).'" class="widget-area">';
            $output .= mvc_dynamic_sidebar($name, false);
         $output .=  '</div>';
         
