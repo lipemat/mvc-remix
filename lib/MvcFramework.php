@@ -1398,7 +1398,7 @@ class MvcFramework{
             mvc_dynamic_sidebar($name);
         } else {
             genesis_markup( array(
-                'html5'   => '<aside '. genesis_attr( mvc_string()->human_format_slug($name) ) .'>',
+                'html5'   => '<aside '. genesis_attr( mvc_string()->slug_format_human($name) ) .'>',
                 'xhtml'   => '<div id="sidebar" class="sidebar widget-area '. mvc_string()->slug_format_human($name).'">',
                 'context' => 'sidebar-primary',
             ) );
