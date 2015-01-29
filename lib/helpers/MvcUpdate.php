@@ -327,7 +327,7 @@ class MvcUpdate {
     public function get_plugin_data() {
         include_once ABSPATH.'/wp-admin/includes/plugin.php';
 
-        $data = get_plugin_data( WP_PLUGIN_DIR.'/'.$this->config['slug']);
+        $data = get_plugin_data( dirname( dirname( dirname( dirname( __FILE__ ) ) ) ).'/'.$this->config['slug']);
         return $data;
     }
 
