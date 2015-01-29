@@ -398,26 +398,13 @@ class MvcImageResize {
 		// checking if the file size is larger than the target size
 		// if it is smaller or the same size, stop right here and return
 		if( $image_src[ 1 ] > $width || $image_src[ 2 ] > $height ){
-			// the file is larger, check if the resized version already exists (for $crop = true but will also work for $crop = false if the sizes match)
-			if( file_exists( $cropped_img_path ) ){
-				$cropped_img_url = str_replace( basename( $image_src[ 0 ] ), basename( $cropped_img_path ), $image_src[ 0 ] );
-
-				$image = array(
-					'url'    => $cropped_img_url,
-					'width'  => $width,
-					'height' => $height
-				);
-
-				return $image;
-			}
 
 			// $crop = false or no height set
 			if( $crop == false OR ! $height ){
-				// calculate the size proportionaly
+				// calculate the size proportionally
 				$proportional_size = wp_constrain_dimensions( $image_src[ 1 ], $image_src[ 2 ], $width, $height );
 				$resized_img_path  = $no_ext_path . '-' . $proportional_size[ 0 ] . 'x' . $proportional_size[ 1 ] . $extension;
 
-				// checking if the file already exists
 				if( file_exists( $resized_img_path ) ){
 					$resized_img_url = str_replace( basename( $image_src[ 0 ] ), basename( $resized_img_path ), $image_src[ 0 ] );
 
@@ -429,7 +416,19 @@ class MvcImageResize {
 
 					return $image;
 				}
+			} elseif( file_exists( $cropped_img_path ) ){
+				$cropped_img_url = str_replace( basename( $image_src[ 0 ] ), basename( $cropped_img_path ), $image_src[ 0 ] );
+
+				$image = array(
+					'url'    => $cropped_img_url,
+					'width'  => $width,
+					'height' => $height
+				);
+
+				return $image;
 			}
+
+			//-- file does not exist so lets check the cache and create it
 
 			// check if image width is smaller than set width
 			$img_size = getimagesize( $file_path );
