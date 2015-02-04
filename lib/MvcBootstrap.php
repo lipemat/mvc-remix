@@ -50,6 +50,10 @@ if( current_theme_supports( 'mvc_update' ) && is_admin() ){
 define( 'IS_MOBILE_THEME', current_theme_supports( 'mvc_mobile_responsive' ) );
 
 
+if( current_theme_supports( 'mvc_api' ) ){
+	\MVC\Api::init();
+}
+
 //For Secure Themes
 if( current_theme_supports( 'mvc_secure' ) ){
 	$MvcLogin = new MvcLogin();
