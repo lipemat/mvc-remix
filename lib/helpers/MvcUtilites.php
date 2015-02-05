@@ -25,6 +25,9 @@ class MvcUtilites {
 	 * revision and return it.
 	 * If no .revison file available returns false
 	 *
+	 * @see lib/build/post-commit for the hook to use locally to increment the .revision and test
+	 *
+	 *
 	 * @return bool|string
 	 */
 	public function get_beanstalk_based_version(){
