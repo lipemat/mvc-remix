@@ -527,11 +527,9 @@ abstract class Settings {
 
 		if( method_exists( $this, $field ) ){
 			$this->{$field}( $value, $field );
-			return;
 
 		} elseif( method_exists( $this, $this->get_non_namespaced_field( $field ) ) ){
 			$this->{$this->get_non_namespaced_field( $field )}( $value, $field );
-			return;
 
 		} else {
 			printf( '<input name="%1$s" value="%2$s" />', $field, $value );
