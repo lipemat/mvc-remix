@@ -469,17 +469,12 @@ class MvcStyles extends MvcFramework {
 	 *
 	 */
 	function add_js_css(){
+		$version = mvc_util()->get_beanstalk_based_version();
 
 		$file = $this->locate_js_file( 'child' );
 
 		if( $file ){
-			wp_enqueue_script(
-				'mvc-child-js',
-				$file,
-				array( 'jquery' ),
-				false,
-				true
-			);
+			wp_enqueue_script( 'mvc-child-js', $file, array( 'jquery' ), $version, true );
 
 			$dirs = array(
 				'IMG'          => MVC_IMAGE_URL,
@@ -502,74 +497,43 @@ class MvcStyles extends MvcFramework {
 		$file = $this->locate_css_file( 'child' );
 		//For custom css files when using with plugins
 		if( $file  ){
-			wp_enqueue_style(
-				'mvc-child-styles',
-				$file
-			);
+			wp_enqueue_style( 'mvc-child-styles', $file, array(), $version );
 		}
 
 
 		//Add the mobile Style if required
 		if( current_theme_supports( 'mobile_responsive' ) ){
 			if( $file = $this->locate_css_file( 'mobile/mobile-responsive.css' ) ){
-				wp_enqueue_style(
-					'mvc-mobile-styles',
-					$file //The location of the style
-				);
+				wp_enqueue_style( 'mvc-mobile-styles', $file, array(), $version );
 			}
 
 			//Add the mobile script or the non mobile script based on device
 			if( !self::is_mobile() ){
 				if( $file = $this->locate_js_file( 'mobile/desktop.js' ) ){
-					wp_enqueue_script(
-						'mvc-non-mobile-script',
-						$file,
-						array( 'jquery' ),
-						false,
-						true
-					);
-
+					wp_enqueue_script( 'mvc-non-mobile-script', $file, array( 'jquery' ), $version, true );
 				}
 			} else {
 
 				//Add the tablet stuff
 				if( self::is_tablet() ){
 					if( $file = $this->locate_css_file( 'mobile/tablet.css' ) ){
-						wp_enqueue_style(
-							'mvc-tablet-styles',
-							$file
-						);
+						wp_enqueue_style( 'mvc-tablet-styles', $file, array(), $version );
 					}
 
 
 					if( $file = $this->locate_js_file(  'mobile/tablet.js' ) ){
-						wp_enqueue_script(
-							'mvc-tablet-script',
-							$file,
-							array( 'jquery' ),
-							false,
-							true
-						);
+						wp_enqueue_script( 'mvc-tablet-script', $file, array( 'jquery' ), $version, true );
 					}
 				}
 
 				//Add the phone stuff
 				if( self::is_phone() ){
 					if( $file = $this->locate_css_file(  'mobile/phone.css' ) ){
-						wp_enqueue_style(
-							'mvc-phone-styles',
-							$file //The location of the style
-						);
+						wp_enqueue_style( 'mvc-phone-styles', $file, array( 'jquery' ), $version );
 					}
 
 					if( $file = $this->locate_js_file( 'mobile/phone.js' ) ){
-						wp_enqueue_script(
-							'mvc-phone-script',
-							$file,
-							array( 'jquery' ),
-							false,
-							true
-						);
+						wp_enqueue_script( 'mvc-phone-script', $file, array( 'jquery' ), $version, true );
 					}
 				}
 			} //-- End if mobile device

@@ -19,6 +19,30 @@ if( class_exists( 'MvcUtilites' ) )
 class MvcUtilites {
 
 	/**
+	 * get_beanstalk_based_version
+	 *
+	 * Beanstalk adds a .revision file to deployments this grabs that
+	 * revision and return it.
+	 * If no .revison file available returns false
+	 *
+	 * @return bool|string
+	 */
+	public function get_beanstalk_based_version(){
+		static $version = null;
+		if( $version !== null ){
+			return $version;
+		}
+		$version = false;
+
+		$file = $_SERVER[ 'DOCUMENT_ROOT' ] . '/.revision';
+		if( file_exists( $file ) ){
+			$version = trim( file_get_contents( $file ) );
+		}
+		return $version;
+	}
+
+
+	/**
 	 * Filters an array on every level
 	 *
 	 * @since 2.0
