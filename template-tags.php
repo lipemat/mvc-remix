@@ -120,7 +120,7 @@ function mvc_styles(){
  * 
  * @example mvc_util()->arrayFilterRecursive();
  * 
- * @return MvcUtilities
+ * @return MvcUtilites
  */
 function mvc_util(){
 	return MvcUtilites::get_instance(); 
