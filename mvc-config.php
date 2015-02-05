@@ -42,3 +42,4 @@ add_theme_support( 'mvc_cache'  );
 //add_theme_support('mvc_mobile_menu','dark'); //light or dark
 //add_theme_support('mvc_category_images');
 //add_theme_support('mvc_image_resize');
+//add_theme_support('mvc_api');
