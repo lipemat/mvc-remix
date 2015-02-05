@@ -57,7 +57,7 @@ if( current_theme_supports( 'mvc_secure' ) ){
 
 //For Cache
 if( current_theme_supports( 'mvc_cache' ) ){
-	add_action( 'plugins_loaded', array( 'MVC\\Cache', 'get_instance' ) );
+	\MVC\Cache::init();
 }
 
 //For the Category Icons

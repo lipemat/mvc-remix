@@ -17,6 +17,8 @@ namespace MVC;
  * 
  */
 class Cache {
+	use Traits\Singleton;
+
 	const OPTION_GROUP_KEYS = 'mvc_cache_group_keys';
 	const DEFAULT_GROUP = 'mvc';
 	const FLUSH_ON_SAVE_POST_GROUP = 'mvc_cache_flush_save_post';
@@ -36,7 +38,7 @@ class Cache {
 	 * 
 	 * @return void
 	 */
-	private function hooks() {
+	protected function hooks() {
 		add_action( 'init', array( $this, 'maybe_clear_cache' ), 9, 0 );
 		
 		if ( current_user_can( 'manage_options' ) ) {
@@ -168,23 +170,4 @@ class Cache {
 		return $new;
 	}
 
-
-	/********** Singleton *************/	
-	private static $instance;
-	
-	
-	/**
-	 * Get Instance
-	 * 
-	 * @uses for singleton but really everything is pretty much static so only call once
-	 * 
-	 * @return self()
-	 */
-	public static function get_instance() {
-		if ( !is_a( self::$instance, __CLASS__ ) ) {
-			self::$instance = new self();
-		}
-		return self::$instance;
-	}
-	
 }
