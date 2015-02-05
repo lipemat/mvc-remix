@@ -22,8 +22,8 @@ namespace MVC;
  * To override the default text field create a protected method with same name as option and
  * it will be passed the ( %value%, %field% ) as its argument.
  *
- * To run a method when the settings are saved create on named on_settings_save() and it
- * will be called autmatically
+ * To run a method when the settings are saved create one named on_settings_save() and it
+ * will be called automatically
  *
  *
  * @package   MVC Theme
