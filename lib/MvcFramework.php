@@ -1376,48 +1376,52 @@ class MvcFramework{
     function erase(){
       return null;       
     }
-    
-        /**
+
+
+    /**
      * Outputs a Sidebar for Page or Posts for Whatever
      * Use widgetArea for a standard widget and this for a true sidebar
-     * 
-     * @param string $name of widget area
-     * @param bool $echo defaults to true
-     * @since 10.22.13
      *
-     * @uses genesis_markup() and mvc_dynamic_sidebar() - if not using genesis will just display sidebar
+     * @param string $name of widget area
+     * @param bool   [$echo] defaults to true
+     *
+     * @uses  genesis_markup() and mvc_dynamic_sidebar() - if not using genesis will just display sidebar
+     *
+     * @return string
      */
-    function sidebar($name, $echo = true){
-        
-        global $wp_registered_sidebars;
-        
-        
-         ob_start();
+    function sidebar( $name, $echo = true ){
+
+        ob_start();
         //we are not rocking genesis
-        if( !function_exists('genesis_markup') ){
-            mvc_dynamic_sidebar($name);
+        if( !function_exists( 'genesis_markup' ) ){
+            mvc_dynamic_sidebar( $name );
         } else {
+
+            $class = mvc_string()->slug_format_human( $name );
+
             genesis_markup( array(
-                'html5'   => '<aside %s>',
-                'xhtml'   => '<div id="sidebar" class="sidebar widget-area '. mvc_string()->slug_format_human($name).'">',
+                'html5'   => '<aside class="sidebar widget-area ' . $class . '">',
+                'xhtml'   => '<div id="sidebar" class="sidebar widget-area ' . $class . '">',
                 'context' => 'sidebar-primary',
             ) );
-                do_action( 'genesis_before_sidebar_widget_area' );
-                    mvc_dynamic_sidebar($name);
-                do_action( 'genesis_after_sidebar_widget_area' );   
-             
+            do_action( 'genesis_before_sidebar_widget_area' );
+                mvc_dynamic_sidebar( $name );
+            do_action( 'genesis_after_sidebar_widget_area' );
+
             genesis_markup( array(
-                'html5' => '</aside>', //* end .sidebar-primary
-                'xhtml' => '</div>', //* end #sidebar
+                'html5' => '</aside>',
+                'xhtml' => '</div>',
             ) );
         }
-        
+
         $output = ob_get_clean();
-        
-        if( !$echo ) return $output;
-        
+
+        if( !$echo ){
+            return $output;
+        }
+
         echo $output;
-        
+
     }
     
    /**
