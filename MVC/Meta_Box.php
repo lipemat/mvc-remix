@@ -112,7 +112,7 @@ abstract class Meta_Box {
 
 	/**
 	 * @abstract
-	 * @param object $post The post being edited
+	 * @param \WP_Post $post The post being edited
 	 * @return void
 	 */
 	abstract public function render($post);
