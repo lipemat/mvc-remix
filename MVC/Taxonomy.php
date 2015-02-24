@@ -52,6 +52,7 @@ class Taxonomy {
 	public $public = true;
 	public $show_ui = null;
 	public $show_in_nav_menus = null;
+	public $show_admin_column = false;
 	public $show_tagcloud = null;
 	public $hierarchical = false;
 	public $update_count_callback = null;
@@ -61,14 +62,6 @@ class Taxonomy {
 	public $meta_box_cb = null;
 	public $rewrite = null;
 
-	/**
-	 * Set to true during __construct() to auto generate a post list column for the taxonomy
-	 *
-	 * _post_list_column
-	 *
-	 * @var bool
-	 */
-	private $_post_list_column = false;
 
 	/**
 	 * Set to true during __construct() auto generate a post list filter
@@ -89,14 +82,14 @@ class Taxonomy {
 	 *
 	 * @param string $taxonomy - Singular Title case name of taxonomy
 	 * @param array  [$post_types] - may also be set by $this->post_types = array()
-	 * @param bool   [$_post_list_column]- generate a post list column
+	 * @param bool   [$show_admin_column]- generate a post list column
 	 * @param bool   [$_post_list_filter] - generate a post list filter
 	 *
 	 */
-	public function __construct( $taxonomy, $post_types = array(), $post_list_column = false, $post_list_filter = false ){
+	public function __construct( $taxonomy, $post_types = array(), $show_admin_column = false, $post_list_filter = false ){
 		$this->post_types = (array)$post_types;
 
-		$this->_post_list_column = $post_list_column;
+		$this->show_admin_column = $show_admin_column;
 		$this->_post_list_filter = $post_list_filter;
 
 		if( !self::$rewrite_checked ){
@@ -145,73 +138,15 @@ class Taxonomy {
 	 * Hook the taxonomy into worpress
 	 */
 	protected function hooks(){
-
 		//so we can add and edit stuff on init hook
 		add_action( 'wp_loaded', array( $this, 'register_taxonomy' ), 8, 0 );
 		add_action( 'wp_loaded', array( $this, 'register_default_terms' ), 9, 0 );
-
-		if( $this->_post_list_column ){
-			foreach( $this->post_types as $_type ){
-				add_filter( "manage_edit-" . $_type . "_columns", array( $this, 'post_list_columns' ) );
-				add_action( "manage_" . $_type . "_posts_custom_column", array( $this, 'post_list_column_output' ), 9, 2 );
-			}
-
-		}
 
 		if( $this->_post_list_filter ){
 			add_action( 'restrict_manage_posts', array( $this, 'post_list_filters') );
 			if ( is_admin() ) {
 				add_action( 'parse_tax_query', array( $this, 'post_list_query_filters' ) );
 			}
-		}
-
-	}
-
-
-	/**
-	 * Post List Columns
-	 *
-	 * Add the taxonomies to the post list columns
-	 *
-	 * @param array $columns - existing columns
-	 *
-	 * @return array
-	 *
-	 */
-	function post_list_columns( $columns ){
-
-		$start = array_slice( $columns, 0, count( $columns )-1, true );
-		$end = array_slice( $columns, count( $columns )-1, 1, true );
-
-		$the_taxonomy = get_taxonomy( $this->taxonomy );
-
-		$start[ $this->taxonomy ] = $the_taxonomy->label;
-
-		$columns = array_merge( $start, $end );
-
-		return $columns;
-	}
-
-
-	/**
-	 * Post List Column Output
-	 *
-	 * Output the taxonomy term into the custom post list columns
-	 *
-	 * @param string $column_name
-	 * @param int $post_id
-	 *
-	 * @return void
-	 *
-	 */
-	function post_list_column_output( $column_name, $post_id ){
-
-		if( $column_name != $this->taxonomy ) return;
-
-		$terms = wp_get_post_terms( $post_id, $column_name );
-
-		if( !empty( $terms ) ){
-			echo implode(', ', wp_list_pluck( $terms, 'name') );
 		}
 
 	}
@@ -360,6 +295,7 @@ class Taxonomy {
 			'public'                => $this->public,
 			'show_ui'               => $this->show_ui,
 			'show_in_nav_menus'     => $this->show_in_nav_menus,
+			'show_admin_column'     => $this->show_admin_column,
 			'show_tagcloud'         => $this->show_tagcloud,
 			'hierarchical'          => $this->hierarchical,
 			'update_count_callback' => $this->update_count_callback,
