@@ -95,6 +95,11 @@ if( current_theme_supports( 'mvc_ajax' ) ){
 	$MvcImageResize = new MvcAjax();
 }
 
+//For custom urls
+if( current_theme_supports( 'mvc_route' ) ){
+	\MVC\Route::init();
+}
+
 
 /**
  * Put all the default stuff in motion

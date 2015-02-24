@@ -38,6 +38,7 @@ add_theme_support( 'mvc_ajax'   );
 add_theme_support( 'mvc_update' );
 add_theme_support( 'mvc_cache'  );
 
+//add_theme_support( 'mvc_route' );
 //add_theme_support('mvc_mobile_responsive');
 //add_theme_support('mvc_mobile_menu','dark'); //light or dark
 //add_theme_support('mvc_category_images');
