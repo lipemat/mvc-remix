@@ -1,20 +1,27 @@
 <?php
 namespace MVC;
 
+
 /**
  * Taxonomy
  *
  * Register taxonomies
  *
- * @example   mvc_versions()->add_update( %version%, %function% );
+ * Must be constructed before the init hooks runs so this can do it's thing
  *
- * @uses      You must add updates during the init hook, because this will run them at the end of the init hook
+ * @example
+ * $tax = new Taxonomy( %slug% );
+ * $tax->hierarchical = FALSE;
+ * $tax->meta_box_cb = false;
+ * $tax->set_label( %singular%, %plural%  );
+ * $tax->post_types = array( self::POST_TYPE );
+ * $tax->slug = %slug;
+ *
  *
  * @package   MVC Theme
  * @namespace MVC
  * @class     Taxonomy
  *
- * @todo      General cleanup of code and PHP docs
  *
  */
 class Taxonomy {
