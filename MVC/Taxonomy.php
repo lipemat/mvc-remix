@@ -88,9 +88,9 @@ class Taxonomy {
 	 * @uses set the class vars to edit arguments
 	 *
 	 * @param string $taxonomy - Singular Title case name of taxonomy
-	 * @param        array     [$post_types] - may also be set by $this->post_types = array()
-	 * @param bool [$_post_list_column]- generate a post list column
-	 * @param bool [$_post_list_filter] - generate a post list filter
+	 * @param array  [$post_types] - may also be set by $this->post_types = array()
+	 * @param bool   [$_post_list_column]- generate a post list column
+	 * @param bool   [$_post_list_filter] - generate a post list filter
 	 *
 	 */
 	public function __construct( $taxonomy, $post_types = array(), $post_list_column = false, $post_list_filter = false ){
