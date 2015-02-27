@@ -220,6 +220,24 @@ class Route {
 
 
 	/**
+	 * Is Current Route
+	 *
+	 * Are we currently on a specified route page?
+	 *
+	 * @param string $route - the route slug
+	 *
+	 * @return bool
+	 */
+	public function is_current_route( $route ){
+		if( get_query_var( self::QUERY_VAR ) === $route ){
+			return true;
+		}
+
+		return false;
+	}
+
+
+	/**
 	 * Get Current Route
 	 *
 	 * Get the args like title and template for the current route
