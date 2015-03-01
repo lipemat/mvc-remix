@@ -1,7 +1,9 @@
 MVC Theme - WordPress Plugin
 ==============================
 
-~Current Version:1.3.0~
+~Current Version:0.0.1~
+
+## As you have probably noticed the master branch is exactly the same as my mvc-theme repo. That is because this is under development. I am working on the develop branch until this is ready for use. Until then, please use the mvc-theme repo.
 
 ##MVC Framework written to work on top of WordPress Genesis theme
 

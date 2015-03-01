@@ -53,13 +53,13 @@ class MvcUpdate {
        $this->config = array(
             'slug' => MVC_SLUG, // this is the slug of your plugin e.g.  %folder%/%main-file%
             'proper_folder_name' => MVC_DIR_NAME, // this is the name of the folder your plugin lives in
-            'api_url' => 'https://api.github.com/repos/lipemat/mvc-theme', // the github API url of your github repo
-            'raw_url' => 'https://raw.github.com/lipemat/mvc-theme/master', // the github raw url of your github repo
-            'github_url' => 'https://github.com/lipemat/mvc-theme', // the github url of your github repo
-            'zip_url' => 'https://github.com/lipemat/mvc-theme/zipball/master', // the zip url of the github repo
+            'api_url' => 'https://api.github.com/repos/lipemat/mvc-remix', // the github API url of your github repo
+            'raw_url' => 'https://raw.github.com/lipemat/mvc-remix/master', // the github raw url of your github repo
+            'github_url' => 'https://github.com/lipemat/mvc-remix', // the github url of your github repo
+            'zip_url' => 'https://github.com/lipemat/mvc-remix/zipball/master', // the zip url of the github repo
             'sslverify' => false,
-            'requires' => '3.3.1', // which version of WordPress does your plugin require?
-            'tested' => '3.7.0', // which version of WordPress is your plugin tested up to?
+            'requires' => '4.1.1', // which version of WordPress does your plugin require?
+            'tested' => '4.1.1', // which version of WordPress is your plugin tested up to?
             'readme' => 'README.md', // which file to use as the readme for the version number
             'access_token' => '', // Access private repositories by authorizing under Appearance > Github Updates when this example plugin is installed
         );
