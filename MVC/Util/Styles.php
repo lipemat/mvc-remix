@@ -1,29 +1,28 @@
 <?php
 
+namespace MVC\Util;
+
 /**
+ * MVC Styles
+ *
  * Optional CSS and JS handler for the theme
  * Allow for targeting specific browsers and such with css file names
  *
  *
  * @uses  add_theme_support('mvc_styles');
  *
- * @TODO  Make a universal method to check for assets folders to pull files from as well as default locations
  */
 
-if( class_exists( 'MvcStyles' ) ){
-	return;
-}
 
-class MvcStyles extends MvcFramework {
+class Styles {
+	use \MVC\Traits\Singleton;
 
 	public static $localize_admin = array();
+
 	public static $localize = array();
 
 
 	function __construct(){
-
-		add_action( 'init', array( $this, 'browser_support' ) );
-
 		//Add the IE only Stylesheets
 		add_action( 'wp_head', array( $this, 'ie_only' ), 99 );
 
@@ -86,8 +85,8 @@ class MvcStyles extends MvcFramework {
 	 *
 	 * Quick way to add a js file to the site from the child themes js file
 	 *
-	 * @param string $file - the file name
-	 * @param bool $debug_only - set to true to only add the js_file when SCRIPT_DEBUG is true
+	 * @param string $file       - the file name
+	 * @param bool   $debug_only - set to true to only add the js_file when SCRIPT_DEBUG is true
 	 *
 	 */
 	function add_js( $file, $debug_only = false ){
@@ -137,21 +136,19 @@ class MvcStyles extends MvcFramework {
 			$families = implode( "','", $families );
 		}
 
-
 		ob_start();
 		?>
 		<script type="text/javascript">
 			WebFontConfig = {
-				google: { families: [ '<?php echo $families; ?>' ] }
+				google : {families : ['<?php echo $families; ?>']}
 			};
-			(function () {
-				var wf = document.createElement('script');
-				wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
-					'://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+			(function(){
+				var wf = document.createElement( 'script' );
+				wf.src = ('https:' == document.location.protocol ? 'https' : 'http') + '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
 				wf.type = 'text/javascript';
 				wf.async = 'true';
-				var s = document.getElementsByTagName('script')[0];
-				s.parentNode.insertBefore(wf, s);
+				var s = document.getElementsByTagName( 'script' )[0];
+				s.parentNode.insertBefore( wf, s );
 			})(); </script>
 		<?php
 
@@ -234,7 +231,7 @@ class MvcStyles extends MvcFramework {
 			$existing_style_formats = json_decode( $settings[ 'style_formats' ] );
 
 			// Merge our new formats with any existing formats and re-encode
-			$settings[ 'style_formats' ] = json_encode( array_merge( (array)$existing_style_formats, $style_formats ) );
+			$settings[ 'style_formats' ] = json_encode( array_merge( (array) $existing_style_formats, $style_formats ) );
 		} else {
 			$settings[ 'style_formats' ] = json_encode( $style_formats );
 		}
@@ -258,6 +255,7 @@ class MvcStyles extends MvcFramework {
 		//ie 10 only
 		if( strpos( $_SERVER[ 'HTTP_USER_AGENT' ], 'MSIE 10' ) ){
 			if( $file = $this->locate_template( 'ie10.css', true ) ){
+				echo '<!--[if IE 10]>';
 				do_action( 'ie-head' );
 				printf( '<link rel="stylesheet" type="text/css" href="%s" /><![endif]-->', $file );
 			}
@@ -304,41 +302,6 @@ class MvcStyles extends MvcFramework {
 
 
 	/**
-	 * Adds a stylesheet with the same name as the browser if file exists
-	 *
-	 * @uses  create a stylesheet in the themes root with the same name as the browser
-	 *        * e.g. chrome.css
-	 * @uses  added to the init hook by construct
-	 * @since 6.7.13
-	 */
-	function browser_support(){
-		foreach( array( 'is_chrome', 'is_gecko', 'is_safari', 'is_IE' ) as $browser ){
-			global ${$browser};
-			if( ${$browser} ){
-				$this->browser = str_replace( array( 'is_', 'gecko' ), array( '', 'firefox' ), $browser );
-				add_action( 'wp_enqueue_scripts', array( $this, 'browser_style' ) );
-			}
-		}
-
-	}
-
-
-	/**
-	 * Adds a stylesheet of the matching browser if the stylesheet exists
-	 *
-	 * @uses  called by browser_support() and used the class var $browser
-	 */
-	function browser_style(){
-		if( $file = $this->locate_css_file( $this->browser . '.css' ) ){
-			wp_enqueue_style(
-				$this->browser . '-child-css',
-				$file
-			);
-		}
-	}
-
-
-	/**
 	 * Add the admin.js and admin.css file to the dashboard
 	 *
 	 * @see  the js and css dirs in the child theme
@@ -357,9 +320,10 @@ class MvcStyles extends MvcFramework {
 				$file,
 				array( 'jquery' )
 			);
-			$dirs = array( 'IMG'          => MVC_IMAGE_URL,
-			               'THEME'        => MVC_THEME_URL,
-			               'LOADING_ICON' => MVC_IMAGE_URL . 'loading.gif'
+			$dirs = array(
+				'IMG'          => MVC_IMAGE_URL,
+				'THEME'        => MVC_THEME_URL,
+				'LOADING_ICON' => MVC_IMAGE_URL . 'loading.gif'
 			);
 
 			wp_localize_script( 'mvc-admin-js', 'DIRS', $dirs );
@@ -367,7 +331,6 @@ class MvcStyles extends MvcFramework {
 			foreach( self::$localize_admin as $var => $data ){
 				wp_localize_script( 'mvc-admin-js', $var, $data );
 			}
-
 
 			//to localize stuff
 			do_action( 'mvc_admin_js', 'mvc-admin-js' );
@@ -400,14 +363,14 @@ class MvcStyles extends MvcFramework {
 		$file_name = str_replace( '.css', '', $file_name );
 
 		if( !defined( 'SCRIPT_DEBUG' ) || !SCRIPT_DEBUG ){
-			if( !$file = $this->locate_template( "$file_name.min.css", true ) ){
-				$file = $this->locate_template( "css/$file_name.min.css", true );
+			if( !$file = mvc_template()->locate_template( "$file_name.min.css", true ) ){
+				$file = mvc_template()->locate_template( "css/$file_name.min.css", true );
 			}
 		}
 
 		if( empty( $file ) ){
-			if( !$file = $this->locate_template( "$file_name.css", true ) ){
-				$file = $this->locate_template( "css/$file_name.css", true );
+			if( !$file = mvc_template()->locate_template( "$file_name.css", true ) ){
+				$file = mvc_template()->locate_template( "css/$file_name.css", true );
 			}
 		}
 
@@ -433,18 +396,18 @@ class MvcStyles extends MvcFramework {
 		$file_name = str_replace( '.js', '', $file_name );
 
 		if( !defined( 'SCRIPT_DEBUG' ) || !SCRIPT_DEBUG ){
-			if( !$file = $this->locate_template( "js/$file_name.min.js", true ) ){
-				if( !$file = $this->locate_template( "js/min/$file_name.min.js", true ) ){
-					$file = $this->locate_template( "resources/js/min/$file_name.min.js", true );
+			if( !$file = mvc_template()->locate_template( "js/$file_name.min.js", true ) ){
+				if( !$file = mvc_template()->locate_template( "js/min/$file_name.min.js", true ) ){
+					$file = mvc_template()->locate_template( "resources/js/min/$file_name.min.js", true );
 				}
 
 			}
 		}
 
 		if( empty( $file ) ){
-			if( !$file = $this->locate_template( "js/$file_name.js", true ) ){
-				if( !$file = $this->locate_template( "js/min/$file_name.js", true ) ){
-					$file = $this->locate_template( "resources/js/$file_name.js", true );
+			if( !$file = mvc_template()->locate_template( "js/$file_name.js", true ) ){
+				if( !$file = mvc_template()->locate_template( "js/min/$file_name.js", true ) ){
+					$file = mvc_template()->locate_template( "resources/js/$file_name.js", true );
 				}
 			}
 		}
@@ -461,7 +424,7 @@ class MvcStyles extends MvcFramework {
 	 * If not defined or false will check for a child.js file
 	 *
 	 * Will check in the %theme%/js dir first then the %theme%/resources/js dir next
-	 * 
+	 *
 	 *
 	 * @uses  called by __construct()
 	 * @uses  also add a global js variable with includes the commonly used dirs called 'DIR'
@@ -493,76 +456,12 @@ class MvcStyles extends MvcFramework {
 			do_action( 'mvc_child_js', 'mvc-child-js' );
 		}
 
-
 		$file = $this->locate_css_file( 'child' );
 		//For custom css files when using with plugins
-		if( $file  ){
+		if( $file ){
 			wp_enqueue_style( 'mvc-child-styles', $file, array(), $version );
 		}
 
-
-		//Add the mobile Style if required
-		if( current_theme_supports( 'mobile_responsive' ) ){
-			if( $file = $this->locate_css_file( 'mobile/mobile-responsive.css' ) ){
-				wp_enqueue_style( 'mvc-mobile-styles', $file, array(), $version );
-			}
-
-			//Add the mobile script or the non mobile script based on device
-			if( !self::is_mobile() ){
-				if( $file = $this->locate_js_file( 'mobile/desktop.js' ) ){
-					wp_enqueue_script( 'mvc-non-mobile-script', $file, array( 'jquery' ), $version, true );
-				}
-			} else {
-
-				//Add the tablet stuff
-				if( self::is_tablet() ){
-					if( $file = $this->locate_css_file( 'mobile/tablet.css' ) ){
-						wp_enqueue_style( 'mvc-tablet-styles', $file, array(), $version );
-					}
-
-
-					if( $file = $this->locate_js_file(  'mobile/tablet.js' ) ){
-						wp_enqueue_script( 'mvc-tablet-script', $file, array( 'jquery' ), $version, true );
-					}
-				}
-
-				//Add the phone stuff
-				if( self::is_phone() ){
-					if( $file = $this->locate_css_file(  'mobile/phone.css' ) ){
-						wp_enqueue_style( 'mvc-phone-styles', $file, array( 'jquery' ), $version );
-					}
-
-					if( $file = $this->locate_js_file( 'mobile/phone.js' ) ){
-						wp_enqueue_script( 'mvc-phone-script', $file, array( 'jquery' ), $version, true );
-					}
-				}
-			} //-- End if mobile device
-
-		} //-- End if Mobile Responsive Theme Support
-
-	}
-
-
-	/********** SINGLETON FUNCTIONS **********/
-
-	/**
-	 * Instance of this class for use as singleton
-	 */
-	private static $instance;
-
-
-	/**
-	 * Get (and instantiate, if necessary) the instance of the class
-	 *
-	 * @static
-	 * @return self
-	 */
-	public static function get_instance(){
-		if( !is_a( self::$instance, __CLASS__ ) ){
-			self::$instance = new self();
-		}
-
-		return self::$instance;
 	}
 
 }

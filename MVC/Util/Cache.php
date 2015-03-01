@@ -1,5 +1,5 @@
 <?php
-namespace MVC;
+namespace MVC\Util;
 
 /**
  * Cache
@@ -17,7 +17,7 @@ namespace MVC;
  * 
  */
 class Cache {
-	use Traits\Singleton;
+	use \MVC\Traits\Singleton;
 
 	const OPTION_GROUP_KEYS = 'mvc_cache_group_keys';
 	const DEFAULT_GROUP = 'mvc';

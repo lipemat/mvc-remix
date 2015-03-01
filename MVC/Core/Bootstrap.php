@@ -1,5 +1,8 @@
 <?php
 
+namespace MVC\Core;
+
+
 /**
  * Boot Strap
  *
@@ -8,7 +11,7 @@
  * @author Mat Lipe <mat@matlipe.com>
  */
 
-$MvcFramework = new MvcFramework();
+$MvcFramework = new \MVC\Core\Framework();
 
 /** The Config for this Theme **/
 if( $file = $MvcFramework->locate_template( 'mvc-config.php' ) ){
@@ -19,7 +22,6 @@ if( $file = $MvcFramework->locate_template( 'mvc-config.php' ) ){
 
 }
 
-
 if( !defined( 'MVC_THEME_URL' ) ){
 	define( 'MVC_THEME_URL', get_bloginfo( 'stylesheet_directory' ) . '/' );
 }
@@ -27,72 +29,52 @@ if( !defined( 'MVC_THEME_DIR' ) ){
 	define( 'MVC_THEME_DIR', get_stylesheet_directory() . '/' );
 }
 
-/** Legacy */
-if( !defined( 'MVC_MOBILE_URL' ) ){
-	define( 'MVC_MOBILE_URL', MVC_THEME_URL . 'mobile/' );
-}
 if( !defined( 'MVC_IMAGE_URL' ) ){
 	define( 'MVC_IMAGE_URL', MVC_THEME_URL . 'images/' );
 }
 if( !defined( 'MVC_JS_URL' ) ){
 	define( 'MVC_JS_URL', MVC_THEME_URL . 'js/' );
 }
-if( !defined( 'MVC_IS_ADMIN' ) ){
-	define( 'MVC_IS_ADMIN', is_admin() );
-}
-
 
 if( current_theme_supports( 'mvc_update' ) && is_admin() ){
-	new MvcUpdate();
+	\MVC\Core\Update::init();
 }
-
 
 define( 'IS_MOBILE_THEME', current_theme_supports( 'mvc_mobile_responsive' ) );
 
-
 if( current_theme_supports( 'mvc_api' ) ){
-	\MVC\Api::init();
+	\MVC\Core\Api::init();
 }
 
-//For Secure Themes
-if( current_theme_supports( 'mvc_secure' ) ){
-	$MvcLogin = new MvcLogin();
+//For internal tax
+if( current_theme_supports( 'mvc_internal_tax' ) ){
+	\MVC\Util\Internal_Tax::init();
 }
+
 
 //For Cache
 if( current_theme_supports( 'mvc_cache' ) ){
-	\MVC\Cache::init();
-}
-
-//For the Category Icons
-if( current_theme_supports( 'mvc_category_images' ) ){
-	$MvcCategoryIcons = new MvcCategoryImage();
-}
-//For the Colapsible Mobile Menu
-if( current_theme_supports( 'mvc_mobile_menu', 'color' ) ){
-	$MvcMobileMenu = new MvcMobileMenu();
+	\MVC\Util\Cache::init();
 }
 
 //For On the Fly Image Resize
 if( current_theme_supports( 'mvc_image_resize' ) ){
-	$MvcImageResize = MvcImageResize::get_instance();
+	\MVC\Util\Image_Resize::init();
 }
-
 
 //For CSS and JS Files
 if( current_theme_supports( 'mvc_styles' ) ){
-	$MvcStyles = MvcStyles::get_instance();
+	\MVC\Util\Styles::init();
 }
 
-
 //For Output Formatting
-if( current_theme_supports( 'mvc_format' ) ){
-	$MvcFormat = MvcFormat::get_instance();
+if( current_theme_supports( 'mvc_template' ) ){
+	\MVC\Util\Template::init();
 }
 
 //For Output Formatting
 if( current_theme_supports( 'mvc_ajax' ) ){
-	$MvcImageResize = new MvcAjax();
+	\MVC\Core\Ajax::init();
 }
 
 //For custom urls
@@ -102,13 +84,15 @@ if( current_theme_supports( 'mvc_route' ) ){
 
 
 /**
- * Put all the default stuff in motion
+ * Bootstrap
  *
+ * Put all the default stuff in motion
  *
  * @author Mat Lipe <mat@matlipe.com>
  *
  */
-class MvcBootstrap extends MvcFramework {
+class Bootstrap {
+	use \MVC\Traits\Singleton;
 
 
 	/**
@@ -138,7 +122,9 @@ class MvcBootstrap extends MvcFramework {
 	 */
 	function singleAndArchiveMethods(){
 
-		if( is_admin() ) return;
+		if( is_admin() ){
+			return;
+		}
 
 		$type = get_post_type();
 
@@ -154,7 +140,6 @@ class MvcBootstrap extends MvcFramework {
 			}
 		}
 
-
 		if( is_author() ){
 			if( !empty( $GLOBALS[ 'MvcClassesWithSingle' ][ 'Author' ] ) ){
 				$GLOBALS[ $GLOBALS[ 'MvcClassesWithSingle' ][ 'Author' ] ]->archive();
@@ -162,8 +147,6 @@ class MvcBootstrap extends MvcFramework {
 
 			return;
 		}
-
-
 
 		if( is_page_template( 'page_blog.php' ) ){
 			$type = 'post';
@@ -205,6 +188,7 @@ class MvcBootstrap extends MvcFramework {
 			if( isset( $GLOBALS[ 'SearchController' ] ) ){
 				if( method_exists( $GLOBALS[ 'SearchController' ], 'single' ) ){
 					$GLOBALS[ 'SearchController' ]->single();
+
 					return;
 				}
 			}
@@ -292,7 +276,6 @@ class MvcBootstrap extends MvcFramework {
 				$classes[ 'Controller' ] = 'Controller';
 			}
 
-
 			if( !file_exists( $dir . 'Controller' ) ){
 				continue;
 			}
@@ -302,17 +285,15 @@ class MvcBootstrap extends MvcFramework {
 				if( !in_array( $file, array( '.', '..', 'Controller.php' ) ) ){
 					//Add the Controller
 					require( $dir . 'Controller/' . $file );
-					$name = str_replace( array( '_Controller', 'Controller', '.php',  ), '', $file );
+					$name = str_replace( array( '_Controller', 'Controller', '.php', ), '', $file );
 
 					if( in_array( $name, array( 'Admin', 'admin' ) ) && !MVC_IS_ADMIN ){
 						continue;
 					}
 
-
 					$class = str_replace( '.php', '', $file );
 					global ${$class};
 					${$class} = new $class;
-
 
 					//Add the Model
 					require( $dir . 'Model/' . $name . '.php' );

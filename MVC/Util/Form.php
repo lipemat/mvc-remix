@@ -1,0 +1,199 @@
+<?php
+
+namespace MVC\Util;
+
+/**
+ * MvcForm
+ *
+ * Form Helpers
+ *
+ * @author  Mat Lipe <mat@matlipe.com>
+ *
+ * @class   Form
+ * @package MVC
+ *
+ * @example mvc_form()->text( 'help' );
+ *
+ * @namespace MVC\Util
+ *
+ */
+class Form {
+
+	use \MVC\Traits\Singleton;
+
+	private static $image_js_out = false;
+
+
+	/**
+	 * Turns an array of attributes into a usable string
+	 *
+	 * @param array $atts
+	 *
+	 * @example array( 'id' => 'my-id', 'name' => 'myname' );
+	 *
+	 * @uses    sending a false value will display no attribute
+	 * @since   5.29.13
+	 */
+	function attributeFactory( $atts ){
+		$output = '';
+		foreach( $atts as $attr => $value ){
+			if( $attr == 'label' ){
+				continue;
+			}
+			if( $value === false ){
+				continue;
+			}
+			$output .= ' ' . $attr . '="' . $value . '"';
+		}
+
+		return substr( $output, 1, 999 );
+
+	}
+
+
+	/**
+	 * Image Upload Form complete with Jquery
+	 *
+	 * @since 2.4.14
+	 *
+	 * @param string $name - the fields name if no specified in the args
+	 * @param string $value
+	 * @param array  $args - array(
+	 *                     'value'        => $value,
+	 *                     'button_label' => 'Upload',
+	 *                     'name'         => $name,
+	 *                     'id'           => $name
+	 *                     );
+	 * @param bool   $echo (defaults to true );
+	 *
+	 * @uses  contains and event called 'MVCImageUploadReturn' which is triggered when a new image is returned
+	 *       This may be tapped into via js like so JQuery(document).bind("MVCImageUploadReturn", function( e, url ){});
+	 *
+	 * @uses  Be sure the ID does not already exist on the dom or this will break
+	 *
+	 */
+	function imageUploadForm( $name, $value = '', $args = array(), $echo = true ){
+
+		wp_enqueue_media();
+
+		$defaults = array(
+			'value'        => $value,
+			'button_label' => 'Upload',
+			'name'         => $name,
+			'id'           => $name,
+			'size'         => 36
+		);
+
+		$args = wp_parse_args( $args, $defaults );
+
+		$atts = $args;
+		unset( $atts[ 'button_label' ] );
+
+		$input = sprintf( '<input type="text" %s />', $this->attributeFactory( $args ) );
+		$input .= sprintf( '<input type="button" rel="%s" value="%s" class="button-secondary image_upload" />', $args[ 'id' ], $args[ 'button_label' ] );
+
+		//only display the js once
+		if( $been_here ){
+			if( $echo ){
+				echo $input;
+			} else {
+				return $input;
+			}
+
+			return;
+		}
+
+		self::$image_js_out = true;
+
+		ob_start();
+
+		echo $input;
+		?>
+
+		<script type="text/javascript">
+			function handle_mvc_form_image_upload( e ){
+				var cu = wp.media( {
+					button : {
+						text : 'Use Selected Media'
+					},
+					multiple : false
+				} ).on( 'select', function(){
+					var items = cu.state().get( 'selection' );
+					var attachment = items.models[0].toJSON();
+					jQuery.event.trigger( 'MVCImageUploadReturn', [attachment.url, attachment, attachment] );
+					jQuery( "#" + e.attr( 'rel' ) ).val( attachment.url );
+				} ).open();
+				return false;
+			}
+			jQuery( function( $ ){
+				jQuery( '.image_upload' ).click( function( e ){
+					handle_mvc_form_image_upload( jQuery( this ) );
+				} );
+			} );
+		</script>
+
+		<?php
+		if( $echo ){
+			echo ob_get_clean();
+		} else {
+			return ob_get_clean();
+		}
+
+	}
+
+
+	/**
+	 * Creates a select from an array
+	 *
+	 *
+	 * @param sting $name
+	 * @param array $args (
+	 *                    options        => array( %key% => %value )
+	 *                    selected       => %value%
+	 *                    id             => %string%
+	 *                    all_label      => %string%,
+	 *                    class          => %string% )
+	 *
+	 * @param bool  $echo display or return default to true
+	 *
+	 *
+	 * @uses  array( value => display )
+	 *
+	 * @since 2.3.14
+	 *
+	 *
+	 */
+	function select( $name, $args = array(), $echo = true ){
+
+		if( !$echo ){
+			ob_start();
+		}
+
+		$defaults = array(
+			'selected'  => '',
+			'id'        => 'mvc_select',
+			'all_label' => false,
+			'class'     => false
+		);
+		$args     = wp_parse_args( $args, $defaults );
+
+		extract( $args );
+
+		if( $args[ 'class' ] ){
+			$args[ 'class' ] = 'class="' . $args[ 'class' ] . '"';
+		}
+
+		printf( '<select name="%s" id="%s" %s>', $name, $id, $args[ 'class' ] );
+		if( $all_label ){
+			printf( '<option value="">%s</option>', $all_label );
+		}
+		foreach( $args[ 'options' ] as $key => $value ){
+			printf( '<option value="%s" %s>%s</option>', $key, selected( $key, $selected, false ), $value );
+		}
+		printf( '</select>' );
+
+		if( !$echo ){
+			return ob_get_clean();
+		}
+	}
+}

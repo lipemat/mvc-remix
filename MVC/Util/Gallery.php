@@ -1,22 +1,21 @@
 <?php
+
+namespace MVC\Util;
+
+
 /**
- * Adds ability to upload images into a gallery group
- * * Creates meta box and handles all uploding needs
+ * Mvc Gallery
  *
- * @uses  new MvcGallery($postTypes, array( %gallery_1, %gallery_2) );
+ * Adds ability to upload images into a gallery group
+ * Creates meta box and handles all uploading needs
+ *
+ * @example  new MvcGallery($postTypes, array( %gallery_1, %gallery_2) );
  *
  * @param array $postTypes - The post types to use this on
  *
- * @since 1.23.14
- *
- *
  */
-if( class_exists( 'MvcGallery' ) ){
-	return;
-}
 
-
-class MvcGallery extends MvcFramework {
+class Gallery {
 
 	public $post_types = array();
 
@@ -46,6 +45,7 @@ class MvcGallery extends MvcFramework {
 
 	}
 
+
 	private function hooks(){
 		add_action( 'admin_print_scripts', array( $this, 'js' ), 999 );
 		add_action( 'add_meta_boxes', array( $this, 'metaBoxSetup' ), 1 );
@@ -61,7 +61,10 @@ class MvcGallery extends MvcFramework {
 	function metaBoxSetup(){
 		foreach( $this->post_types as $pt ){
 			foreach( $this->groups as $group ){
-				add_meta_box( $group, ucwords( str_replace( '_', ' ', $group ) ), array( $this, 'metaBoxOutput' ), $pt, 'normal', 'high' );
+				add_meta_box( $group, ucwords( str_replace( '_', ' ', $group ) ), array(
+					$this,
+					'metaBoxOutput'
+				), $pt, 'normal', 'high' );
 			}
 		}
 
@@ -263,8 +266,8 @@ class MvcGallery extends MvcFramework {
 		<script type="text/javascript">
 			jQuery( function( $ ){
 				if( !$( '.mvc-gallery ol' ).length ){
-                    return;
-                }
+					return;
+				}
 
 				$( '.mvc-gallery ol' ).sortable( {
 					placeholder : 'sortable-placeholder'

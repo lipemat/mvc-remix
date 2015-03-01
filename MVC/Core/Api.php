@@ -1,6 +1,6 @@
 <?php
 
-namespace MVC;
+namespace MVC\Core;
 
 
 /**
@@ -18,7 +18,7 @@ namespace MVC;
  */
 class Api {
 
-	use Traits\Singleton;
+	use \MVC\Traits\Singleton;
 
 	const DB_VERSION = 1;
 	const DB_KEY = 'mvc-api-version';

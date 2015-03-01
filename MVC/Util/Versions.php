@@ -1,5 +1,5 @@
 <?php
-namespace MVC;
+namespace MVC\Util;
 
 /**
  * Versions
@@ -17,6 +17,7 @@ namespace MVC;
  * 
  */
 class Versions {
+	use \MVC\Traits\Singleton;
 	
 	const OPTION = 'mvc-versions-version';
 	
@@ -150,29 +151,5 @@ class Versions {
 		return version_compare( $a[ 'version' ], $b[ 'version' ], '>' );	
 		
 	}
-	
-	
-	
-	/********** SINGLETON FUNCTIONS **********/
-
-	/**
-	 * Instance of this class for use as singleton
-	 */
-	private static $instance;
-
-	/**
-	 * Get (and instantiate, if necessary) the instance of the class
-	 *
-	 * @static
-	 * @return self
-	 */
-	public static function get_instance() {
-		if( !is_a( self::$instance, __CLASS__ ) ) {
-			self::$instance = new self();
-		}
-		return self::$instance;
-	}
-			
-		
 }
 	

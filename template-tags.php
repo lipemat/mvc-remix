@@ -12,7 +12,7 @@
  *
  * Get an instance of the main class
  *
- * @return MvcFramework
+ * @return \MVC\Core\Framework
  */
 function mvc(){
 	static $mvc = null;
@@ -20,7 +20,7 @@ function mvc(){
 		return $mvc;
 	}
 
-	return $mvc = new MvcFramework();
+	return $mvc = new \MVC\Core\Framework();
 }
 
 
@@ -35,7 +35,7 @@ function mvc(){
  * 
  */
 function mvc_versions(){
-	return MVC\Versions::get_instance(); 
+	return MVC\Util\Versions::get_instance();
 }
 
 /**
@@ -76,10 +76,10 @@ function mvc_meta_box( $post_type = null, $meta_box_class, $args = array() ) {
  * 
  * @example mvc_internal()->has_term( 'active' );
  * 
- * @return MvcInternalTax
+ * @return \MVC\Util\Internal_Tax
  */
 function mvc_internal(){
-	return MvcInternalTax::get_instance(); 
+	return \MVC\Util\Internal_Tax::get_instance();
 }
 
 
@@ -90,10 +90,10 @@ function mvc_internal(){
  * 
  * @example  mvc_string()->theContentLimit();
  * 
- * @return MvcString
+ * @return \MVC\Util\String
  */
 function mvc_string(){
-	return MvcString::get_instance(); 
+	return \MVC\Util\String::get_instance();
 }
 
 /**
@@ -103,13 +103,13 @@ function mvc_string(){
  * 
  * @example  mvc_styles()->localize( %var%, %data% );
  * 
- * @return MvcStyles
+ * @return \MVC\Util\Styles
  */
 function mvc_styles(){
 	if( !current_theme_supports('mvc_styles') ){
 		throwException( 'To use mvc_styles, your theme must declare mvc_styles support!' );
 	}
-	return MvcStyles::get_instance(); 
+	return \MVC\Util\Styles::get_instance();
 }
 
 
@@ -120,25 +120,25 @@ function mvc_styles(){
  * 
  * @example mvc_util()->arrayFilterRecursive();
  * 
- * @return MvcUtilites
+ * @return \MVC\Util\Utility
  */
 function mvc_util(){
-	return MvcUtilites::get_instance(); 
+	return \MVC\Util\Utility::get_instance();
 }
 
                     
 
 /**
- * Mvc Format
+ * Mvc Template
  * 
- * quick function for interacting with MvcFormat
+ * quick function for interacting with Template
  * 
- * @example mvc_format()->change_sidebar( 'active' );
+ * @example mvc_template()->change_sidebar( 'active' );
  * 
- * @return MvcFormat
+ * @return \MVC\Util\Template
  */
-function mvc_format(){
-	return MvcFormat::get_instance(); 
+function mvc_template(){
+	return \MVC\Util\Template::get_instance();
 }			
 
 
@@ -149,11 +149,11 @@ function mvc_format(){
  * 
  * @example mvc_form()->text( 'active' );
  * 
- * @return MvcForm
+ * @return \MVC\Util\Form
  */
 function mvc_form(){
-	return MvcForm::get_instance(); 
-}					
+	return \MVC\Util\Form::get_instance();
+}
 			
 					
 					                                                 

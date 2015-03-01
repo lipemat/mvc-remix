@@ -1,6 +1,6 @@
 <?php
 
-namespace MVC;
+namespace MVC\Util;
 
 /**
  * Route
@@ -19,7 +19,7 @@ namespace MVC;
  * @namespace MVC
  */
 class Route {
-	use Traits\Singleton;
+	use \MVC\Traits\Singleton;
 
 	const POST_TYPE = 'mvc_route';
 	const QUERY_VAR = 'mvc_route_template';

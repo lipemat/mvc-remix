@@ -6,7 +6,7 @@
  * @author Mat Lipe
  * @uses   Extend your Model Class with This one
  */
-class Model extends MvcFramework {
+class Model extends \MVC\Core\Framework {
 
 
 }  

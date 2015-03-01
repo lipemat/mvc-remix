@@ -6,7 +6,7 @@
  * @since  2.2
  * @author Mat Lipe
  */
-class Controller extends MvcFramework {
+class Controller extends \MVC\Core\Framework {
 
 	/**
 	 * Will run only once on page load

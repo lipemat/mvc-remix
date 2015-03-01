@@ -1,5 +1,7 @@
 <?php
 
+namespace MVC\Core;
+
 //define( 'MVC_FORCE_UPDATE', true );
 
 
@@ -15,9 +17,9 @@
  * 
  * @uses do not call this directly 
  */
- 
-if( class_exists('MvcUpdate') ) return;   
-class MvcUpdate {
+
+class Update {
+	use \MVC\Traits\Singleton;
 
     /**
      * GitHub Updater version
@@ -325,7 +327,7 @@ class MvcUpdate {
      * @return object $data the data
      */
     public function get_plugin_data() {
-        include_once ABSPATH.'/wp-admin/includes/plugin.php';
+        include_once ABSPATH . '/wp-admin/includes/plugin.php';
 
         $data = get_plugin_data( dirname( dirname( dirname( dirname( __FILE__ ) ) ) ).'/'.$this->config['slug']);
         return $data;

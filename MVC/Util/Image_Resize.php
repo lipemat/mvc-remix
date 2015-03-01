@@ -1,6 +1,10 @@
 <?php
+
+namespace MVC\Util;
+
+
 /**
- * Manage Image resizing on the fly to prevent a bunch of uneeded image sizes for every image uploaded
+ * Manage Image resizing on the fly to prevent a bunch of unneeded image sizes for every image uploaded
  * Includes support for the Wp Smush.it plugin and will run the smush on all image sizes when generating the thumbnails. This also allow for smushing image larger than 1mb when
  * using cropped sizes less than 1MB
  *
@@ -11,19 +15,11 @@
  * @since  11.10.13
  */
 
-if( class_exists( 'MvcImageResize' ) ){
-	return;
-}
+class Image_Resize {
 
-
-class MvcImageResize {
+	use \MVC\Traits\Singleton;
 
 	private $_image_sizes = array(); //Keeps track of all theme and plugins image sizes
-
-
-	private function __construct(){
-		$this->hooks();
-	}
 
 
 	private function hooks(){
@@ -133,17 +129,17 @@ class MvcImageResize {
 		/* SET VARS FOR OUTPUT */
 
 		// from esplicit thumbnail ID
-		if( ! empty( $id ) ){
+		if( !empty( $id ) ){
 			$image_id  = $id;
 			$image_url = wp_get_attachment_url( $id );
 
 			// thumbnail of specified post
-		} elseif( ! empty( $post_id ) ) {
+		} elseif( !empty( $post_id ) ) {
 			$image_id  = get_post_thumbnail_id( $post_id );
 			$image_url = wp_get_attachment_url( $image_id );
 
 			// or from SRC
-		} elseif( ! empty( $src ) ) {
+		} elseif( !empty( $src ) ) {
 			$image_id  = null;
 			$image_url = esc_url( $src );
 
@@ -153,7 +149,7 @@ class MvcImageResize {
 			$image_url = wp_get_attachment_url( $image_id );
 
 			// get the first image of the post
-		} elseif( $image_scan && function_exists( 'mvc' )) {
+		} elseif( $image_scan && function_exists( 'mvc' ) ) {
 			$image_id  = null;
 			$image_url = mvc()->getFirstContentImage( $post_id );
 
@@ -176,12 +172,12 @@ class MvcImageResize {
 		$full_image_url = $image_url;
 
 		// get the post attachment
-		if( ! empty( $image_id ) ){
+		if( !empty( $image_id ) ){
 			$attachment = get_post( $image_id );
 		}
 
 		// get size from add_image_size
-		if( ! empty( $size ) ){
+		if( !empty( $size ) ){
 			global $_wp_additional_image_sizes, $content_width;
 
 			// if is array, put width and height indivudually
@@ -208,7 +204,7 @@ class MvcImageResize {
 				$width  = intval( get_option( 'thumbnail_size_w' ) );
 				$height = intval( get_option( 'thumbnail_size_h' ) );
 				// last chance thumbnail size defaults
-				if( ! $width && ! $height ){
+				if( !$width && !$height ){
 					$width  = 128;
 					$height = 96;
 				}
@@ -235,7 +231,7 @@ class MvcImageResize {
 		}
 
 		// maybe need resize
-		if( ! empty( $width ) || ! empty( $height ) ){
+		if( !empty( $width ) || !empty( $height ) ){
 			$image     = $this->resize( $image_id, $image_url, $width, $height, $crop );
 			$image_url = $image[ 'url' ];
 			$width     = $image[ 'width' ];
@@ -262,13 +258,13 @@ class MvcImageResize {
 			return array( $image_url, $width, $height );
 		}
 
-		if( ! empty( $image_id ) ){
+		if( !empty( $image_id ) ){
 			$size = empty( $size ) ? $size = array( $width, $height ) : $size;
 			if( $output != 'a' ){
 				$class .= ' mvc-resized-image';
 			}
 			$html_image = wp_get_attachment_image( $image_id, $size, false, array(
-				'class' => trim( "$class" . ( ! is_array( $size ) && ! empty( $size ) ? " attachment-$size" : '' ) ),
+				'class' => trim( "$class" . ( !is_array( $size ) && !empty( $size ) ? " attachment-$size" : '' ) ),
 				'alt'   => empty( $alt ) ? trim( strip_tags( get_post_meta( $image_id, '_wp_attachment_image_alt', true ) ) ) : $alt,
 				'title' => empty( $title ) ? $attachment->post_title : $title,
 			) );
@@ -278,7 +274,7 @@ class MvcImageResize {
 			if( $output != 'a' ){
 				$class .= ' mvc-resized-image';
 			}
-			if( ! is_array( $size ) && ! empty( $size ) ){
+			if( !is_array( $size ) && !empty( $size ) ){
 				$class .= " attachment-$size";
 			}
 
@@ -292,7 +288,7 @@ class MvcImageResize {
 			);
 
 			foreach( $attr as $name => $value ){
-				if( ! empty( $value ) ){
+				if( !empty( $value ) ){
 					$html_image .= " $name=" . '"' . $value . '"';
 				}
 			}
@@ -319,7 +315,7 @@ class MvcImageResize {
 			);
 
 			foreach( $attr as $name => $value ){
-				if( ! empty( $value ) ){
+				if( !empty( $value ) ){
 					$html_link .= " $name=" . '"' . $value . '"';
 				}
 			}
@@ -379,12 +375,12 @@ class MvcImageResize {
 		$file_info = pathinfo( $file_path );
 
 		// check if file exists
-		if( ! isset( $file_info[ 'dirname' ] ) && ! isset( $file_info[ 'filename' ] ) && ! isset( $file_info[ 'extension' ] ) ){
+		if( !isset( $file_info[ 'dirname' ] ) && !isset( $file_info[ 'filename' ] ) && !isset( $file_info[ 'extension' ] ) ){
 			return;
 		}
 
 		$base_file = $file_info[ 'dirname' ] . '/' . $file_info[ 'filename' ] . '.' . $file_info[ 'extension' ];
-		if( ! file_exists( $base_file ) ){
+		if( !file_exists( $base_file ) ){
 			return;
 		}
 
@@ -400,7 +396,7 @@ class MvcImageResize {
 		if( $image_src[ 1 ] > $width || $image_src[ 2 ] > $height ){
 
 			// $crop = false or no height set
-			if( $crop == false OR ! $height ){
+			if( $crop == false OR !$height ){
 				// calculate the size proportionally
 				$proportional_size = wp_constrain_dimensions( $image_src[ 1 ], $image_src[ 2 ], $width, $height );
 				$resized_img_path  = $no_ext_path . '-' . $proportional_size[ 0 ] . 'x' . $proportional_size[ 1 ] . $extension;
@@ -416,7 +412,7 @@ class MvcImageResize {
 
 					return $image;
 				}
-			} elseif( file_exists( $cropped_img_path ) ){
+			} elseif( file_exists( $cropped_img_path ) ) {
 				$cropped_img_url = str_replace( basename( $image_src[ 0 ] ), basename( $cropped_img_path ), $image_src[ 0 ] );
 
 				$image = array(
@@ -437,7 +433,7 @@ class MvcImageResize {
 			}
 
 			// Check if GD Library installed
-			if( ! function_exists( 'imagecreatetruecolor' ) ){
+			if( !function_exists( 'imagecreatetruecolor' ) ){
 				echo 'GD Library Error: imagecreatetruecolor does not exist - please contact your webhost and ask them to install the GD library';
 
 				return;
@@ -455,7 +451,6 @@ class MvcImageResize {
 				}
 
 			}
-
 
 			if( !file_exists( $new_img_path ) ){
 				return;
@@ -522,28 +517,5 @@ class MvcImageResize {
 		return $new_image;
 	}
 
-
-	//********** SINGLETON FUNCTIONS **********/
-
-	/**
-	 * Instance of this class for use as singleton
-	 */
-	private static $instance;
-
-
-	/**
-	 * Get (and instantiate, if necessary) the instance of the
-	 * class
-	 *
-	 * @static
-	 * @return self
-	 */
-	public static function get_instance(){
-		if( ! is_a( self::$instance, __CLASS__ ) ){
-			self::$instance = new self();
-		}
-
-		return self::$instance;
-	}
 
 }

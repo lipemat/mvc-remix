@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: Mvc Theme
+Plugin Name: Mvc Remix
 Plugin URI: http://matlipe.com 
 Description: Turns any Genesis theme into a Model View Controller driven framework.
 Author: Mat Lipe
@@ -21,12 +21,10 @@ require( 'MVC/Autoloader.php' );
 require( 'functions.php' );
 require( 'template-tags.php' );
 
-//Allow for auto-loading framework Classes
 spl_autoload_register('_mvc_autoload');
 
-#-- Bring in the Framework
 add_action( 'plugins_loaded', 'mvc_load', 99999999 );
 function mvc_load(){
-	new MvcBootstrap();
+	\MVC\Core\Bootstrap::init();
 }
 

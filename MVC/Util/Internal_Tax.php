@@ -1,24 +1,30 @@
 <?php
-if( class_exists( 'MvcInternalTax' ) ){
-	return;
-}
+
+namespace MVC\Util;
+
 
 /**
  * The internal taxonomy Class
  *
- * @uses    for interacting with the hidden internal taxonomy
+ * @see This must be constructed before the init hook loads!!!!!
  *
- * @uses    This is really just to solve the heavy meta query issue. This may be used to reuse terms and keep queries faster. It  is highly recommended you use this for checkboxes instead of meta data which will allow for much faster queries later.
+ * For interacting with the hidden internal taxonomy
+ *
+ * This is really just to solve the heavy meta query issue.
+ * This may be used to reuse terms and keep queries faster.
+ *
+ * It is highly recommended you use this for checkboxes instead
+ * of meta data which will allow for much faster queries later.
+ *
  *
  * @example mvc_internal()->has_term( 'active' );
  *
  * @package Mvc Theme
- * @class   MvcInternalTax
  *
- * @author  Mat Lipe
  *
  */
-class MvcInternalTax extends MvcPostTypeTax {
+class Internal_Tax {
+	use \MVC\Traits\Singleton;
 
 	const TAXONOMY = 'internal';
 
@@ -31,7 +37,9 @@ class MvcInternalTax extends MvcPostTypeTax {
 	 * @uses  registers the taxonomy and sets everything up
 	 */
 	function __construct() {
-		$this->register_taxonomy( self::TAXONOMY );
+		$tax = new \MVC\Taxonomy( self::TAXONOMY );
+		$tax->public = false;
+		$tax->show_ui = false;
 	}
 
 
@@ -229,29 +237,6 @@ class MvcInternalTax extends MvcPostTypeTax {
 
 			return $this->terms[ $termName ] = $term[ 'term_id' ];
 		}
-	}
-
-
-	/********** SINGLETON FUNCTIONS **********/
-
-	/**
-	 * Instance of this class for use as singleton
-	 */
-	private static $instance;
-
-
-	/**
-	 * Get (and instantiate, if necessary) the instance of the class
-	 *
-	 * @static
-	 * @return self
-	 */
-	public static function get_instance() {
-		if( !is_a( self::$instance, __CLASS__ ) ){
-			self::$instance = new self();
-		}
-
-		return self::$instance;
 	}
 
 }
