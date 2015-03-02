@@ -34,7 +34,6 @@ add_theme_support( 'mvc_styles' );
 add_theme_support( 'mvc_widgets' );
 add_theme_support( 'mvc_template' );
 add_theme_support( 'mvc_ajax' );
-add_theme_support( 'mvc_update' );
 add_theme_support( 'mvc_cache' );
 add_theme_support( 'mvc_image_resize' );
 add_theme_support( 'mvc_internal_tax' );

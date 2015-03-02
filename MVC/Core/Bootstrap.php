@@ -16,7 +16,6 @@ $MvcFramework = new \MVC\Core\Framework();
 /** The Config for this Theme **/
 if( $file = $MvcFramework->locate_template( 'mvc-config.php' ) ){
 	include( $file );
-
 } else {
 	include( MVC_DIR . 'mvc-config.php' );
 
@@ -35,12 +34,6 @@ if( !defined( 'MVC_IMAGE_URL' ) ){
 if( !defined( 'MVC_JS_URL' ) ){
 	define( 'MVC_JS_URL', MVC_THEME_URL . 'js/' );
 }
-
-if( current_theme_supports( 'mvc_update' ) && is_admin() ){
-	\MVC\Core\Update::init();
-}
-
-define( 'IS_MOBILE_THEME', current_theme_supports( 'mvc_mobile_responsive' ) );
 
 if( current_theme_supports( 'mvc_api' ) ){
 	\MVC\Core\Api::init();

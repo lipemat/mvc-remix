@@ -11,10 +11,6 @@ Instead what this plugin does is give you MVC functionality inside your theme. U
 
 This will work with a non Genesis themes or may be extended into other plugins. However many of the formatting or frontend features are designed to work with Genesis hooks a will become frustrating for someone who wants the full functionality and is using a non Genesis theme.
 
-
-This will update from the Github releases automatically using the standard WordPress plugin updates.
-
-
 ##Usage
 To Turn features on and off, add file mvc-config.php to your theme, copy the code from the mvc-config.php located in the plugins root and make your changes to the theme's file.
 
