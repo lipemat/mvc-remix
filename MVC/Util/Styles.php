@@ -43,7 +43,7 @@ class Styles {
 	/**
 	 * Localize
 	 *
-	 * Quick function for adding variables available in the child.js
+	 * Quick function for adding variables available in the front-end.js
 	 *
 	 * @param $name - name of var
 	 * @param $data - data attached to var
@@ -83,7 +83,7 @@ class Styles {
 	 *
 	 * Add Js
 	 *
-	 * Quick way to add a js file to the site from the child themes js file
+	 * Quick way to add a js file to the site from the front-end themes js file
 	 *
 	 * @param string $file       - the file name
 	 * @param bool   $debug_only - set to true to only add the js_file when SCRIPT_DEBUG is true
@@ -304,7 +304,7 @@ class Styles {
 	/**
 	 * Add the admin.js and admin.css file to the dashboard
 	 *
-	 * @see  the js and css dirs in the child theme
+	 * @see  the js and css dirs in the front-end theme
 	 *
 	 * @uses called by construct()
 	 * @uses to change the local admin css use the filter 'mat-local-admin-css'
@@ -418,10 +418,10 @@ class Styles {
 
 
 	/**
-	 * Add the child.js file to the site
+	 * Add the front-end.js file to the site
 	 *
 	 * If SCRIPT_DEBUG is defined and true this will check for a chid.min.js file
-	 * If not defined or false will check for a child.js file
+	 * If not defined or false will check for a front-end.js file
 	 *
 	 * Will check in the %theme%/js dir first then the %theme%/resources/js dir next
 	 *
@@ -434,10 +434,10 @@ class Styles {
 	function add_js_css(){
 		$version = mvc_util()->get_beanstalk_based_version();
 
-		$file = $this->locate_js_file( 'child' );
+		$file = $this->locate_js_file( 'front-end' );
 
 		if( $file ){
-			wp_enqueue_script( 'mvc-child-js', $file, array( 'jquery' ), $version, true );
+			wp_enqueue_script( 'mvc-front-end-js', $file, array( 'jquery' ), $version, true );
 
 			$dirs = array(
 				'IMG'          => MVC_IMAGE_URL,
@@ -446,20 +446,20 @@ class Styles {
 				'ADMIN_URL'    => get_admin_url()
 			);
 
-			wp_localize_script( 'mvc-child-js', 'DIRS', $dirs );
+			wp_localize_script( 'mvc-front-end-js', 'DIRS', $dirs );
 
 			foreach( self::$localize as $var => $data ){
-				wp_localize_script( 'mvc-child-js', $var, $data );
+				wp_localize_script( 'mvc-front-end-js', $var, $data );
 			}
 
 			//to localize stuff
-			do_action( 'mvc_child_js', 'mvc-child-js' );
+			do_action( 'mvc_front-end_js', 'mvc-front-end-js' );
 		}
 
-		$file = $this->locate_css_file( 'child' );
+		$file = $this->locate_css_file( 'front-end' );
 		//For custom css files when using with plugins
 		if( $file ){
-			wp_enqueue_style( 'mvc-child-styles', $file, array(), $version );
+			wp_enqueue_style( 'mvc-front-end-styles', $file, array(), $version );
 		}
 
 	}
