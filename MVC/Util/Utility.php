@@ -35,7 +35,7 @@ class Utility {
 		if( $version !== null ){
 			return $version;
 		}
-		$version = false;
+		$version = null;
 
 		$file = $_SERVER[ 'DOCUMENT_ROOT' ] . '/.revision';
 		if( file_exists( $file ) ){

@@ -105,14 +105,16 @@ class Styles {
 			wp_enqueue_script(
 				'mvc-' . $file,
 				$url,
-				array( 'jquery' )
+				array( 'jquery' ),
+				mvc_util()->get_beanstalk_based_version()
 			);
 		} else {
 
 			wp_enqueue_script(
 				'mvc-' . $file,
 				$url,
-				array( 'jquery' )
+				array( 'jquery' ),
+				mvc_util()->get_beanstalk_based_version()
 			);
 		}
 	}
@@ -318,7 +320,8 @@ class Styles {
 			wp_enqueue_script(
 				'mvc-admin-js',
 				$file,
-				array( 'jquery' )
+				array( 'jquery' ),
+				mvc_util()->get_beanstalk_based_version()
 			);
 			$dirs = array(
 				'IMG'          => MVC_IMAGE_URL,
@@ -339,7 +342,9 @@ class Styles {
 		if( $file = $this->locate_css_file( 'admin.css' ) ){
 			wp_enqueue_style(
 				'mvc-admin-styles',
-				$file
+				$file,
+				array(),
+				mvc_util()->get_beanstalk_based_version()
 			);
 		}
 
