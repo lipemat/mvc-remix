@@ -62,7 +62,7 @@ abstract class Db {
 			user_id bigint(20) NOT NULL,
 			content_id varchar(100) NOT NULL,
 			content_type varchar(100) NOT NULL,
-			date TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	        date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,,
 			PRIMARY KEY  (uid),
 			KEY lang_id (user_id),
 			KEY post_id (content_id),
