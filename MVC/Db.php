@@ -75,6 +75,10 @@ abstract class Db {
 	 */
 	abstract protected function create_table();
 
+	public function get_id_field(){
+		return $this->id_field;
+	}
+
 
 	/**
 	 * get
