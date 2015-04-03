@@ -19,6 +19,19 @@ namespace MVC\Util;
  */
 class String {
 
+	/**
+	 * Get Current Url
+	 *
+	 * Returns the url of the page you are currently on
+	 *
+	 * @return string
+	 */
+	public function get_current_url(){
+		global $wp;
+		$current_url = add_query_arg( $wp->query_string, '', home_url( $wp->request ) );
+		return $current_url;
+	}
+
 
 	/**
 	 * Give me the plural version
