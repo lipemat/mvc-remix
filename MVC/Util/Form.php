@@ -12,13 +12,11 @@ namespace MVC\Util;
  * @class   Form
  * @package MVC
  *
- * @example mvc_form()->text( 'help' );
  *
  * @namespace MVC\Util
  *
  */
 class Form {
-
 	use \MVC\Traits\Singleton;
 
 	private static $image_js_out = false;
@@ -143,57 +141,25 @@ class Form {
 
 
 	/**
-	 * Creates a select from an array
+	 * select
 	 *
+	 * Outputs a select from an array
 	 *
-	 * @param sting $name
-	 * @param array $args (
-	 *                    options        => array( %key% => %value )
-	 *                    selected       => %value%
-	 *                    id             => %string%
-	 *                    all_label      => %string%,
-	 *                    class          => %string% )
+	 * @param string $name
+	 * @param string $value
+	 * @param array  $options - array( %value% => %label )
+	 * @param string [$all_label]
 	 *
-	 * @param bool  $echo display or return default to true
-	 *
-	 *
-	 * @uses  array( value => display )
-	 *
-	 * @since 2.3.14
-	 *
-	 *
+	 * @return void
 	 */
-	function select( $name, $args = array(), $echo = true ){
-
-		if( !$echo ){
-			ob_start();
-		}
-
-		$defaults = array(
-			'selected'  => '',
-			'id'        => 'mvc_select',
-			'all_label' => false,
-			'class'     => false
-		);
-		$args     = wp_parse_args( $args, $defaults );
-
-		extract( $args );
-
-		if( $args[ 'class' ] ){
-			$args[ 'class' ] = 'class="' . $args[ 'class' ] . '"';
-		}
-
-		printf( '<select name="%s" id="%s" %s>', $name, $id, $args[ 'class' ] );
-		if( $all_label ){
-			printf( '<option value="">%s</option>', $all_label );
-		}
-		foreach( $args[ 'options' ] as $key => $value ){
-			printf( '<option value="%s" %s>%s</option>', $key, selected( $key, $selected, false ), $value );
-		}
+	function select( $name, $value, array $options, $all_label = null ){
+		printf( '<select name="%s">', $name );
+			if( $all_label != null ){
+				printf( '<option value="">%s</option>', $all_label );
+			}
+			foreach( $options as $_key => $_value ){
+				printf( '<option value="%s" %s>%s</option>', $_key, selected( $_key, $value, false ), $_value );
+			}
 		printf( '</select>' );
-
-		if( !$echo ){
-			return ob_get_clean();
-		}
 	}
 }
