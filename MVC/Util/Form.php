@@ -71,9 +71,10 @@ class Form {
 	 *
 	 * @uses  Be sure the ID does not already exist on the dom or this will break
 	 *
+	 * @return string|null
+	 *
 	 */
 	function imageUploadForm( $name, $value = '', $args = array(), $echo = true ){
-
 		wp_enqueue_media();
 
 		$defaults = array(
@@ -93,50 +94,49 @@ class Form {
 		$input .= sprintf( '<input type="button" rel="%s" value="%s" class="button-secondary image_upload" />', $args[ 'id' ], $args[ 'button_label' ] );
 
 		//only display the js once
-		if( $been_here ){
+		if( self::$image_js_out ){
 			if( $echo ){
 				echo $input;
+
 			} else {
 				return $input;
 			}
-
-			return;
-		}
-
-		self::$image_js_out = true;
-
-		ob_start();
-
-		echo $input;
-		?>
-
-		<script type="text/javascript">
-			function handle_mvc_form_image_upload( e ){
-				var cu = wp.media( {
-					button : {
-						text : 'Use Selected Media'
-					},
-					multiple : false
-				} ).on( 'select', function(){
-					var items = cu.state().get( 'selection' );
-					var attachment = items.models[0].toJSON();
-					jQuery.event.trigger( 'MVCImageUploadReturn', [attachment.url, attachment, attachment] );
-					jQuery( "#" + e.attr( 'rel' ) ).val( attachment.url );
-				} ).open();
-				return false;
-			}
-			jQuery( function( $ ){
-				jQuery( '.image_upload' ).click( function( e ){
-					handle_mvc_form_image_upload( jQuery( this ) );
-				} );
-			} );
-		</script>
-
-		<?php
-		if( $echo ){
-			echo ob_get_clean();
 		} else {
-			return ob_get_clean();
+			self::$image_js_out = true;
+
+			ob_start();
+
+			echo $input;
+			?>
+
+			<script type="text/javascript">
+				function handle_mvc_form_image_upload( e ){
+					var cu = wp.media( {
+						button : {
+							text : 'Use Selected Media'
+						},
+						multiple : false
+					} ).on( 'select', function(){
+						var items = cu.state().get( 'selection' );
+						var attachment = items.models[0].toJSON();
+						jQuery.event.trigger( 'MVCImageUploadReturn', [attachment.url, attachment, attachment] );
+						jQuery( "#" + e.attr( 'rel' ) ).val( attachment.url );
+					} ).open();
+					return false;
+				}
+				jQuery( function( $ ){
+					jQuery( '.image_upload' ).click( function( e ){
+						handle_mvc_form_image_upload( jQuery( this ) );
+					} );
+				} );
+			</script>
+
+			<?php
+			if( $echo ){
+				echo ob_get_clean();
+			} else {
+				return ob_get_clean();
+			}
 		}
 
 	}
