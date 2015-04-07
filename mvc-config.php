@@ -37,6 +37,7 @@ add_theme_support( 'mvc_ajax' );
 add_theme_support( 'mvc_cache' );
 add_theme_support( 'mvc_image_resize' );
 add_theme_support( 'mvc_internal_tax' );
+add_theme_support( 'mvc_translate' );
 
 //add_theme_support( 'mvc_route' );
 

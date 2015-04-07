@@ -256,7 +256,7 @@ class Styles {
 
 		//ie 10 only
 		if( strpos( $_SERVER[ 'HTTP_USER_AGENT' ], 'MSIE 10' ) ){
-			if( $file = $this->locate_template( 'ie10.css', true ) ){
+			if( $file = mvc_file()->locate_template( 'ie10.css', true ) ){
 				echo '<!--[if IE 10]>';
 				do_action( 'ie-head' );
 				printf( '<link rel="stylesheet" type="text/css" href="%s" /><![endif]-->', $file );
@@ -264,21 +264,21 @@ class Styles {
 		}
 
 		//ie 9 only
-		if( $file = $this->locate_template( 'ie9.css', true ) ){
+		if( $file = mvc_file()->locate_template( 'ie9.css', true ) ){
 			echo '<!--[if IE 9]>';
 			do_action( 'ie9-head' );
 			printf( '<link rel="stylesheet" type="text/css" href="%s" /><![endif]-->', $file );
 		}
 
 		//ie 8 only
-		if( $file = $this->locate_template( 'ie8.css', true ) ){
+		if( $file = mvc_file()->locate_template( 'ie8.css', true ) ){
 			echo '<!--[if IE 8]>';
 			do_action( 'ie8-head' );
 			printf( '<link rel="stylesheet" type="text/css" href="%s" /><![endif]-->', $file );
 		}
 
 		//ie 7 only
-		if( $file = $this->locate_template( 'ie7.css', true ) ){
+		if( $file = mvc_file()->locate_template( 'ie7.css', true ) ){
 			echo '<!--[if IE 7]>';
 			do_action( 'ie7-head' );
 			printf( '<link rel="stylesheet" type="text/css" href="%s" /><![endif]-->', $file );
@@ -368,14 +368,14 @@ class Styles {
 		$file_name = str_replace( '.css', '', $file_name );
 
 		if( !defined( 'SCRIPT_DEBUG' ) || !SCRIPT_DEBUG ){
-			if( !$file = mvc_template()->locate_template( "$file_name.min.css", true ) ){
-				$file = mvc_template()->locate_template( "css/$file_name.min.css", true );
+			if( !$file = mvc_file()->locate_template( "$file_name.min.css", true ) ){
+				$file = mvc_file()->locate_template( "css/$file_name.min.css", true );
 			}
 		}
 
 		if( empty( $file ) ){
-			if( !$file = mvc_template()->locate_template( "$file_name.css", true ) ){
-				$file = mvc_template()->locate_template( "css/$file_name.css", true );
+			if( !$file = mvc_file()->locate_template( "$file_name.css", true ) ){
+				$file = mvc_file()->locate_template( "css/$file_name.css", true );
 			}
 		}
 
@@ -401,18 +401,18 @@ class Styles {
 		$file_name = str_replace( '.js', '', $file_name );
 
 		if( !defined( 'SCRIPT_DEBUG' ) || !SCRIPT_DEBUG ){
-			if( !$file = mvc_template()->locate_template( "js/$file_name.min.js", true ) ){
-				if( !$file = mvc_template()->locate_template( "js/min/$file_name.min.js", true ) ){
-					$file = mvc_template()->locate_template( "resources/js/min/$file_name.min.js", true );
+			if( !$file = mvc_file()->locate_template( "js/$file_name.min.js", true ) ){
+				if( !$file = mvc_file()->locate_template( "js/min/$file_name.min.js", true ) ){
+					$file = mvc_file()->locate_template( "resources/js/min/$file_name.min.js", true );
 				}
 
 			}
 		}
 
 		if( empty( $file ) ){
-			if( !$file = mvc_template()->locate_template( "js/$file_name.js", true ) ){
-				if( !$file = mvc_template()->locate_template( "js/min/$file_name.js", true ) ){
-					$file = mvc_template()->locate_template( "resources/js/$file_name.js", true );
+			if( !$file = mvc_file()->locate_template( "js/$file_name.js", true ) ){
+				if( !$file = mvc_file()->locate_template( "js/min/$file_name.js", true ) ){
+					$file = mvc_file()->locate_template( "resources/js/$file_name.js", true );
 				}
 			}
 		}

@@ -18,10 +18,7 @@ define( 'MVC_SLUG', MVC_DIR_NAME.'/'.basename(__FILE__));
 require( 'MVC/Autoloader.php' );
 \MVC\Autoloader::add( "MVC\\", __DIR__ . '/MVC' );
 
-require( 'functions.php' );
 require( 'template-tags.php' );
-
-spl_autoload_register('_mvc_autoload');
 
 add_action( 'plugins_loaded', 'mvc_load', 99999999 );
 function mvc_load(){

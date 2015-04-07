@@ -164,8 +164,19 @@ function mvc_util(){
  */
 function mvc_template(){
 	return \MVC\Util\Template::get_instance();
-}			
+}
 
+
+/**
+ * mvc_file
+ *
+ * @example mvc_file()->locate_template( %file% )
+ *
+ * @return \MVC\Util\File
+ */
+function mvc_file(){
+	return \MVC\Util\File::get_instance();
+}
 
 /**
  * Mvc Form

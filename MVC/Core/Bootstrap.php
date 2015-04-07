@@ -2,7 +2,6 @@
 
 namespace MVC\Core;
 
-
 /**
  * Boot Strap
  *
@@ -11,10 +10,8 @@ namespace MVC\Core;
  * @author Mat Lipe <mat@matlipe.com>
  */
 
-$MvcFramework = new \MVC\Core\Framework();
-
 /** The Config for this Theme **/
-if( $file = $MvcFramework->locate_template( 'mvc-config.php' ) ){
+if( $file = mvc_file()->locate_template( 'mvc-config.php' ) ){
 	include( $file );
 } else {
 	include( MVC_DIR . 'mvc-config.php' );
@@ -73,6 +70,11 @@ if( current_theme_supports( 'mvc_ajax' ) ){
 //For custom urls
 if( current_theme_supports( 'mvc_route' ) ){
 	\MVC\Route::init();
+}
+
+//translation adjustments
+if( current_theme_supports( 'mvc_translate' ) ){
+	\MVC\Util\Translate::init();
 }
 
 
@@ -201,7 +203,7 @@ class Bootstrap {
 	 * @filters mvc_theme_dirs - allows for other themes or plugins to have a widgets folder
 	 */
 	function registerWidgets(){
-		$dirs = mvc()->get_mvc_dirs();
+		$dirs = mvc_file()->get_mvc_dirs();
 
 		//Register Widgets from the theme's widget folder
 		if( !current_theme_supports( 'mvc_widgets' ) ){
@@ -248,7 +250,7 @@ class Bootstrap {
 	function setupMvc(){
 		global $mvc_theme;
 
-		$mvc_theme[ 'mvc_dirs' ] = mvc()->get_mvc_dirs();
+		$mvc_theme[ 'mvc_dirs' ] = mvc_file()->get_mvc_dirs();
 
 		foreach( $mvc_theme[ 'mvc_dirs' ] as $dir ){
 
