@@ -45,7 +45,7 @@ function mvc_image( $url, $size, $crop = true ){
 		'output' => 'url'
 	);
 
-	return $image->image( $args );
+	return $image->image( $args, false );
 }
 
 
