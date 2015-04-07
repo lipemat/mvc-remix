@@ -23,6 +23,31 @@ function mvc(){
 	return $mvc = new \MVC\Core\Framework();
 }
 
+/**
+ * mvc_image
+ *
+ * Retrieve a url to a resized version of
+ * a specified url
+ *
+ * @param string       $url  Url of the full sized image.
+ * @param string|array $size Any registered image size or an array( %width%, %height% )
+ * @param bool         $crop Set to false to soft crop. Default true ( hard crop )
+ *
+ * @return string
+ */
+function mvc_image( $url, $size, $crop = true ){
+	$image = \MVC\Util\Image_Resize::get_instance();
+
+	$args = array(
+		'size'   => $size,
+		'src'    => $url,
+		'crop'   => $crop,
+		'output' => 'url'
+	);
+
+	return $image->image( $args );
+}
+
 
 /**
  * Mvc Versions
