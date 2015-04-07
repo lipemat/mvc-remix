@@ -298,7 +298,7 @@ class Custom_Post_Type {
 			'not_found'          => sprintf( __( 'No %s Found' ), $plural ),
 			'not_found_in_trash' => sprintf( __( 'No %s Found in Trash' ), $plural ),
 			'menu_name'          => empty( $this->menu_name ) ? $plural : $this->menu_name,
-			'parent_item_colon'  => sprintf( __( 'Parent %s:', $single ) ),
+			'parent_item_colon'  => sprintf( __( 'Parent %s:' ), $single ),
 			'all_items'          => sprintf( __( 'All %s' ), $plural )
 		);
 
