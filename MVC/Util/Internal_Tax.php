@@ -55,7 +55,6 @@ class Internal_Tax {
 	 *
 	 */
 	function assignTerm( $term, $post = false, $removeTerms = array() ) {
-
 		$post_id = $this->getPostId( $post );
 
 		if( !empty( $removeTerms ) ){
@@ -73,7 +72,8 @@ class Internal_Tax {
 
 		$term_id = $this->getTermId( $term );
 
-		return wp_set_post_terms( $post_id, $term_id, self::TAXONOMY, true );
+		wp_set_object_terms( $post_id, (int)$term_id, self::TAXONOMY, true );
+
 	}
 
 
