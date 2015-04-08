@@ -220,7 +220,7 @@ abstract class Settings {
 	 * Construct
 	 *
 	 */
-	function __construct(){
+	public function __construct(){
 		$this->add_settings();
 		$this->set_vars();
 		$this->fill_class_vars();

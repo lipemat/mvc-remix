@@ -13,7 +13,7 @@ namespace MVC\Traits;
 
 trait Singleton {
 
-	protected function __construct(){
+	public function __construct(){
 		if( method_exists( $this, 'hooks' ) ){
 			$this->hooks();
 		}
