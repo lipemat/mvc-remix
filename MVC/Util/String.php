@@ -18,18 +18,15 @@ namespace MVC\Util;
  *
  */
 class String {
+	use \MVC\Traits\Singleton;
 
 	/**
-	 * Get Current Url
-	 *
-	 * Returns the url of the page you are currently on
-	 *
-	 * @return string
+	 * @deprecated use mvc_template()->get_current_url();
 	 */
 	public function get_current_url(){
-		global $wp;
-		$current_url = add_query_arg( $wp->query_string, '', home_url( $wp->request ) );
-		return $current_url;
+		_deprecated_function( 'get_current_url', '4.10.15', 'mvc_url()->get_current_url()' );
+
+		return mvc_url()->get_current_url();
 	}
 
 
@@ -397,30 +394,7 @@ class String {
 	 * @example findTagContents('<div>hi</div>','div');
 	 */
 	function findTagContents( $s, $tag ){
-		return find_between( $s, "<$tag>", "</$tag>", true );
-	}
-
-
-	/********** SINGLETON FUNCTIONS **********/
-
-	/**
-	 * Instance of this class for use as singleton
-	 */
-	private static $instance;
-
-
-	/**
-	 * Get (and instantiate, if necessary) the instance of the class
-	 *
-	 * @static
-	 * @return self
-	 */
-	public static function get_instance(){
-		if( !is_a( self::$instance, __CLASS__ ) ){
-			self::$instance = new self();
-		}
-
-		return self::$instance;
+		retur$this->n find_between( $s, "<$tag>", "</$tag>", true );
 	}
 
 

@@ -24,6 +24,20 @@ function mvc(){
 }
 
 /**
+ * Mvc Url
+ *
+ * Quick function for interacting with MVC\Util\Url
+ *
+ * @example mvc_url()->get_current_url();
+ *
+ *
+ * @return \MVC\Util\Url
+ */
+function mvc_url(){
+	return \MVC\Util\Url::get_instance();
+}
+
+/**
  * mvc_image
  *
  * Retrieve a url to a resized version of

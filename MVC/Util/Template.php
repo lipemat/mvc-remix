@@ -19,36 +19,42 @@ class Template {
 
 	public $sidebar_changed = false;
 
-
 	/**
-	 * @since 10.2.13
-	 * @uses  called at Bootstrap.php if theme supports it
+	 * Init Theme Adjustments
+	 *
+	 * Called by bootstrap only to use hooks if theme supports to do so
+	 *
+	 * @todo Move this stuff to it's own deal
+	 *
+	 * @static
+	 *
+	 * @return void
 	 */
-	function __construct(){
-
+	public static function init_theme_adjustments(){
+		$class = self::get_instance();
+		
 		//Filter the Search Form
 		if( defined( 'SEARCH_TEXT' ) ){
-			add_filter( 'genesis_search_text', array( $this, 'return_' . SEARCH_TEXT ) );
+			add_filter( 'genesis_search_text', array( $class, 'return_' . SEARCH_TEXT ) );
 		}
 		if( defined( 'SEARCH_BUTTON_TEXT' ) ){
-			add_filter( 'genesis_search_button_text', array( $this, 'return_' . SEARCH_BUTTON_TEXT ) );
+			add_filter( 'genesis_search_button_text', array( $class, 'return_' . SEARCH_BUTTON_TEXT ) );
 		}
 
 		//Add the class 'first-class' to the first post
-		add_filter( 'post_class', array( $this, 'first_post_class' ), 0, 2 );
+		add_filter( 'post_class', array( $class, 'first_post_class' ), 0, 2 );
 
 		//Add the special classes to the nav
-		add_filter( 'wp_nav_menu_objects', array( $this, 'menu_classes' ) );
+		add_filter( 'wp_nav_menu_objects', array( $class, 'menu_classes' ) );
 
 		//Changes the Sidebar for the Blog Pages
-		add_action( 'wp', array( $this, 'blog_sidebar' ) );
+		add_action( 'wp', array( $class, 'blog_sidebar' ) );
 
 		//Add a class matching the page name for styling - nice :)
-		add_filter( 'body_class', array( $this, 'body_class' ) );
+		add_filter( 'body_class', array( $class, 'body_class' ) );
 
-		add_action( 'genesis_before', array( $this, 'outabody_open' ) );
-		add_action( 'genesis_after', array( $this, 'outabody_close' ) );
-
+		add_action( 'genesis_before', array( $class, 'outabody_open' ) );
+		add_action( 'genesis_after', array( $class, 'outabody_close' ) );
 	}
 
 
