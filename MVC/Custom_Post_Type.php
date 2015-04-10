@@ -230,6 +230,7 @@ class Custom_Post_Type {
 			'show_ui'             => $this->show_ui,
 			'show_in_menu'        => $this->show_in_menu,
 			'show_in_nav_menus'   => $this->show_in_nav_menus,
+			'show_in_admin_bar'   => $this->show_in_admin_bar,
 			'menu_icon'           => $this->menu_icon,
 			'capability_type'     => $this->capability_type,
 			'map_meta_cap'        => $this->map_meta_cap,
