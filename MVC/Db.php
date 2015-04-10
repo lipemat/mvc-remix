@@ -251,11 +251,14 @@ abstract class Db {
 			if( array_key_exists( $column, $columns ) ){
 				$clean[ $column ] = $columns[ $column ];
 			} else {
-				$clean[ $column ] = null;
+				//we are always doing default date stuff
+				if( $column != 'date' ){
+					$clean[ $column ] = null;
+				}
 			}
 		}
 
-		return $clean;
+		return array_reverse( $clean );
 	}
 
 
