@@ -276,7 +276,7 @@ abstract class Db {
 			}
 		}
 
-		return array_reverse( $clean );
+		return $clean;
 	}
 
 
