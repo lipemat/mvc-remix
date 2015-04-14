@@ -19,10 +19,11 @@ namespace MVC\Util;
  * @namespace MVC
  */
 class Route {
-	use \MVC\Traits\Singleton;
+	use Traits\Singleton;
 
 	const POST_TYPE = 'mvc_route';
 	const QUERY_VAR = 'mvc_route_template';
+	const PARAM_QUERY_VAR = 'mvc_route_param';
 	const OPTION = 'mvc_route_cache';
 	const POST_ID_OPTION = 'mvc_route_post_id';
 
@@ -51,7 +52,7 @@ class Route {
 	 * Runs when MvcBootstrap loads if add_theme_support( 'mvc_route' );
 	 *
 	 */
-	protected function __construct(){
+	public function __construct(){
 		$this->hooks();
 	}
 
@@ -182,6 +183,7 @@ class Route {
 	 */
 	public function add_query_var( $vars ){
 		$vars[] = self::QUERY_VAR;
+		$vars[] = self::PARAM_QUERY_VAR;
 
 		return $vars;
 	}
@@ -198,7 +200,10 @@ class Route {
 	 */
 	public function setup_endpoints(){
 		foreach( self::$routes as $_route => $_args ){
+			add_rewrite_rule( $_route . '/([^/]+)/?$', 'index.php?post_type=' . self::POST_TYPE . '&p=' . self::get_post_id() . '&' . self::QUERY_VAR . '=' . $_route . '&' . self::PARAM_QUERY_VAR. '=$matches[1]', 'top' );
+
 			add_rewrite_rule( $_route, 'index.php?post_type=' . self::POST_TYPE . '&p=' . self::get_post_id() . '&' . self::QUERY_VAR . '=' . $_route, 'top' );
+
 		}
 	}
 
@@ -252,6 +257,21 @@ class Route {
 		}
 
 		return self::$routes[ $route ];
+	}
+
+
+	/**
+	 * Get Url Parameter
+	 *
+	 * Retrieves the value sent within the url
+	 * /%route%/%param%/
+	 *
+	 * @example If the url is /profile/mat/ this will return 'mat'
+	 *
+	 * @return string
+	 */
+	public function get_url_parameter(){
+		return get_query_var( self::PARAM_QUERY_VAR );
 	}
 
 
