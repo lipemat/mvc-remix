@@ -19,7 +19,7 @@ namespace MVC\Util;
  * @namespace MVC
  */
 class Route {
-	use Traits\Singleton;
+	use \MVC\Traits\Singleton;
 
 	const POST_TYPE = 'mvc_route';
 	const QUERY_VAR = 'mvc_route_template';
@@ -200,7 +200,8 @@ class Route {
 	 */
 	public function setup_endpoints(){
 		foreach( self::$routes as $_route => $_args ){
-			add_rewrite_rule( $_route . '/([^/]+)/?$', 'index.php?post_type=' . self::POST_TYPE . '&p=' . self::get_post_id() . '&' . self::QUERY_VAR . '=' . $_route . '&' . self::PARAM_QUERY_VAR. '=$matches[1]', 'top' );
+			add_rewrite_rule( $_route . '/([^/]+)/?.?', 'index.php?post_type=' . self::POST_TYPE . '&p=' . self::get_post_id() . '&' . self::QUERY_VAR . '=' . $_route . '&' . self::PARAM_QUERY_VAR. '=$matches[1]', 'top' );
+
 
 			add_rewrite_rule( $_route, 'index.php?post_type=' . self::POST_TYPE . '&p=' . self::get_post_id() . '&' . self::QUERY_VAR . '=' . $_route, 'top' );
 
