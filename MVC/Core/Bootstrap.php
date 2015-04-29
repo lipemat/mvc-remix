@@ -253,21 +253,18 @@ class Bootstrap {
 		$mvc_theme[ 'mvc_dirs' ] = mvc_file()->get_mvc_dirs();
 
 		foreach( $mvc_theme[ 'mvc_dirs' ] as $dir ){
-
 			$classes = array();
 
 			if( file_exists( $dir . 'Controller/Controller.php' ) ){
-
 				require( $dir . 'Controller/Controller.php' );
 				require( $dir . 'Model/Model.php' );
-				#-- Setup and run the Global, Controller, Model, and View
+
 				//Had to do it this way because of requirements by the rest
-				$Controller        = new Controller();
-				$Controller->Model = new Model();
+				$Controller        = new \Controller();
+				$Controller->Model = new \Model();
 				if( method_exists( $Controller, 'before' ) ){
 					add_action( 'wp', array( $Controller, 'before' ) );
 				}
-
 				$classes[ 'Controller' ] = 'Controller';
 			}
 
@@ -282,7 +279,7 @@ class Bootstrap {
 					require( $dir . 'Controller/' . $file );
 					$name = str_replace( array( '_Controller', 'Controller', '.php', ), '', $file );
 
-					if( in_array( $name, array( 'Admin', 'admin' ) ) && !MVC_IS_ADMIN ){
+					if( in_array( $name, array( 'Admin', 'admin' ) ) && !is_admin() ){
 						continue;
 					}
 
@@ -310,7 +307,7 @@ class Bootstrap {
 					if( method_exists( ${$class}, 'before' ) ){
 						//Check if the new child class has a before and runs it if it does
 						//has to be done this way to prevent recalling the Controller->before() over and over
-						$reflect = new ReflectionClass( $class );
+						$reflect = new \ReflectionClass( $class );
 						if( $reflect->getMethod( 'before' )->getDeclaringClass()->getName() == $class ){
 							add_action( 'wp', array( ${$class}, 'before' ) );
 						}
