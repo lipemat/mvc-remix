@@ -170,7 +170,7 @@ class Template {
 	 * @return string | false in in admin
 	 */
 	function getPageTemplateName(){
-		if( MVC_IS_ADMIN ){
+		if( is_admin() ){
 			return false;
 		}
 		$post = get_post();

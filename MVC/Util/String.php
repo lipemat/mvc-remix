@@ -394,7 +394,7 @@ class String {
 	 * @example findTagContents('<div>hi</div>','div');
 	 */
 	function findTagContents( $s, $tag ){
-		retur$this->n find_between( $s, "<$tag>", "</$tag>", true );
+		return $this->find_between( $s, "<$tag>", "</$tag>", true );
 	}
 
 
