@@ -171,10 +171,6 @@ class Framework {
 	function view( $file = false, $folder = false, $args = array(), $hideInfo = false ){
 		global $posts, $post, $wp_did_header, $wp_query, $wp_rewrite, $wpdb, $wp_version, $wp, $id, $comment, $user_ID;
 
-		//@deprected - remove these when going to +
-		$MvcString = $this->MvcString;
-		$MvcForm   = $this->MvcForm;
-
 		if( !$folder ){
 			$folder = $this->getController();
 			if( defined( "MVC_CONTROLLER_PREFIX" ) && MVC_CONTROLLER_PREFIX ){

@@ -10,7 +10,6 @@ namespace MVC\Util;
  *
  * @author  Mat Lipe
  *
- * @uses    this will be available in all views via the $MvcString Variable
  *
  * @example mvc_string()->theContentLimit()
  *
