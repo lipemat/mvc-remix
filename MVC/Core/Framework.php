@@ -191,7 +191,7 @@ class Framework {
 			echo '<!-- View/' . $folder . $file . '.php -->';
 		}
 
-		if( $path = $this->locate_template( 'View/' . $folder . $file . '.php' ) ){
+		if( $path = mvc_file()->locate_template( 'View/' . $folder . $file . '.php' ) ){
 			extract( $args );
 			extract( $this->get() );
 			include( $path );
