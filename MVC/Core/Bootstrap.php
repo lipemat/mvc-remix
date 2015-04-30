@@ -89,7 +89,6 @@ if( current_theme_supports( 'mvc_translate' ) ){
 class Bootstrap {
 	use \MVC\Traits\Singleton;
 
-
 	/**
 	 * Constructor
 	 *
@@ -216,6 +215,8 @@ class Bootstrap {
 
 		//go through all files in all widget dirs
 		foreach( $dirs as $dir ){
+			$widgets = array();
+
 			if( !is_dir( $dir . 'widgets' ) ){
 				continue;
 			}
@@ -225,9 +226,9 @@ class Bootstrap {
 					continue;
 				}
 				require( $dir . 'widgets/' . $widget );
-				$widgets[ ] = str_replace( '.php', '', $widget );
+				$widgets[] = str_replace( '.php', '', $widget );
 			}
-			if( !isset( $widgets ) ){
+			if( empty( $widgets ) ){
 				continue;
 			}
 			foreach( $widgets as $widget ){

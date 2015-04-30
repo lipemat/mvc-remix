@@ -22,6 +22,12 @@ require( 'template-tags.php' );
 
 add_action( 'plugins_loaded', 'mvc_load', 99999999 );
 function mvc_load(){
+	static $loaded = false;
+	if( $loaded ){
+		return;
+	}
+
 	\MVC\Core\Bootstrap::init();
+	$loaded = true;
 }
 
