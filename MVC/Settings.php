@@ -177,7 +177,7 @@ abstract class Settings {
 	 * @uses    $this->settings
 	 *
 	 *
-	 * @example $this->add_settings_section( %slug%, %title% );
+	 * @example $this->add_setting_section( %slug%, %title% );
 	 * @example $this->add_setting( %section%, %field_slug%, %field_title% );
 	 *
 	 * @example $this->settings = array(
