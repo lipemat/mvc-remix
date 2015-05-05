@@ -142,7 +142,7 @@ abstract class Db {
 				}
 			}
 
-			$where = "WHERE " . implode( ' AND ', $wheres );
+			$where = " WHERE " . implode( ' AND ', $wheres );
 			$sql .= $wpdb->prepare( $where, $values );
 		}
 
