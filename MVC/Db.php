@@ -127,26 +127,24 @@ abstract class Db {
 			$columns = implode( ',', $columns );
 		}
 
-		if( empty( $id_or_wheres ) ){
-			return $wpdb->get_results( "SELECT $columns FROM $this->table" );
-		}
-
 		if( is_numeric( $id_or_wheres ) ){
 			$id_or_wheres = array( $this->id_field => $id_or_wheres );
 		}
 
+		$sql = "SELECT $columns FROM $this->table";
 
-		$where_formats = $this->get_formats( $id_or_wheres );
-		foreach( $id_or_wheres as $column => $value ){
-			if( !empty( $value ) ){
-				$wheres[ $column ] = "`$column` = " . array_shift( $where_formats );
-				$values[ ]         = $value;
+		if( $id_or_wheres != null ){
+			$where_formats = $this->get_formats( $id_or_wheres );
+			foreach( $id_or_wheres as $column => $value ){
+				if( !empty( $value ) ){
+					$wheres[ $column ] = "`$column` = " . array_shift( $where_formats );
+					$values[ ]         = $value;
+				}
 			}
+
+			$where = "WHERE " . implode( ' AND ', $wheres );
+			$sql .= $wpdb->prepare( $where, $values );
 		}
-
-
-		$sql = "SELECT $columns FROM $this->table WHERE " . implode( ' AND ', $wheres );
-		$sql = $wpdb->prepare( $sql, $values );
 
 		if( $order_by != null ){
 			$sql .= " ORDER BY $order_by";
@@ -172,7 +170,6 @@ abstract class Db {
 		}
 
 	}
-
 
 	/**
 	 * Add
