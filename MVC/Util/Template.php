@@ -32,13 +32,13 @@ class Template {
 	 */
 	public static function init_theme_adjustments(){
 		$class = self::get_instance();
-		
+
 		//Filter the Search Form
 		if( defined( 'SEARCH_TEXT' ) ){
-			add_filter( 'genesis_search_text', array( $class, 'return_' . SEARCH_TEXT ) );
+			add_filter( 'genesis_search_text', array( mvc(), 'return_' . SEARCH_TEXT ) );
 		}
 		if( defined( 'SEARCH_BUTTON_TEXT' ) ){
-			add_filter( 'genesis_search_button_text', array( $class, 'return_' . SEARCH_BUTTON_TEXT ) );
+			add_filter( 'genesis_search_button_text', array( mvc(), 'return_' . SEARCH_BUTTON_TEXT ) );
 		}
 
 		//Add the class 'first-class' to the first post
@@ -461,7 +461,7 @@ class Template {
 	 */
 	function change_layout( $layout = 'full-width-content' ){
 		$this->layout = $layout;
-		add_filter( 'genesis_site_layout', array( $this, 'return_' . $layout ) );
+		add_filter( 'genesis_site_layout', array( mvc(), 'return_' . $layout ) );
 	}
 
 
