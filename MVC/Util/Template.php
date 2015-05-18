@@ -33,14 +33,6 @@ class Template {
 	public static function init_theme_adjustments(){
 		$class = self::get_instance();
 
-		//Filter the Search Form
-		if( defined( 'SEARCH_TEXT' ) ){
-			add_filter( 'genesis_search_text', array( mvc(), 'return_' . SEARCH_TEXT ) );
-		}
-		if( defined( 'SEARCH_BUTTON_TEXT' ) ){
-			add_filter( 'genesis_search_button_text', array( mvc(), 'return_' . SEARCH_BUTTON_TEXT ) );
-		}
-
 		//Add the class 'first-class' to the first post
 		add_filter( 'post_class', array( $class, 'first_post_class' ), 0, 2 );
 
