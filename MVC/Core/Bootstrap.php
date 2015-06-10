@@ -77,6 +77,12 @@ if( current_theme_supports( 'mvc_translate' ) ){
 	\MVC\Util\Translate::init();
 }
 
+//taxonomy meta
+if( current_theme_supports( 'mvc_taxonomy_meta' ) ){
+	\MVC\Util\Taxonomy_Meta::init();
+}
+
+
 
 /**
  * Bootstrap
