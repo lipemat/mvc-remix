@@ -27,22 +27,22 @@ class Taxonomy_Meta {
 
 
 	public function get_term_meta( $term_id, $taxonomy, $key, $single = false ){
-		return get_metadata( 'term_taxonomy', get_term_taxonomy_id( $term_id, $taxonomy ), $key, $single );
+		return get_metadata( 'term_taxonomy', $this->get_term_taxonomy_id( $term_id, $taxonomy ), $key, $single );
 	}
 
 
 	public function add_term_meta( $term_id, $taxonomy, $meta_key, $meta_value, $unique = false ){
-		return add_metadata( 'term_taxonomy', get_term_taxonomy_id( $term_id, $taxonomy ), $meta_key, $meta_value, $unique );
+		return add_metadata( 'term_taxonomy', $this->get_term_taxonomy_id( $term_id, $taxonomy ), $meta_key, $meta_value, $unique );
 	}
 
 
 	public function update_term_meta( $term_id, $taxonomy, $meta_key, $meta_value, $prev_value = '' ){
-		return update_metadata( 'term_taxonomy', get_term_taxonomy_id( $term_id, $taxonomy ), $meta_key, $meta_value, $prev_value );
+		return update_metadata( 'term_taxonomy', $this->get_term_taxonomy_id( $term_id, $taxonomy ), $meta_key, $meta_value, $prev_value );
 	}
 
 
 	public function delete_term_meta( $term_id, $taxonomy, $meta_key, $meta_value = '' ){
-		return delete_metadata( 'term_taxonomy', get_term_taxonomy_id( $term_id, $taxonomy ), $meta_key, $meta_value );
+		return delete_metadata( 'term_taxonomy', $this->get_term_taxonomy_id( $term_id, $taxonomy ), $meta_key, $meta_value );
 	}
 
 
