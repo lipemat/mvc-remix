@@ -153,7 +153,7 @@ class Framework {
 
 
 	/**
-	 * Calles the Proper view file from a controller
+	 * Calls the Proper view file from a controller
 	 *
 	 * @since 12.2.13
 	 *
@@ -200,6 +200,43 @@ class Framework {
 			echo __( 'The file does not exist View/' . $folder . $file . '.php', 'mvc' );
 		}
 
+	}
+
+
+	/**
+	 * single_view
+	 *
+	 * Display a view only one time. Calling this more than once
+	 * with the same folder and file will do nothing. Only the first
+	 * call will actually call the view method.
+	 *
+	 * Great for js or thickbox templates
+	 *
+	 * @uses $this->view()
+	 *
+	 * @param string $file   the view file to use
+	 * @param string $folder the view folder to use
+	 * @param Array  $args   will be extracted into usable args is associate array otherwise will be available as is in view
+	 * @param       bool    [$hideInfo] - to remove the <!-- comments --> (defaults to false);
+	 *
+	 * @return void
+	 */
+	function single_view( $file = false, $folder = false, $args = array(), $hideInfo = false ){
+		static $views = array();
+		if( !$folder ){
+			$folder = get_class($this);
+		}
+
+		if( !$file ){
+			list(, $caller) = debug_backtrace(false);
+			$file = $caller['function'];
+		}
+		if( isset( $views[ $file ][ $folder ] ) ){
+			return;
+		}
+		$views[ $file ][ $folder ] = 1;
+
+		$this->view( $file, $folder, $args, $hideInfo );
 	}
 
 
