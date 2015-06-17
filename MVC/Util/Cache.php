@@ -131,6 +131,8 @@ class Cache {
 			$value = $key.$time;
 		}
 		self::set_group_keys($keys);
+
+		wp_cache_flush();
 	}
 
 
