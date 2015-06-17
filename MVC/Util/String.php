@@ -164,18 +164,16 @@ class String {
 
 
 	/**
-	 * Limit a sting to a number of characters
-	 *
-	 * @since 6.25.13
+	 * Limit a string to a number of characters
 	 *
 	 * @param string $content - the content to limit
-	 * @param int    $maxChar - the number of characters to max out on
-	 * @param        bool     [$striptags] - to remove the html tags from the content (defaults
-	 *                        to true)
-	 * @param array  $args    (
-	 *                        'allowed_tags' => '<p><b><strong><em><i><u><del><span
-	 *                        style="text-decoration: underline;">',
-	 *                        'strip_tags' => true
+	 * @param int $maxChar - the number of characters to max out on
+	 * @param array $args {
+	 *           @type string $allowed_tags - list of html tags allowed  default <p><b><strong><em><i><u><del><span><style="text-decoration: underline>">
+	 *           @type bool   $strip_tags - default true
+	 * }
+	 *
+	 * @return string
 	 */
 	public function limitText( $content, $maxChar = 1000, $args = array() ){
 
