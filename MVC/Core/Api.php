@@ -55,4 +55,18 @@ class Api {
 	}
 
 
+	/**
+	 * Get the url used to hit the api endpoint
+	 *
+	 * @param string [$action]
+	 *
+	 * @return string
+	 */
+	public function get_api_url( $action = null ){
+		$url = trailingslashit( trailingslashit( get_home_url() ) . 'api/'. $action );
+		return $url;
+	}
+
+
+
 }
