@@ -98,25 +98,16 @@ class Styles {
 
 		$url = $this->locate_js_file( $file );
 
-		if( empty( $file ) ){
+		if( empty( $url ) ){
 			return;
 		}
-		if( !MVC_IS_ADMIN ){
-			wp_enqueue_script(
-				'mvc-' . $file,
-				$url,
-				array( 'jquery' ),
-				mvc_util()->get_beanstalk_based_version()
-			);
-		} else {
+		wp_enqueue_script(
+			'mvc-' . $file,
+			$url,
+			array( 'jquery' ),
+			mvc_util()->get_beanstalk_based_version()
+		);
 
-			wp_enqueue_script(
-				'mvc-' . $file,
-				$url,
-				array( 'jquery' ),
-				mvc_util()->get_beanstalk_based_version()
-			);
-		}
 	}
 
 
