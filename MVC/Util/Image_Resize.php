@@ -66,6 +66,8 @@ class Image_Resize {
 	public function add_other_image_sizes(){
 		global $_wp_additional_image_sizes;
 
+		do_action( 'mvc_before_add_other_image_sizes' );
+
 		if( empty( $_wp_additional_image_sizes ) ){
 			return;
 		}
