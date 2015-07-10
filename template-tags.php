@@ -204,11 +204,21 @@ function mvc_file(){
 function mvc_form(){
 	return \MVC\Util\Form::get_instance();
 }
-			
-					
-					                                                 
-                         
-                         
+
+/**
+ * Mvc Form
+ *
+ * quick function for interacting with MvcApi
+ *
+ * @example mvc_api()->get_api_url();
+ *
+ * @return \MVC\Core\Api
+ */
+function mvc_api(){
+    return \MVC\Core\Api::get_instance();
+}
+
+
 /**
  * Registers a sidebar with all the proper args for name usage later on
  * * Takes care of all the common args but allows for overriding
