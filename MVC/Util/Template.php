@@ -651,7 +651,9 @@ class Template {
 			$classes[ ] = 'has-thumbnail';
 		}
 
-		$classes[ ] = sprintf( 'item-count-%s', array_search( $post, $posts ) + 1 );
+		if( !empty( $posts ) ){
+			$classes[] = sprintf( 'item-count-%s', array_search( $post, $posts ) + 1 );
+		}
 
 		return $classes;
 	}
