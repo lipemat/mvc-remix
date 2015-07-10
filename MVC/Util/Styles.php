@@ -330,7 +330,7 @@ class Styles {
 			do_action( 'mvc_admin_js', 'mvc-admin-js' );
 		}
 
-		if( $file = $this->locate_css_file( 'admin.css' ) ){
+		if( $file = $this->locate_css_file( 'admin' ) ){
 			wp_enqueue_style(
 				'mvc-admin-styles',
 				$file,
@@ -360,13 +360,17 @@ class Styles {
 
 		if( !defined( 'SCRIPT_DEBUG' ) || !SCRIPT_DEBUG ){
 			if( !$file = mvc_file()->locate_template( "$file_name.min.css", true ) ){
-				$file = mvc_file()->locate_template( "css/$file_name.min.css", true );
+				if( !$file = mvc_file()->locate_template( "css/$file_name.min.css", true ) ){
+					$file = mvc_file()->locate_template( "resources/css/$file_name.min.css", true );
+				}
 			}
 		}
 
 		if( empty( $file ) ){
 			if( !$file = mvc_file()->locate_template( "$file_name.css", true ) ){
-				$file = mvc_file()->locate_template( "css/$file_name.css", true );
+				if( !$file = mvc_file()->locate_template( "css/$file_name.css", true ) ){
+					$file = mvc_file()->locate_template( "resources/css/$file_name.css", true );
+				}
 			}
 		}
 
