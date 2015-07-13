@@ -45,7 +45,7 @@ class Pagination {
 	 */
 	public function get_this_pages_items(){
 		$page   = $this->page;
-		$bottom = ( $page - 1 ) * self::PER_PAGE + 1;
+		$bottom = ( $page - 1 ) * self::PER_PAGE;
 
 		$items = array_slice( $this->items, $bottom, self::PER_PAGE );
 
