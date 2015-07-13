@@ -61,7 +61,7 @@ class Pagination {
 	 *
 	 * @return void
 	 */
-	public function get_pagination_output(){
+	public function render_pagination(){
 		$page  = $this->page;
 		$total = $this->get_total_pages();
 
