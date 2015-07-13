@@ -82,7 +82,7 @@ class Pagination {
 		}
 
 		?>
-		<ul class="drive-pagination">
+		<ul class="mvc-pagination">
 			<?php
 			if( $page != "1" ){
 				?>
