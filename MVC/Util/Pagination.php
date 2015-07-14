@@ -65,6 +65,10 @@ class Pagination {
 		$page  = $this->page;
 		$total = $this->get_total_pages();
 
+		if( $total == 1 ){
+			return;
+		}
+
 		if( $page < 3 ){
 			$bottom = 1;
 		} elseif( $page == $total ){
