@@ -100,7 +100,7 @@ class Pagination {
 		$page  = $this->page;
 		$total = $this->get_total_pages();
 
-		if( $total == 1 ){
+		if( $total < 2 ){
 			return;
 		}
 
