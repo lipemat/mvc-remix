@@ -438,7 +438,7 @@ class Image_Resize {
 			if( !function_exists( 'imagecreatetruecolor' ) ){
 				echo 'GD Library Error: imagecreatetruecolor does not exist - please contact your webhost and ask them to install the GD library';
 
-				return;
+				return false;
 			}
 
 			// no cache files - let's finally resize it
@@ -451,11 +451,12 @@ class Image_Resize {
 				} else {
 					$new_img_path = $save_data[ 'path' ];
 				}
-
+			}  else {
+				$new_img_path = false;
 			}
 
 			if( !file_exists( $new_img_path ) ){
-				return;
+				return false;
 			}
 
 			$new_img_size = getimagesize( $new_img_path );
@@ -469,11 +470,11 @@ class Image_Resize {
 			);
 
 			//If using Wp Smushit
-			if( class_exists( 'WpSmushit' ) ){
-				global $WpSmushit;
-				if( filesize( $new_img_path ) < WP_SMUSHIT_MAX_BYTES ){
-					$WpSmushit->do_smushit( $new_img_path, $new_img );
-
+			if( class_exists( 'WpSmush' ) ){
+				global $WpSmush;
+				$max = $WpSmush->is_pro() ? WP_SMUSH_PREMIUM_MAX_BYTES : WP_SMUSH_MAX_BYTES;
+				if( filesize( $new_img_path ) < $max ){
+					$WpSmush->do_smushit( $new_img_path, $new_img );
 				}
 			}
 
