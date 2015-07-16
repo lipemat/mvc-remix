@@ -45,7 +45,7 @@ class Pagination {
 	 */
 	public function get_this_pages_items(){
 		$page   = $this->page;
-		$bottom = ( $page - 1 ) * self::PER_PAGE + 1;
+		$bottom = ( $page - 1 ) * self::PER_PAGE;
 
 		$items = array_slice( $this->items, $bottom, self::PER_PAGE );
 
@@ -61,9 +61,13 @@ class Pagination {
 	 *
 	 * @return void
 	 */
-	public function get_pagination_output(){
+	public function render_pagination(){
 		$page  = $this->page;
 		$total = $this->get_total_pages();
+
+		if( $total == 1 ){
+			return;
+		}
 
 		if( $page < 3 ){
 			$bottom = 1;
@@ -82,7 +86,7 @@ class Pagination {
 		}
 
 		?>
-		<ul class="drive-pagination">
+		<ul class="mvc-pagination">
 			<?php
 			if( $page != "1" ){
 				?>
