@@ -35,19 +35,19 @@ class Pagination {
 	 * If no wp_query is used I will split the list and return the items within that range
 	 * If a wp_query is used, I will return the same items you sent me
 	 *
-	 * @param array $items              - either the full list of items, or this page's posts when using a wp_query
-	 * @param \WP_Query|false [$wp_query] - send a wp_query to use that for handling calculations instead of an
-	 *                                  independent list
-	 * @param       int                 [$per_page] - defaults to 10
+	 * @param array            $items     - either the full list of items, or this page's posts when using a wp_query
+	 * @param \WP_Query|false [$wp_query] - send a wp_query to use that for handling calculations instead of an independent list
+	 * @param       int       [$per_page] - defaults to 10 ( ignored if using a $wp_query )
 	 */
 	public function __construct( $items, \WP_Query $wp_query = null, $per_page = 10 ){
 		$this->items    = $items;
 		$this->wp_query = $wp_query;
-		$this->per_page = 8;
 
 		if( $wp_query ){
-			$page = $this->wp_query->is_paged() ? $wp_query->query_vars[ 'paged' ] : 1;
+			$this->per_page = $wp_query->get( 'posts_per_page' );
+			$page = $this->wp_query->is_paged() ? $wp_query->get( 'paged' ) : 1;
 		} else {
+			$this->per_page = $per_page;
 			$page = empty( $_REQUEST[ 'page' ] ) ? 1 : $_REQUEST[ 'page' ];
 		}
 		$this->page = $page;
