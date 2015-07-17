@@ -17,6 +17,7 @@ define( 'MVC_SLUG', MVC_DIR_NAME.'/'.basename(__FILE__));
 
 require( 'MVC/Autoloader.php' );
 \MVC\Autoloader::add( "MVC\\", __DIR__ . '/MVC' );
+\MVC\Autoloader::add( "MVC\\", __DIR__ . '/Deprecated' );
 
 require( 'template-tags.php' );
 
