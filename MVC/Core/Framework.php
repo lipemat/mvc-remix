@@ -24,16 +24,6 @@ class Framework {
 
 	protected $controller;
 
-	private static $body_classes = array();
-
-
-	/**
-	 * Placeholder to prevent issues
-	 */
-	function init(){
-		return false;
-	}
-
 
 	/**
 	 * __call()
