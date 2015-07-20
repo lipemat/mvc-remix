@@ -151,12 +151,12 @@ class Pagination {
 				?>
 				<li>
 					<a href="<?php echo get_pagenum_link( 1 ); ?>">
-						&laquo;
+						<?php echo apply_filters( 'mvc_paginate_double_back', '&laquo' ); ?>
 					</a>
 				</li>
 				<li>
 					<a href="<?php echo get_pagenum_link( $page - 1 ); ?>">
-						&lt;
+						<?php echo apply_filters( 'mvc_paginate_back', '&lt' ); ?>
 					</a>
 				</li>
 				<?php
@@ -191,12 +191,12 @@ class Pagination {
 				?>
 				<li>
 					<a href="<?php echo get_pagenum_link( $page + 1 ); ?>">
-						&gt;
+						<?php echo apply_filters( 'mvc_paginate_forward', '&gt;' ); ?>
 					</a>
 				</li>
 				<li>
 					<a href="<?php echo get_pagenum_link( $total ); ?>">
-						&raquo;
+						<?php echo apply_filters( 'mvc_paginate_double_forward', '&raquo;' ); ?>
 					</a>
 				</li>
 				<?php
@@ -226,12 +226,12 @@ class Pagination {
 				?>
 				<li>
 					<a data-page="1">
-						&laquo;
+						<?php echo apply_filters( 'mvc_paginate_double_back', '&laquo' ); ?>
 					</a>
 				</li>
 				<li>
 					<a data-page="<?php echo $page - 1; ?>">
-						&lt;
+						<?php echo apply_filters( 'mvc_paginate_back', '&lt' ); ?>
 					</a>
 				</li>
 				<?php
@@ -266,12 +266,12 @@ class Pagination {
 				?>
 				<li>
 					<a data-page="<?php echo $page + 1; ?>">
-						&gt;
+						<?php echo apply_filters( 'mvc_paginate_forward', '&gt;' ); ?>
 					</a>
 				</li>
 				<li>
 					<a data-page="<?php echo $total; ?>">
-						&raquo;
+						<?php echo apply_filters( 'mvc_paginate_double_forward', '&raquo;' ); ?>
 					</a>
 				</li>
 				<?php
