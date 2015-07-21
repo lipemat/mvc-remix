@@ -44,11 +44,19 @@ trait User {
 	}
 
 
+	public function get_user(){
+		if( empty( $this->user ) ){
+			$this->user = get_user_by( 'id', $this->user_id );
+		}
+		return $this->user;
+	}
+
+
 	/************ magic **************************/
 	public function __get( $property ){
 		$user = $this->get_user();
 
-		return $user->{$property};
+		return $this->{$property} = $user->{$property};
 	}
 
 
@@ -58,11 +66,6 @@ trait User {
 	}
 
 
-	public function get_user(){
-		if( empty( $this->user ) ){
-			$this->user = get_user_by( 'id', $this->user_id );
-		}
-		return $this->user;
-	}
+
 
 }
