@@ -392,7 +392,15 @@ abstract class Settings {
 			}
 		}
 
-		wp_redirect( add_query_arg( array( 'page' => $this->slug, 'updated' => 'true' ), network_admin_url( $this->parent_menu_slug ) ) );
+		if( strpos( $this->parent_menu_slug, '.php' ) === false ){
+			$parent_url = network_admin_url( 'admin.php' );
+		} else {
+			$parent_url = network_admin_url( $this->parent_menu_slug );
+		}
+		$url = add_query_arg( array( 'page' => $this->slug, 'updated' => 'true' ), $parent_url );
+
+		wp_redirect( $url );
+		die();
 
 		exit();
 
