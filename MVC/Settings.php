@@ -540,7 +540,7 @@ abstract class Settings {
 			$this->{$this->get_non_namespaced_field( $field )}( $value, $field );
 
 		} else {
-			printf( '<input name="%1$s" value="%2$s" />', $field, $value );
+			printf( '<input type="text" name="%1$s" value="%2$s" class="regular-text" />', $field, $value );
 		}
 
 
