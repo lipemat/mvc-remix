@@ -36,6 +36,9 @@ abstract class Db {
 	 * Db columns with corresponding data type
 	 * Used to sanitize queries
 	 *
+	 * @see May exclude the primary key from this list if it is auto increment
+	 * @see Date should be added to this list even if default current timestamp
+	 *
 	 * @example array(
 			'user_id'      => "%d",
 			'content_id'   => "%s",
@@ -210,8 +213,8 @@ abstract class Db {
 		foreach( $id_or_wheres as $column => $value ){
 			if( $column == $this->id_field ){
 				$formats[] = "%d";
-			} elseif( !empty( $this->fields[ $column ] ) ) {
-				$formats[] = $this->fields[ $column ];
+			} elseif( !empty( $this->columns[ $column ] ) ) {
+				$formats[] = $this->columns[ $column ];
 			} else {
 				$formats[] = "%s";
 			}
