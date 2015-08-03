@@ -79,6 +79,52 @@ class Styles {
 	}
 
 
+    /**
+     * Quick and Dirty way to enque a js file from any resources folder
+     * Handles front-end, admin, and min files for each just by specifying
+     * the url path to the js folder.
+     *
+     * Based off or my own grunt folder structure, so should probably be
+     * considered @internal due to non universal usage
+     * /front-end.js
+     * /admin.js
+     * /min/admin.min.js
+     * /min/front-end.min.js
+     *
+     * @internal
+     *
+     * @param string $handle - Needs to match the js var from the grunt config
+     * @param array  $dependencies - these must already be cued
+     * @param string $folder - Full url path to the js folder
+     * @param $config
+     *
+     * @return void
+     */
+    public function add_external_js( $handle, $dependencies, $folder, $config  ){
+        $folder = trailingslashit( $folder );
+
+        if( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ){
+            $folder .= 'min/';
+            $extension = '.min.js';
+        } else {
+            $extension = '.js';
+        }
+
+        if( is_admin() ){
+            $file = $folder . 'admin' . $extension;
+            $action = 'admin_enqueue_scripts';
+        } else {
+            $file = $folder . 'front-end' . $extension;
+            $action = 'wp_enqueue_scripts';
+        }
+
+        add_action( $action, function() use( $handle, $dependencies, $file, $config ){
+            wp_enqueue_script( $handle, $file, $dependencies, mvc_util()->get_beanstalk_based_version() );
+            wp_localize_script( $handle, $handle . '_config' , $config );
+        });
+    }
+
+
 	/**
 	 *
 	 * Add Js
