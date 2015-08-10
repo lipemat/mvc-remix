@@ -193,8 +193,12 @@ class Styles {
 
 		$output = ob_get_clean();
 
-		add_action( 'wp_head', array( $this, 'echo_' . $output ) );
-		add_action( 'admin_print_scripts', array( $this, 'echo_' . $output ) );
+		add_action( 'wp_head', function() use( $output ){
+           echo $output;
+        } );
+		add_action( 'admin_print_scripts', function() use( $output ){
+            echo $output;
+        } );
 	}
 
 
