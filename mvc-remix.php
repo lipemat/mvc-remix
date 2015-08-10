@@ -18,6 +18,11 @@ define( 'MVC_SLUG', MVC_DIR_NAME.'/'.basename(__FILE__));
 require( 'MVC/Autoloader.php' );
 \MVC\Autoloader::add( "MVC\\", __DIR__ . '/MVC' );
 \MVC\Autoloader::add( "MVC\\", __DIR__ . '/Deprecated' );
+spl_autoload_register( function( $class ){
+	if( file_exists( __DIR__ . '/Deprecated/' . $class . '.php' ) ){
+		require( __DIR__ . '/Deprecated/' . $class . '.php' );
+	}
+});
 
 require( 'template-tags.php' );
 
