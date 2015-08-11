@@ -28,18 +28,19 @@ class Internal_Tax {
 
 	const TAXONOMY = 'internal';
 
-	public $terms = array(); //The previously retrieved terms
+	public $term_cache = array();
 
-
+	
 	/**
-	 * @since 7.31.13
-	 *
-	 * @uses  registers the taxonomy and sets everything up
+	 * Registers the Taxonomy upon the first call to
+	 * self::get_instance() or self::init()
+	 * 
 	 */
-	function __construct() {
-		$tax = new \MVC\Taxonomy( self::TAXONOMY );
-		$tax->public = false;
-		$tax->show_ui = false;
+	function __construct(){
+		$tax               = new \MVC\Taxonomy( self::TAXONOMY );
+		$tax->public       = false;
+		$tax->show_ui      = false;
+		$tax->hierarchical = true;
 	}
 
 
@@ -153,7 +154,6 @@ class Internal_Tax {
 	 *
 	 */
 	public function toggle_terms( $term_one, $term_two, $post = false ) {
-
 		if( $this->hasTerm( $term_one, $post ) ){
 			$this->removeTerm( $term_one, $post );
 			$this->assignTerm( $term_two, $post );
@@ -177,7 +177,6 @@ class Internal_Tax {
 	 * @param int|obj [$post] - defaults to the current global post
 	 */
 	function checkbox( $term, $echo = true, $post = null ) {
-
 		$post = get_post( $post );
 
 		$term_id = $this->getTermId( $term );
@@ -188,9 +187,9 @@ class Internal_Tax {
 			$checked = false;
 		}
 
-		$output = '<input type="hidden" name="tax_input[internal][]" value="0">';
+		$output = '<input type="hidden" name="tax_input[' . self::TAXONOMY . '][]" value="0">';
 
-		$output .= sprintf( '<input value="%s" type="checkbox" name="tax_input[internal][]" %s>', $term_id, checked( true, $checked, false ) );
+		$output .= sprintf( '<input value="%s" type="checkbox" name="tax_input[' . self::TAXONOMY . '][]" %s>', $term_id, checked( true, $checked, false ) );
 
 		if( $echo ){
 			echo $output;
@@ -225,17 +224,17 @@ class Internal_Tax {
 		//If not an id or an object the term must be the name
 		$termName = $term;
 
-		if( isset( $this->terms[ $termName ] ) ){
-			return $this->terms[ $termName ];
+		if( isset( $this->term_cache[ $termName ] ) ){
+			return $this->term_cache[ $termName ];
 		}
 
 		if( $term = get_term_by( 'name', $termName, self::TAXONOMY ) ){
-			return $this->terms[ $termName ] = $term->term_id;
+			return $this->term_cache[ $termName ] = $term->term_id;
 		} else {
 
 			$term = wp_insert_term( $termName, self::TAXONOMY );
 
-			return $this->terms[ $termName ] = $term[ 'term_id' ];
+			return $this->term_cache[ $termName ] = $term[ 'term_id' ];
 		}
 	}
 
