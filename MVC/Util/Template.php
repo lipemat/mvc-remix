@@ -426,7 +426,7 @@ class Template {
 		$this->sidebar_changed = true;
 
 		remove_action( 'genesis_after_content', 'genesis_get_sidebar' );
-		add_action( 'genesis_after_content', array( $this, 'sidebar_' . $sidebar ) );
+		add_action( 'genesis_after_content', array( mvc(), 'sidebar_' . $sidebar ) );
 
 	}
 
@@ -512,7 +512,7 @@ class Template {
 			$class = mvc_string()->slug_format_human( $name );
 
 			genesis_markup( array(
-				'html5'   => '<aside class="sidebar widget-area ' . $class . '">',
+				'html5'   => '<aside class="sidebar sidebar-primary widget-area ' . $class . '">',
 				'xhtml'   => '<div id="sidebar" class="sidebar widget-area ' . $class . '">',
 				'context' => 'sidebar-primary',
 			) );
@@ -595,7 +595,7 @@ class Template {
 		if( mvc_dynamic_sidebar( 'Blog Sidebar', false ) ){
 			if( $this->isBlogPage() ){
 				remove_action( 'genesis_after_content', 'genesis_get_sidebar' );
-				add_action( 'genesis_after_content', array( $this, 'sidebar_Blog_Sidebar' ) );
+				add_action( 'genesis_after_content', array( mvc(), 'sidebar_Blog_Sidebar' ) );
 			}
 		}
 	}
