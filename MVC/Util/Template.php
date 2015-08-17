@@ -424,9 +424,10 @@ class Template {
 	 */
 	function changeSidebar( $sidebar ){
 		$this->sidebar_changed = true;
-
-		remove_action( 'genesis_after_content', 'genesis_get_sidebar' );
-		add_action( 'genesis_after_content', array( $this, 'sidebar_' . $sidebar ) );
+        if( function_exists( 'genesis_site_layout' ) && genesis_site_layout( 0 ) != 'full-width-content' ){
+            remove_action( 'genesis_after_content', 'genesis_get_sidebar' );
+            add_action( 'genesis_after_content', array( $this, 'sidebar_' . $sidebar ) );
+        }
 
 	}
 
