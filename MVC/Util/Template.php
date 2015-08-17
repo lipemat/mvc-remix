@@ -414,22 +414,18 @@ class Template {
 	/**
 	 * Change the sidebar to another widget area
 	 *
-	 * @since 5.22.0
-	 *
 	 * @param string $sidebar - Name of widget area
 	 *
-	 * @uses  must be called before the 'genesis_after_content' hook is run
-	 *
-	 * @see   Will not work if not using Genesis
+	 * @see  must be called before the 'genesis_after_content' hook is run
+	 * @see  Will not work if not using Genesis
 	 */
-	function changeSidebar( $sidebar ){
-		$this->sidebar_changed = true;
+    function changeSidebar( $sidebar ){
+        $this->sidebar_changed = true;
         if( function_exists( 'genesis_site_layout' ) && genesis_site_layout( 0 ) != 'full-width-content' ){
             remove_action( 'genesis_after_content', 'genesis_get_sidebar' );
-            add_action( 'genesis_after_content', array( $this, 'sidebar_' . $sidebar ) );
+            add_action( 'genesis_after_content', array( mvc(), 'sidebar_' . $sidebar ) );
         }
-
-	}
+    }
 
 
 	/**
@@ -513,7 +509,7 @@ class Template {
 			$class = mvc_string()->slug_format_human( $name );
 
 			genesis_markup( array(
-				'html5'   => '<aside class="sidebar widget-area ' . $class . '">',
+				'html5'   => '<aside class="sidebar sidebar-primary widget-area ' . $class . '">',
 				'xhtml'   => '<div id="sidebar" class="sidebar widget-area ' . $class . '">',
 				'context' => 'sidebar-primary',
 			) );
@@ -596,7 +592,7 @@ class Template {
 		if( mvc_dynamic_sidebar( 'Blog Sidebar', false ) ){
 			if( $this->isBlogPage() ){
 				remove_action( 'genesis_after_content', 'genesis_get_sidebar' );
-				add_action( 'genesis_after_content', array( $this, 'sidebar_Blog_Sidebar' ) );
+				add_action( 'genesis_after_content', array( mvc(), 'sidebar_Blog_Sidebar' ) );
 			}
 		}
 	}
