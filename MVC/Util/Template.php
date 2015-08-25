@@ -640,6 +640,9 @@ class Template {
 	 */
 	function first_post_class( $classes ){
 		global $post, $posts, $wp_query;
+        if( !is_array( $posts ) ){
+            return $classes;
+        }
 		if( ( $wp_query->current_post === 0 ) || ( $post == $posts[ 0 ] ) ){
 			$classes[ ] = 'first-post';
 		}
