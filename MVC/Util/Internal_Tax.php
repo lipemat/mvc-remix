@@ -59,21 +59,24 @@ class Internal_Tax {
 		$post_id = $this->getPostId( $post );
 
 		if( !empty( $removeTerms ) ){
-			if( $terms = wp_get_post_terms( $post_id, self::TAXONOMY ) ){
-				foreach( $terms as $t ){
-					if( in_array( $t->name, $removeTerms ) ){
-						$this->removeTerm( $t->term_id, $post_id );
+			$terms = array();
+			if( $_terms = wp_get_post_terms( $post_id, self::TAXONOMY ) ){
+				foreach( $_terms as $k => $_term ){
+					if( !in_array( $_term->name, $removeTerms ) ){
+						$terms[] = $_term->term_id;
 					}
 				}
 			}
-		}
-		if( empty( $term ) ){
-			return false;
-		}
+			$term_id = $this->getTermId( $term );
+			if( !empty( $term_id ) ){
+				$terms[] = $term_id;
+			}
+			wp_set_object_terms( $post_id, (int)$term_id, self::TAXONOMY, false );
 
-		$term_id = $this->getTermId( $term );
-
-		wp_set_object_terms( $post_id, (int)$term_id, self::TAXONOMY, true );
+		} else {
+			$term_id = $this->getTermId( $term );
+			wp_set_object_terms( $post_id, (int)$term_id, self::TAXONOMY, true );
+		}
 
 	}
 
