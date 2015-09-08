@@ -12,11 +12,6 @@ namespace MVC\Util;
  * @uses   Pretty much automatic - use standard WP add_image_size() and this will pick it up
  * @May    be tapped in using the pulbic methods as well - however probably not neccessary
  *
- * @todo   Append the custom image sizes to the get_image_meta() or whatever is retrieving the sizes 
- *         During the wp.library call so we can skip the ajax step when using the images. Make make more
- *         sense to add the image sizes to meta during uppload beacause we generate the images on the fly anyway
- * 
- * 
  * @since  11.10.13
  */
 
