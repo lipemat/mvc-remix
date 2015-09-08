@@ -23,6 +23,7 @@ class Api {
 	const DB_VERSION = 1;
 	const DB_KEY = 'mvc-api-version';
 
+	private $doing_api = false;
 
 	protected function hooks(){
 		add_action( 'init', array( $this, 'add_endpoint' ), 10, 0 );
@@ -49,9 +50,22 @@ class Api {
 		if( empty( $wp->query_vars[ 'api' ] ) ){
 			return;
 		}
+
+		$this->doing_api = true;
+
 		$args     = explode( '/', $wp->query_vars[ 'api' ] );
 		$endpoint = array_shift( $args );
 		do_action( 'mvc_api_' . $endpoint, $args );
+	}
+
+
+	/**
+	 * Check if we are currently running a api request
+	 *
+	 * @return bool
+	 */
+	public function is_doing_api(){
+		return $this->doing_api;
 	}
 
 
