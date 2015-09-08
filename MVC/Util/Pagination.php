@@ -220,7 +220,7 @@ class Pagination {
 	 */
 	private function ajax_html( $page, $total, $top, $bottom ){
 		?>
-		<ul class="cc-pagination navigation">
+		<ul class="pagination navigation">
 			<?php
 			if( $page != "1" ){
 				?>
