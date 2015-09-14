@@ -46,6 +46,7 @@ class Cache {
 		}
 
 		add_action( 'save_post', array( $this, 'clear_save_post_group' ), 1, 0 );
+		add_action( 'delete_post', array( $this, 'clear_save_post_group' ), 1, 0 );
 	}
 
 	public function clear_save_post_group(){
