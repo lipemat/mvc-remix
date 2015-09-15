@@ -231,13 +231,18 @@ class Internal_Tax {
 			return $this->term_cache[ $termName ];
 		}
 
-		if( $term = get_term_by( 'name', $termName, self::TAXONOMY ) ){
+	    if( $term = get_term_by( 'name', $termName, self::TAXONOMY ) ){
 			return $this->term_cache[ $termName ] = $term->term_id;
 		} else {
-
 			$term = wp_insert_term( $termName, self::TAXONOMY );
-
-			return $this->term_cache[ $termName ] = $term[ 'term_id' ];
+			if( !is_wp_error( $term ) ){
+				return $this->term_cache[ $termName ] = $term[ 'term_id' ];
+			} else {
+				if( !empty( $term->error_data[ 'term_exists' ] ) ){
+					return $this->term_cache[ $termName ] = $term->error_data[ 'term_exists' ];
+				}
+				return false; //failed
+			}
 		}
 	}
 
