@@ -32,7 +32,7 @@ trait User {
 	 *
 	 * @var \WP_User
 	 */
-	public $user;
+	private $user;
 
 
 	public function __construct( $user_id = null ){

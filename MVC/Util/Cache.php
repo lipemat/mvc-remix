@@ -46,6 +46,7 @@ class Cache {
 		}
 
 		add_action( 'save_post', array( $this, 'clear_save_post_group' ), 1, 0 );
+		add_action( 'delete_post', array( $this, 'clear_save_post_group' ), 1, 0 );
 	}
 
 	public function clear_save_post_group(){
@@ -90,6 +91,24 @@ class Cache {
 	public static function set( $key, $value, $group = self::DEFAULT_GROUP, $expire = 0 ) {
 		$group = self::get_group_key($group);
 		return wp_cache_set( self::filter_key( $key ), $value, $group, $expire );
+	}
+
+	/**
+	 * Memcache will return false if we store null or false etc.
+	 * This makes it impossible to know if we already tried to retreive some data
+	 * if our result was false or null.
+	 * Using this method will store a '' in place of any empty value so we can check for
+	 * === false and know if we have previously tried to store something
+	 *
+	 * @static
+	 *
+	 * @return bool
+	 */
+	public static function set_store_empty( $key, $value, $group = self::DEFAULT_GROUP, $expire = 0 ) {
+		if( empty( $value ) ){
+			$value = '';
+		}
+		return self::set( $key, $value, $group, $expire );
 	}
 
 

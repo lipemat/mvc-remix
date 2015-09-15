@@ -177,11 +177,10 @@ class Framework {
 			$file = $caller[ 'function' ];
 		}
 
-		if( ( defined( 'WP_DEBUG' ) && WP_DEBUG ) && !$hideInfo ){
-			echo '<!-- View/' . $folder . $file . '.php -->';
-		}
-
 		if( $path = mvc_file()->locate_template( 'View/' . $folder . $file . '.php' ) ){
+			if( ( defined( 'WP_DEBUG' ) && WP_DEBUG ) && !$hideInfo ){
+				echo "<!-- $path -->";
+			}
 			extract( $args );
 			extract( $this->get() );
 			include( $path );
