@@ -30,7 +30,7 @@ class Taxonomy {
 	private static $rewrite_checked = false;
 
 	/**
-	 * The ID of the taxonomy
+	 * The taxonomy slug
 	 *
 	 * @var string
 	 */
@@ -80,7 +80,7 @@ class Taxonomy {
 	 *
 	 * @uses set the class vars to edit arguments
 	 *
-	 * @param string $taxonomy - Singular Title case name of taxonomy
+	 * @param string $taxonomy - Taxonomy Slug ( will convert a title to a slug as well )
 	 * @param array  [$post_types] - may also be set by $this->post_types = array()
 	 * @param bool   [$show_admin_column]- generate a post list column
 	 * @param bool   [$_post_list_filter] - generate a post list filter
@@ -172,14 +172,18 @@ class Taxonomy {
 		}
 
 		$tax_query = array();
-		$lower     = strtolower( $this->taxonomy );
-		if( isset( $query->query_vars[ $lower ] ) ){
-			if( !empty( $query->query_vars[ $lower ] ) ){
-				$tax_query[ ] = array(
-					'taxonomy' => $this->taxonomy,
-					'terms'    => $query->query_vars[ $lower ],
-					'field'    => 'id',
-				);
+		if( isset( $query->query_vars[ $this->taxonomy ] ) ){
+			if( !empty( $query->query_vars[ $this->taxonomy ] ) ){
+                if( is_numeric( $query->query_vars[ $this->taxonomy ] ) ){
+                    $field = 'id';
+                } else {
+                    $field = 'slug';
+                }
+                $tax_query[] = array(
+                        'taxonomy' => $this->taxonomy,
+                        'terms' => $query->query_vars[ $this->taxonomy ],
+                        'field' => $field,
+                );
 
 			}
 		}
@@ -216,14 +220,17 @@ class Taxonomy {
 		);
 
 		$the_taxonomy = get_taxonomy( $this->taxonomy );
-		$lower        = strtolower( $this->taxonomy );
 
 		$args[ 'show_option_all' ] = __( "Show All", 'steelcase' ) . ' ' . $the_taxonomy->label;
 		$args[ 'taxonomy' ]        = $this->taxonomy;
-		$args[ 'name' ]            = $lower;
+		$args[ 'name' ]            = $this->taxonomy;
 
-		if( !empty( $wp_query->query[ $lower ] ) ){
-			$args[ 'selected' ] = $wp_query->query[ $lower ];
+		if( !empty( $wp_query->query[ $this->taxonomy ] ) ){
+            if( !is_numeric( $wp_query->query[ $this->taxonomy ] ) ){
+                $args[ 'selected' ] = get_term_by( 'slug', $wp_query->query[ $this->taxonomy ], $this->taxonomy )->term_id;
+            } else {
+                $args[ 'selected' ] = $wp_query->query[ $this->taxonomy ];
+            }
 			$been_filtered      = true;
 		}
 		wp_dropdown_categories( $args );
