@@ -261,20 +261,27 @@ class Taxonomy {
 	}
 
 
-	public function register_default_terms(){
-		// don't do anything if the taxonomy already has terms
-		if( !$this->default_terms || get_terms( $this->taxonomy, array( 'hide_empty' => false ) ) ){
-			return;
-		}
-		foreach( $this->default_terms as $slug => $term ){
-			$args = array();
-			if( !is_numeric( $slug ) ){
-				$args[ 'slug' ] = $slug;
-			}
-			wp_insert_term( $term, $this->taxonomy, $args );
-		}
-	}
+    public function register_default_terms(){
+        if( empty( $this->default_terms ) ){
+            return;
+        }
 
+        $already_defaulted = get_option( 'mvc_taxonomy_defaults_registry', array() );
+        if( !in_array( $this->get_slug(), $already_defaulted ) ){
+            // don't do anything if the taxonomy already has terms
+            if( !get_terms( $this->taxonomy, array( 'hide_empty' => false, 'number' => 1 ) ) ){
+                foreach( $this->default_terms as $slug => $term ){
+                    $args = array();
+                    if( !is_numeric( $slug ) ){
+                        $args[ 'slug' ] = $slug;
+                    }
+                    wp_insert_term( $term, $this->taxonomy, $args );
+                }
+            }
+            $already_defaulted[] = $this->get_slug();
+            update_option( 'mvc_taxonomy_defaults_registry', $already_defaulted, true );
+        }
+    }
 
 	/**
 	 * Register this post type with WordPress
