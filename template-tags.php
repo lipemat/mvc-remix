@@ -220,6 +220,24 @@ function mvc_api(){
     return \MVC\Core\Api::get_instance();
 }
 
+/**
+ * Test for a submitted nonce
+ * Assumes your nonce field's name is the same as the
+ * nonce's name.
+ *
+ * Works off of the $_POST[ $nonce_name ]
+ *
+ * @param string $nonce_name
+ *
+ * @return bool
+ */
+function mvc_post_nonce( $nonce_name ){
+    if( !empty( $_POST[ $nonce_name ] ) && wp_verify_nonce( $_POST[ $nonce_name ], $nonce_name ) ){
+        return true;
+    } else {
+        return false;
+    }
+}
 
 /**
  * Registers a sidebar with all the proper args for name usage later on
