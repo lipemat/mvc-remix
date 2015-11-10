@@ -106,6 +106,12 @@ function mvc_meta_box( $post_type = null, $meta_box_class, $args = array() ) {
         }
         return true;
     }
+    if( is_array( $post_type ) ){
+        foreach( $post_type as $_post_type ){
+            new $meta_box_class( $_post_type, $args );
+        }
+        return true;
+    }
 	return new $meta_box_class( $post_type, $args );
 } 
  
