@@ -62,18 +62,21 @@ abstract class Meta_Box {
 
 	/**
 	 * Constructor
-	 * 
-	 * @param string $post_type
-	 * @param array $args = array(
-	 * 		'title'   => '',
-			'context'   => 'advanced',
-			'priority'   => 'default',
-			'callback_args'   => NULL,
-			'defaults'   => array(),
-	 * )
-	 * 
+	 *
+	 * @param string $post_type -
+	 * @param array $args          = array{
+	 *      Optional arguments to pass to the meta box class.
+	 *      @see https://codex.wordpress.org/Function_Reference/add_meta_box for more info
+	 *
+	 *      @type string $title         ( defaults to the id of the metabox built by the class ),
+	 *      @type string $context       - 'normal', 'advanced', or 'side' ( defaults to 'advanced' )
+	 *      @type string $priority      - 'high', 'core', 'default' or 'low' ( defaults to 'default' )
+	 *      @type array  $callback_args - will be assigned as $this->callback_args to the meta box class and can be retrieved via $this->get_callback_args(),
+	 *      @type array $defaults - can be retrieved using $this->get_defaults() ( @todo uncertain of this purpose, but have to make sure I'm not using it anywhere before deleting )
+	 * }
+	 *
 	 * @return self()
-	 * 
+	 *
 	 */
 	public function __construct($post_type, $args = array()) {
 		$this->post_type = $post_type;

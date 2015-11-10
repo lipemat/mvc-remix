@@ -80,17 +80,19 @@ function mvc_versions(){
 /**
  * Mvc Meta Box
  *
- * @param string [$post_type] - null will add it to all post types
- * @param string $meta_box_class
- * @param array  $args = array(
- *                     'title'   => '',
- *                     'context'   => 'advanced',
- *                     'priority'   => 'default',
- *                     'callback_args'   => NULL,
- *                     'defaults'   => array()
- *               )
+ * @param string|array $post_type - null will add it to all post types
+ * @param array $args          = array{
+ *      Optional arguments to pass to the meta box class.
+ *      @see https://codex.wordpress.org/Function_Reference/add_meta_box for more info
  *
- * @return null|MVC\Meta_Box
+ *      @type string $title         ( defaults to the id of the metabox built by the class ),
+ *      @type string $context       - 'normal', 'advanced', or 'side' ( defaults to 'advanced' )
+ *      @type string $priority      - 'high', 'core', 'default' or 'low' ( defaults to 'default' )
+ *      @type array  $callback_args - will be assigned as $this->callback_args to the meta box class and can be retrieved via $this->get_callback_args(),
+ *      @type array $defaults - can be retrieved using $this->get_defaults() ( @todo uncertain of this purpose, but have to make sure I'm not using it anywhere before deleting )
+ * }
+ *
+ * @return bool|MVC\Meta_Box
  */
 function mvc_meta_box( $post_type = null, $meta_box_class, $args = array() ) {
 	if ( !class_exists( $meta_box_class ) ) {
@@ -102,7 +104,7 @@ function mvc_meta_box( $post_type = null, $meta_box_class, $args = array() ) {
         foreach( get_post_types() as $_post_type ){
             new $meta_box_class( $_post_type, $args );
         }
-        return;
+        return true;
     }
 	return new $meta_box_class( $post_type, $args );
 } 
