@@ -84,7 +84,7 @@ class Route {
 		add_action( 'init', array( __CLASS__, 'register_post_type' ) );
 		add_action( 'pre_get_posts', array( $this, 'maybe_add_post_hooks' ), 10, 1 );
 
-		add_action( 'wp_loaded', array( $this, 'maybe_flush_rules' ) );
+		add_action( 'wp_loaded', array( $this, 'maybe_flush_rules' ), 999999999999 );
 	}
 
 
