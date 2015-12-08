@@ -401,9 +401,6 @@ abstract class Settings {
 
 		wp_redirect( $url );
 		die();
-
-		exit();
-
 	}
 
 
