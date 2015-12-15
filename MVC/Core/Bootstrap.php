@@ -281,7 +281,7 @@ class Bootstrap {
 
 			#-- Bring in the Files and Construct The Classes
 			foreach( scandir( $dir . 'Controller' ) as $file ){
-				if( !in_array( $file, array( '.', '..', 'Controller.php' ) ) ){
+				if( !in_array( $file, array( '.', '..', '.DS_Store', 'Controller.php' ) ) ){
 					//Add the Controller
 					require( $dir . 'Controller/' . $file );
 					$name = str_replace( array( '_Controller', 'Controller', '.php', ), '', $file );
