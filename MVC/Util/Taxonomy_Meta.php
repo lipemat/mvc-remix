@@ -20,6 +20,13 @@ class Taxonomy_Meta {
 			add_action( 'created_term', array( $this, 'delete_extra_meta' ), - 1000, 3 );
 			add_action( 'delete_term', array( $this, 'delete_all_term_meta' ), 10, 3 );
 			add_action( 'switch_blog', array( $this, 'switch_to_blog' ), 10, 2 );
+
+		} else {
+			//backward compatibility for anything still using this property
+			global $wpdb;
+			$table_name = $wpdb->prefix . 'term_taxonomymeta';
+			$wpdb->term_taxonomymeta = $table_name;
+
 		}
 
 		add_action( 'wp_upgrade', array( $this, 'migrate_data_to_core_structure' ), 1, 2 );
@@ -45,9 +52,6 @@ class Taxonomy_Meta {
 		//4.4 or greater coming from 4.3 or lower
 		if( $db_version >= 35700 && $wp_current_db_version < 35700 ){
 			global $wpdb;
-			$table_name = $wpdb->prefix . 'term_taxonomymeta';
-			$wpdb->term_taxonomymeta = $table_name;
-
 			$existing = $wpdb->get_var( "SELECT meta_id FROM $wpdb->termmeta LIMIT 1" );
 			if( $existing ){
 				return; //bail because we have already upgraded once
