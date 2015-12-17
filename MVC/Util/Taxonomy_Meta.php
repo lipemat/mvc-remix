@@ -45,6 +45,13 @@ class Taxonomy_Meta {
 		//4.4 or greater coming from 4.3 or lower
 		if( $db_version >= 35700 && $wp_current_db_version < 35700 ){
 			global $wpdb;
+			$table_name = $wpdb->prefix . 'term_taxonomymeta';
+			$wpdb->term_taxonomymeta = $table_name;
+
+			$existing = $wpdb->get_var( "SELECT meta_id FROM $wpdb->termmeta LIMIT 1" );
+			if( $existing ){
+				return; //bail because we have already upgraded once
+			}
 			$query = "SELECT term_id, meta_key, meta_value
 						FROM $wpdb->term_taxonomymeta AS meta
 						LEFT JOIN $wpdb->term_taxonomy AS terms
