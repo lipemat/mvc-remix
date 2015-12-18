@@ -65,7 +65,10 @@ class Taxonomy_Meta {
 			foreach( $meta as $_meta ){
 				$meta_key        = $_meta->meta_key;
 				$meta_value      = addslashes( $_meta->meta_value );
-				$sql_query_sel[] = "SELECT $_meta->term_id, '$meta_key', '$meta_value'";
+				//because we could have come old data
+				if( !empty( $_meta->term_id ) && !empty( $meta_key ) && !empty( $meta_value ) ){
+					$sql_query_sel[] = "SELECT $_meta->term_id, '$meta_key', '$meta_value'";
+				}
 			}
 
 			$import_query .= implode( " UNION ALL ", $sql_query_sel );
