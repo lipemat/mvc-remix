@@ -24,9 +24,7 @@ class Taxonomy_Meta {
 		} else {
 			//backward compatibility for anything still using this property
 			global $wpdb;
-			$table_name = $wpdb->prefix . 'term_taxonomymeta';
-			$wpdb->term_taxonomymeta = $table_name;
-
+			$wpdb->term_taxonomymeta = $wpdb->termmeta;
 		}
 
 		add_action( 'wp_upgrade', array( $this, 'migrate_data_to_core_structure' ), 1, 2 );
