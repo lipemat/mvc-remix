@@ -28,8 +28,8 @@ class Url {
 	 * @return string
 	 */
 	public function get_current_url(){
-		global $wp;
-		$current_url = add_query_arg( $wp->query_string, '', home_url( $wp->request ) );
+		$prefix = is_ssl() ? "https://" : "http://";
+		$current_url = $prefix. $_SERVER["HTTP_HOST"] . $_SERVER[ "REQUEST_URI" ];
 		return $current_url;
 	}
 
