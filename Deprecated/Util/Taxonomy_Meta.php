@@ -97,7 +97,7 @@ class Taxonomy_Meta {
 	 */
 	public function add_term_meta( $term_id, $taxonomy, $meta_key, $meta_value, $unique = false ){
 		if( function_exists( 'add_term_meta' ) ){
-			return add_term_meta( $term_id, $meta_key, $meta_key, $unique );
+			return add_term_meta( $term_id, $meta_key, $meta_value, $unique );
 
 		} else {
 			return add_metadata( 'term_taxonomy', $this->get_term_taxonomy_id( $term_id, $taxonomy ), $meta_key, $meta_value, $unique );
@@ -111,7 +111,7 @@ class Taxonomy_Meta {
 	 */
 	public function update_term_meta( $term_id, $taxonomy, $meta_key, $meta_value, $prev_value = '' ){
 		if( function_exists( 'update_term_meta' ) ){
-			return update_term_meta( $term_id, $meta_key, $meta_key, $prev_value );
+			return update_term_meta( $term_id, $meta_key, $meta_value, $prev_value );
 
 		} else {
 			return update_metadata( 'term_taxonomy', $this->get_term_taxonomy_id( $term_id, $taxonomy ), $meta_key, $meta_value, $prev_value );
