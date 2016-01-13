@@ -16,7 +16,7 @@ class Taxonomy_Meta {
 
 		//less than version 4.4
 		if( version_compare( $GLOBALS[ 'wp_version' ], "4.4" ) === - 1 ){
-			add_action( 'init', array( $this, 'configure_term_meta' ), 0, 0 );
+			add_action( 'init', array( $this, 'configure_term_meta' ), 1, 0 );
 			add_action( 'created_term', array( $this, 'delete_extra_meta' ), - 1000, 3 );
 			add_action( 'delete_term', array( $this, 'delete_all_term_meta' ), 10, 3 );
 			add_action( 'switch_blog', array( $this, 'switch_to_blog' ), 10, 2 );
@@ -200,6 +200,7 @@ class Taxonomy_Meta {
 	}
 
 
+
 	/**
 	 * @deprecated as of version 4.4 in WP Core
 	 */
@@ -208,7 +209,6 @@ class Taxonomy_Meta {
 		$table_name              = $wpdb->prefix . 'term_taxonomymeta';
 		$wpdb->term_taxonomymeta = $table_name;
 	}
-
 
 	/**
 	 * @deprecated
