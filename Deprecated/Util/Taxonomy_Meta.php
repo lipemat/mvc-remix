@@ -54,24 +54,14 @@ class Taxonomy_Meta {
 			if( $existing ){
 				return; //bail because we have already upgraded once
 			}
-			$query = "SELECT term_id, meta_key, meta_value
-						FROM $wpdb->term_taxonomymeta AS meta
-						LEFT JOIN $wpdb->term_taxonomy AS terms
-						USING (term_taxonomy_id)";
-			$meta  = $wpdb->get_results( $query );
+			$term_taxonomymeta_table = $wpdb->prefix.'term_taxonomymeta';
 
-			$import_query  = "INSERT INTO $wpdb->termmeta (term_id, meta_key, meta_value)";
-			$sql_query_sel = array();
-			foreach( $meta as $_meta ){
-				$meta_key        = $_meta->meta_key;
-				$meta_value      = addslashes( $_meta->meta_value );
-				//because we could have come old data
-				if( !empty( $_meta->term_id ) && !empty( $meta_key ) && !empty( $meta_value ) ){
-					$sql_query_sel[] = "SELECT $_meta->term_id, '$meta_key', '$meta_value'";
-				}
-			}
+			$import_query = "INSERT INTO $wpdb->termmeta (term_id, meta_key, meta_value)
+							  SELECT term_id, meta_key, meta_value
+							  FROM $term_taxonomymeta_table AS meta
+							  LEFT JOIN $wpdb->term_taxonomy AS terms
+							  USING (term_taxonomy_id)";
 
-			$import_query .= implode( " UNION ALL ", $sql_query_sel );
 			$wpdb->query( $import_query );
 		}
 
