@@ -3,14 +3,14 @@
 namespace MVC;
 
 /**
- * Script
+ * Style
  *
  * @author  Mat Lipe
- * @since   11/4/2015
+ * @since   1/19/2016
  *
  * @package MVC
  */
-class Script {
+class Style {
 
 	/**
 	 * file
@@ -25,7 +25,7 @@ class Script {
 	/**
 	 * handle
 	 *
-	 * Script handle.
+	 * Style handle.
 	 * Will generate one if not specified
 	 *
 	 * @var string
@@ -48,17 +48,17 @@ class Script {
 	/**
 	 * dependencies
 	 *
-	 * Scripts this depends on.
-	 * Defaults to array( 'jquery' )
+	 * Styles this depends on.
+	 * Defaults to array()
 	 *
 	 * @var array
 	 */
-	public $dependencies = array( 'jquery' );
+	public $dependencies = array();
 
 	/**
 	 * version
 	 *
-	 * The scripts version.
+	 * The styles version.
 	 * Defaults to mvc_util()->get_beanstalk_based_version()
 	 *
 	 * @var bool
@@ -95,19 +95,6 @@ class Script {
 	 */
 	public $include_in_frontend = true;
 
-	/**
-	 * data
-	 *
-	 * Data that will be localized for this
-	 * script
-	 *
-	 * @see $this->set_data()
-	 *
-	 * @var array
-	 */
-	private $data = array();
-
-
 	public function __construct( $file ){
 		$this->file = $file;
 
@@ -116,50 +103,54 @@ class Script {
 
 
 	private function hooks(){
-		add_action( 'admin_enqueue_scripts', array( $this, 'register_script' ), 99 );
-		add_action( 'wp_enqueue_scripts', array( $this, 'register_script' ), 99 );
+		add_action( 'admin_enqueue_scripts', array( $this, 'register_style' ), 99 );
+		add_action( 'wp_enqueue_scripts', array( $this, 'register_style' ), 99 );
 	}
 
 
 	/**
-	 * Register the proper hook to cue the script
+	 * Register the proper hook to cue the style
 	 * Based on is_admin() and the class parameters
 	 *
 	 * @uses $this->include_in_admin
 	 * @uses $this->include_in_frontend
-	 * @uses $this->enque_script()
+	 * @uses $this->enque_style()
 	 *
-	 * @return bool
+	 * @return void
 	 */
-	public function register_script(){
+	public function register_style(){
 		if( is_admin() ){
-			if( !$this->include_in_admin ){
-				return false;
+			if( $this->include_in_admin ){
+				$this->cue_style();
 			}
 		} else {
-			if( !$this->include_in_frontend ){
-				return false;
+			if( $this->include_in_frontend ){
+				$this->cue_style();
 			}
 		}
-
-		$file   = $this->locate_js_file( $this->file );
-		if( $file ){
-			$handle = $this->get_handle();
-			wp_enqueue_script( $handle, $file, $this->dependencies, $this->get_version(), $this->in_footer );
-
-			if( !empty( $this->data ) ){
-				foreach( $this->data as $_var => $_data ){
-					wp_localize_script( $handle, $_var, $_data );
-				}
-			}
-		}
-
-		return true;
 	}
 
 
 	/**
-	 * Set data that will be used to localize the script
+	 * The actual cueing of the style.
+	 * Added to the appropriate action by $this->register_style()
+	 *
+	 * @uses $this->register_style()
+	 *
+	 * @return void
+	 */
+	private function cue_style(){
+		$file   = $this->locate_css_file( $this->file );
+		if( $file ){
+			$handle = $this->get_handle();
+			wp_enqueue_style( $handle, $file, $this->dependencies, $this->get_version(), $this->in_footer );
+		}
+
+	}
+
+
+	/**
+	 * Set data that will be used to localize the style
 	 *
 	 * @param string $object_name - name of JS variable that will be created
 	 * @param array  $data        - data that will be assigned
@@ -167,12 +158,13 @@ class Script {
 	 * @return void
 	 */
 	public function set_data( $object_name, $data ){
-		$this->data[ $object_name ] = $data;
+		$this->data_object_name = $object_name;
+		$this->data             = $data;
 	}
 
 
 	/**
-	 * Get the scripts version.
+	 * Get the styles version.
 	 * If not specified will pull the git hash from
 	 * the beanstalk .version file
 	 *
@@ -191,7 +183,7 @@ class Script {
 
 
 	/**
-	 * Retrieve the scripts handle.
+	 * Retrieve the styles handle.
 	 * If not specified this will generate one based on the md5
 	 * of this class.
 	 *
@@ -202,7 +194,7 @@ class Script {
 	private function get_handle(){
 		$handle = $this->handle;
 		if( empty( $handle ) ){
-			$handle = 'mvc-script-' . md5( $this );
+			$handle = 'mvc-style-' . md5( $this );
 		}
 
 		return $handle;
@@ -210,41 +202,39 @@ class Script {
 
 
 	/**
-	 * locate_js_file
+	 * locate_css_file
 	 *
-	 * Locates the proper js file based on SCRIPT_DEBUG
-	 * And theme structure
+	 * Locates the proper css file based on SCRIPT_DEBUG
+	 * Searches:
+	 * /
+	 * /css
+	 * /resources/css
 	 *
-	 * Will look in a /js folder first then /resources/js
-	 *
-	 * if !SCRIPT_DEBUG will look for a $file_name.min.js file
-	 * first then fallback to non min file. It will also look
-	 * within min folders.
+	 * If !SCRIPT_DEBUG will look for .min.css file
 	 *
 	 * @param $file_name
 	 *
 	 * @return bool|string
 	 */
-	private function locate_js_file( $file_name ){
-		$file_name = str_replace( '.js', '', $file_name );
+	private function locate_css_file( $file_name ){
+		$file_name = str_replace( '.css', '', $file_name );
 
 		if( !defined( 'SCRIPT_DEBUG' ) || !SCRIPT_DEBUG ){
-			if( !$file = mvc_file()->locate_template( "js/$file_name.min.js", true ) ){
-				if( !$file = mvc_file()->locate_template( "js/min/$file_name.min.js", true ) ){
-					if( !$file = mvc_file()->locate_template( "resources/js/$file_name.min.js", true ) ){
-						$file = mvc_file()->locate_template( "resources/js/min/$file_name.min.js", true );
-					}
+			if( !$file = mvc_file()->locate_template( "$file_name.min.css", true ) ){
+				if( !$file = mvc_file()->locate_template( "css/$file_name.min.css", true ) ){
+					$file = mvc_file()->locate_template( "resources/css/$file_name.min.css", true );
 				}
 			}
 		}
 
 		if( empty( $file ) ){
-			if( !$file = mvc_file()->locate_template( "js/$file_name.js", true ) ){
-				$file = mvc_file()->locate_template( "resources/js/$file_name.js", true );
+			if( !$file = mvc_file()->locate_template( "$file_name.css", true ) ){
+				if( !$file = mvc_file()->locate_template( "css/$file_name.css", true ) ){
+					$file = mvc_file()->locate_template( "resources/css/$file_name.css", true );
+				}
 			}
 		}
 
 		return $file;
-
 	}
 }

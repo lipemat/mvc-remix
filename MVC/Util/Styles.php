@@ -1,6 +1,8 @@
 <?php
 
 namespace MVC\Util;
+use MVC\Script;
+use MVC\Style;
 
 /**
  * MVC Styles
@@ -24,19 +26,14 @@ class Styles {
 
 	function __construct(){
 		//Add the IE only Stylesheets
+		/** To be removed on 1/19/2017 */
 		add_action( 'wp_head', array( $this, 'ie_only' ), 99 );
 
-		//Add Javascript to Site
-		add_action( 'wp_enqueue_scripts', array( $this, 'add_js_css' ) );
-
-		//Add Js and CSS to Admin
-		add_action( 'admin_enqueue_scripts', array( $this, 'admin_js' ) );
-
-		//Add stylesheet to editor
-		add_filter( 'mce_css', array( $this, 'editor_style' ) );
-
-		add_filter( 'tiny_mce_before_init', array( $this, 'editorStyleColumns' ) );
-
+		if( is_admin() ){
+			add_action( 'admin_enqueue_scripts', array( $this, 'cue_admin_js_css' ) );
+		} else {
+			add_action( 'wp_enqueue_scripts', array( $this, 'cue_js_css' ) );
+		}
 	}
 
 
@@ -80,7 +77,7 @@ class Styles {
 
 
     /**
-     * Quick and Dirty way to enque a js file from any resources folder
+     * Quick and Dirty way to cue a js file from any resources folder
      * Handles front-end, admin, and min files for each just by specifying
      * the url path to the js folder.
      *
@@ -93,14 +90,14 @@ class Styles {
      *
      * @internal
      *
-     * @param string $handle - Needs to match the js var from the grunt config
+     * @param string $js_var       - Needs to match the js var from the grunt config
      * @param array  $dependencies - these must already be cued
-     * @param string $folder - Full url path to the js folder
-     * @param $config
+     * @param string $folder       - Full url path to the js folder
+     * @param array  $config       - data passed as the js config
      *
      * @return void
      */
-    public function add_external_js( $handle, $dependencies, $folder, $config  ){
+    public function add_external_js( $js_var, $dependencies, $folder, $config  ){
         $folder = trailingslashit( $folder );
 
         if( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ){
@@ -118,9 +115,9 @@ class Styles {
             $action = 'wp_enqueue_scripts';
         }
 
-        add_action( $action, function() use( $handle, $dependencies, $file, $config ){
-            wp_enqueue_script( $handle, $file, $dependencies, mvc_util()->get_beanstalk_based_version() );
-            wp_localize_script( $handle, $handle . '_config' , $config );
+        add_action( $action, function() use( $js_var, $dependencies, $file, $config ){
+            wp_enqueue_script( $js_var, $file, $dependencies, mvc_util()->get_beanstalk_based_version() );
+            wp_localize_script( $js_var, $js_var . '_config' , $config );
         });
     }
 
@@ -137,24 +134,43 @@ class Styles {
 	 */
 	function add_js( $file, $debug_only = false ){
 		if( $debug_only ){
+			_deprecated_argument( '\MVC\Styles::add_js->debug_only', "1.19.16", "Use your own conditional if you want to exclude this js");
 			if( !defined( 'SCRIPT_DEBUG' ) || !SCRIPT_DEBUG ){
 				return;
 			}
 		}
+		new Script( $file );
+	}
 
-		$url = $this->locate_js_file( $file );
+
+	/**
+	 * Quick cue of a stylesheet
+	 * Will honor .min version if no SCRIPT_DEBUG
+	 *
+	 * Searches:
+	 * /
+	 * /css
+	 * /resources/css
+	 *
+	 * @param string $file - name of file minus the .css
+	 *
+	 * @return void
+	 */
+	function add_css( $file ){
+		$url = $this->locate_css_file( $file );
 
 		if( empty( $url ) ){
 			return;
 		}
-		wp_enqueue_script(
+		wp_enqueue_style(
 			'mvc-' . $file,
 			$url,
-			array( 'jquery' ),
+			array(),
 			mvc_util()->get_beanstalk_based_version()
 		);
 
 	}
+
 
 
 	/**
@@ -203,88 +219,6 @@ class Styles {
 
 
 	/**
-	 * Add column entries to the style dropdown.
-	 *
-	 * @since 1.7.14
-	 *
-	 * @param array $settings Existing settings for all toolbar items
-	 *
-	 * @return array $settings Amended settings
-	 * @uses  added to the tiny_mce_before_init filter
-	 */
-	function editorStyleColumns( array $settings ){
-
-		$style_formats = array(
-			array( 'title' => 'Columns', ),
-			array(
-				'title'   => 'First Half',
-				'block'   => 'div',
-				'classes' => 'one-half first',
-			),
-			array(
-				'title'   => 'Half',
-				'block'   => 'div',
-				'classes' => 'one-half',
-			),
-			array(
-				'title'   => 'First Third',
-				'block'   => 'div',
-				'classes' => 'one-third first',
-			),
-			array(
-				'title'   => 'Third',
-				'block'   => 'div',
-				'classes' => 'one-third',
-			),
-			array(
-				'title'   => 'First Quarter',
-				'block'   => 'div',
-				'classes' => 'one-fourth first',
-			),
-			array(
-				'title'   => 'Quarter',
-				'block'   => 'div',
-				'classes' => 'one-fourth',
-			),
-			array(
-				'title'   => 'First Fifth',
-				'block'   => 'div',
-				'classes' => 'one-fifth first',
-			),
-			array(
-				'title'   => 'Fifth',
-				'block'   => 'div',
-				'classes' => 'one-fifth',
-			),
-			array(
-				'title'   => 'First Sixth',
-				'block'   => 'div',
-				'classes' => 'one-sixth first',
-			),
-			array(
-				'title'   => 'Sixth',
-				'block'   => 'div',
-				'classes' => 'one-sixth',
-			),
-		);
-
-		// Check if there are some styles already
-		if( isset( $settings[ 'style_formats' ] ) ){
-			// Decode any existing style formats
-			$existing_style_formats = json_decode( $settings[ 'style_formats' ] );
-
-			// Merge our new formats with any existing formats and re-encode
-			$settings[ 'style_formats' ] = json_encode( array_merge( (array) $existing_style_formats, $style_formats ) );
-		} else {
-			$settings[ 'style_formats' ] = json_encode( $style_formats );
-		}
-
-		return $settings;
-
-	}
-
-
-	/**
 	 * Add stylesheets that Targer Specific version of IE
 	 *
 	 * @uses    create a file named ie.css, ie8.css, or ie7.css and this will do the rest
@@ -301,6 +235,8 @@ class Styles {
 				echo '<!--[if IE 10]>';
 				do_action( 'ie-head' );
 				printf( '<link rel="stylesheet" type="text/css" href="%s" /><![endif]-->', $file );
+
+				_deprecated_function( '\MVC\Styles::ie_only', '1/19/2016', 'If you need to support ie stylesheets do so in your theme' );
 			}
 		}
 
@@ -309,6 +245,7 @@ class Styles {
 			echo '<!--[if IE 9]>';
 			do_action( 'ie9-head' );
 			printf( '<link rel="stylesheet" type="text/css" href="%s" /><![endif]-->', $file );
+			_deprecated_function( '\MVC\Styles::ie_only', '1/19/2016', 'If you need to support ie stylesheets do so in your theme' );
 		}
 
 		//ie 8 only
@@ -316,6 +253,7 @@ class Styles {
 			echo '<!--[if IE 8]>';
 			do_action( 'ie8-head' );
 			printf( '<link rel="stylesheet" type="text/css" href="%s" /><![endif]-->', $file );
+			_deprecated_function( '\MVC\Styles::ie_only', '1/19/2016', 'If you need to support ie stylesheets do so in your theme' );
 		}
 
 		//ie 7 only
@@ -323,24 +261,9 @@ class Styles {
 			echo '<!--[if IE 7]>';
 			do_action( 'ie7-head' );
 			printf( '<link rel="stylesheet" type="text/css" href="%s" /><![endif]-->', $file );
+			_deprecated_function( '\MVC\Styles::ie_only', '1/19/2016', 'If you need to support ie stylesheets do so in your theme' );
 		}
 
-	}
-
-
-	/**
-	 * Adds the style.css file to the editor
-	 *
-	 * @param string $wp exiting editor styles
-	 *
-	 * @return string
-	 * @since 9/21/12
-	 * @uses  called by __construct()
-	 */
-	function editor_style( $wp ){
-		$wp .= ',' . get_bloginfo( 'stylesheet_url' );
-
-		return $wp;
 	}
 
 
@@ -353,42 +276,29 @@ class Styles {
 	 * @uses to change the local admin css use the filter 'mat-local-admin-css'
 	 *
 	 */
-	function admin_js(){
+	function cue_admin_js_css(){
+		$script         = new Script( 'admin' );
+		$script->handle = 'mvc-admin-js';
+		$script->include_in_admin = true;
+		$script->include_in_frontend = false;
+		$dirs           = array(
+			'IMG'          => MVC_IMAGE_URL,
+			'THEME'        => MVC_THEME_URL,
+			'LOADING_ICON' => MVC_IMAGE_URL . 'loading.gif',
+		);
 
-		$file = $this->locate_js_file( 'admin' );
-
-		if( !empty( $file ) ){
-			wp_enqueue_script(
-				'mvc-admin-js',
-				$file,
-				array( 'jquery' ),
-				mvc_util()->get_beanstalk_based_version()
-			);
-			$dirs = array(
-				'IMG'          => MVC_IMAGE_URL,
-				'THEME'        => MVC_THEME_URL,
-				'LOADING_ICON' => MVC_IMAGE_URL . 'loading.gif'
-			);
-
-			wp_localize_script( 'mvc-admin-js', 'DIRS', $dirs );
-
-			foreach( self::$localize_admin as $var => $data ){
-				wp_localize_script( 'mvc-admin-js', $var, $data );
-			}
-
-			//to localize stuff
-			do_action( 'mvc_admin_js', 'mvc-admin-js' );
+		$script->set_data( 'DIRS', $dirs );
+		foreach( self::$localize_admin as $var => $data ){
+			$script->set_data( $var, $data );
 		}
 
-		if( $file = $this->locate_css_file( 'admin' ) ){
-			wp_enqueue_style(
-				'mvc-admin-styles',
-				$file,
-				array(),
-				mvc_util()->get_beanstalk_based_version()
-			);
-		}
+		//to localize stuff
+		do_action( 'mvc_admin_js', 'mvc-admin-js' );
 
+		$style         = new Style( 'admin' );
+		$style->include_in_frontend = false;
+		$style->include_in_admin = true;
+		$style->handle = 'mvc-admin-styles';
 	}
 
 
@@ -481,37 +391,24 @@ class Styles {
 	 * @uses  adds the mobile stylesheets if defined in the theme config
 	 *
 	 */
-	function add_js_css(){
-		$version = mvc_util()->get_beanstalk_based_version();
-
-		$file = $this->locate_js_file( 'front-end' );
-
-		if( $file ){
-			wp_enqueue_script( 'mvc-front-end-js', $file, array( 'jquery' ), $version, true );
-
-			$dirs = array(
-				'IMG'          => MVC_IMAGE_URL,
-				'THEME'        => MVC_THEME_URL,
-				'LOADING_ICON' => MVC_IMAGE_URL . 'loading.gif',
-				'ADMIN_URL'    => get_admin_url()
-			);
-
-			wp_localize_script( 'mvc-front-end-js', 'DIRS', $dirs );
-
-			foreach( self::$localize as $var => $data ){
-				wp_localize_script( 'mvc-front-end-js', $var, $data );
-			}
-
-			//to localize stuff
-			do_action( 'mvc_front-end_js', 'mvc-front-end-js' );
+	function cue_js_css(){
+		$script         = new Script( 'front-end' );
+		$script->handle = 'mvc-front-end-js';
+		$dirs           = array(
+			'IMG'          => MVC_IMAGE_URL,
+			'THEME'        => MVC_THEME_URL,
+			'LOADING_ICON' => MVC_IMAGE_URL . 'loading.gif',
+			'ADMIN_URL'    => get_admin_url(),
+		);
+		$script->set_data( 'DIRS', $dirs );
+		foreach( self::$localize as $var => $data ){
+			$script->set_data( $var, $data );
 		}
 
-		$file = $this->locate_css_file( 'front-end' );
-		//For custom css files when using with plugins
-		if( $file ){
-			wp_enqueue_style( 'mvc-front-end-styles', $file, array(), $version );
-		}
+		//to localize stuff
+		do_action( 'mvc_front-end_js', 'mvc-front-end-js' );
 
+		$style = new Style( 'front-end' );
 	}
 
 }
