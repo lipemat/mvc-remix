@@ -33,4 +33,24 @@ class Url {
 		return $current_url;
 	}
 
+
+	/**
+	 * Get the url to archive for posts
+	 * First checks for a blog template
+	 * then uses the setting from reading if
+	 * no page exists.
+	 *
+	 * @return bool|string
+	 */
+	public function get_blog_page_url(){
+		$blog_page_id = mvc_template()->get_blog_page();
+
+		if( !empty( $blog_page_id ) ){
+			$url =  get_permalink( $blog_page_id );
+		} else {
+			$url = get_home_url();
+		}
+		return $url;
+	}
+
 }

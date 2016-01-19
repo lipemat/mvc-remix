@@ -71,16 +71,15 @@ class Template {
 
 
 	/**
-	 * getBlogPage
-	 *
 	 * Retrieve the post_id of the page with the page_blog.php template
-	 * Will return 0 if no page is set to blog page
+	 * If none is found use the reading settings value for where
+	 * posts are displayed
 	 *
-	 * @cached
+	 * Will return 0 if no page is set or end up on home
 	 *
-	 * @return int
+	 * @return bool|mixed|void
 	 */
-	public function getBlogPage(){
+	public function get_blog_page(){
 		$page_id = \MVC\Util\Cache::get( 'getBlogPage', \MVC\Util\Cache::FLUSH_ON_SAVE_POST_GROUP );
 		if( $page_id !== false ){
 			return $page_id;
@@ -98,6 +97,16 @@ class Template {
 		if( !empty( $pages[ 0 ] ) ){
 			$page_id = $pages[ 0 ];
 		} else {
+			if( empty( $blog_page_id ) ){
+				$front_page_displays = get_option( 'show_on_front' );
+				if( 'page' == $front_page_displays ){
+					$page_id = get_option( 'page_for_posts' );
+				}
+			}
+		}
+
+		//for cache
+		if( empty( $page_id ) ){
 			$page_id = 0;
 		}
 
@@ -105,6 +114,15 @@ class Template {
 
 		return $page_id;
 
+	}
+
+
+	/**
+	 * @deprecated
+	 */
+	public function getBlogPage(){
+		_deprecated_function( 'getBlogPage', "1.19.16", "use get_blog_page()" );
+		return $this->get_blog_page();
 	}
 
 
