@@ -19,6 +19,8 @@ class Template {
 
 	public $sidebar_changed = false;
 
+	private static $body_classes = array();
+
 	/**
 	 * Init Theme Adjustments
 	 *
@@ -51,22 +53,38 @@ class Template {
 
 
 	/**
-	 * Check if we are on a blog type page
-	 *
-	 * @uses  returns true for Blog Template, Post, Post Archive, 'Date Archive', 'Category'
-	 *
-	 * @return bool
-	 * @uses  must bee called after 'wp' like using before()
-	 *
-	 * @since 5.42.0
+	 * @deprecated
 	 */
 	function isBlogPage(){
-		if( is_page_template( 'page_blog.php' ) || is_post_type_archive( 'post' ) || is_singular( 'post' ) || is_category() || ( is_date() && get_post_type() == 'post' ) ){
+		_deprecated_function( "isBlogPage", "1.20.16", "use is_posts_page" );
+		return $this->is_posts_page();
+	}
+
+
+	/**
+	 * Check if we on a a 'post' post type page
+	 * For determining if we should have a blog
+	 * style layout etc.
+	 * Searches:
+	 * - blog page template
+	 * - post archive
+	 * - single post
+	 * - category
+	 * - date and 'post' post type
+	 *
+	 * @return bool
+	 */
+	function is_posts_page(){
+		if( is_page_template( 'page_blog.php' ) ||
+		    is_post_type_archive( 'post' ) ||
+		    is_singular( 'post' ) ||
+		    is_category() ||
+		    ( is_date() && get_post_type() == 'post' ) ){
 			return true;
+
+		} else {
+			return false;
 		}
-
-		return false;
-
 	}
 
 
@@ -197,7 +215,7 @@ class Template {
 	 * optionaly specify the widgets Area name to only retrieve those
 	 *
 	 * @since 3.8.0
-	 * @uses  Must be Called after the functions.php file has loaded or non default sidebars do not exist yet - unless you don't care about none default ones
+	 * @uses  Must be Called after the functions.php file has loaded or non default sidebars do not exist yet - unless you don't care about non default ones
 	 *
 	 * @param array $args = array()
 	 *
@@ -208,10 +226,9 @@ class Template {
 	 *                  'bool [object_data] - to return full object including class information'
 	 *                  'bool [include_output'] - to include the output of the widgets'
 	 *
-	 * @since 4.18.13
+	 * @return array
 	 */
 	function getWidgetData( $args = array() ){
-
 		$defaults = array(
 			'sidebar_name'     => false,
 			'widget_name'      => false,
@@ -320,31 +337,37 @@ class Template {
 
 
 	/**
-	 * Body Class
+	 * Append a class to the body tag.
+	 * Must be called before the body_class filter is called.
 	 *
-	 * Adds a class to the body
+	 * @param string $class
 	 *
-	 * @example send a string to append to the body classes
-	 * @uses    will be called automatically on the body_class filter to add some classed automatically
+	 * @return void
+	 */
+	public function add_body_class( $class ){
+		if( !in_array( $class, self::$body_classes ) ){
+			self::$body_classes[] = $class;
+		}
+	}
+
+
+	/**
+	 * Called on the body_class filter to
+	 * add some classes related to the current section, post, etc.
 	 *
-	 * @param string $classes
+	 * @param array $classes
+	 *
+	 * @return array
 	 *
 	 */
-	function body_class( $class ){
+	public function body_class( $classes ){
 		global $post;
 
-		//Handy little due for quick adding of classes
-		if( is_string( $class ) ){
-			self::$body_classes[ ] = $class;
-
+		//deprecate way of doing things
+		if( is_string( $classes ) ){
+			_deprecated_function( "body_class", "1.20.16", "use add_body_class" );
+			$this->add_body_class( $classes );
 			return;
-
-		} elseif( is_array( $class ) ) {
-			$classes = $class;
-
-		} else {
-			return;
-
 		}
 
 		if( !empty( $post->ID ) ){
@@ -353,8 +376,9 @@ class Template {
 			}
 		}
 
-		if( $this->isBlogPage() ){
-			$classes[ ] = 'blog-page';
+		if( $this->is_posts_page() ){
+			$classes[ ] = 'blog-page'; //deprecated
+			$classes[ ] = 'posts-page';
 		}
 
 		//Add an archive class for the blog template
@@ -372,11 +396,11 @@ class Template {
 			$classes[ ] = mvc_string()->slug_format_human( $post->post_title );
 		}
 
-		if( empty( self::$body_classes ) ){
-			return $classes;
+		if( !empty( self::$body_classes ) ){
+			$classes = array_merge( $classes, self::$body_classes );
 		}
 
-		return array_merge( $classes, self::$body_classes );
+		return $classes;
 	}
 
 
@@ -608,7 +632,7 @@ class Template {
 		}
 
 		if( mvc_dynamic_sidebar( 'Blog Sidebar', false ) ){
-			if( $this->isBlogPage() ){
+			if( $this->is_posts_page() ){
 				remove_action( 'genesis_after_content', 'genesis_get_sidebar' );
 				add_action( 'genesis_after_content', array( mvc(), 'sidebar_Blog_Sidebar' ) );
 			}
