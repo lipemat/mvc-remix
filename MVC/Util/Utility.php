@@ -88,75 +88,21 @@ class Utility {
 
 
 	/**
-	 * Coverts Mysql Time Stamp to string Date
-	 *
-	 * @since 11.27.13
-	 *
-	 * @param string $date - the date string
-	 *
-	 * @return string
-	 *
+	 * @deprecated
 	 */
 	public function MysqlTimeStampToString( $date, $format = 'm/d/Y' ){
-		$timestamp = strtotime( $date );
-
-		return date( $format, $timestamp );
+		_deprecated_function( "MysqlTimeStampToString", "1.20.16", "Use WP function mysql2date" );
+		return mysql2date( $format, $date );
 	}
 
 
 	/**
-	 * Get how long ago a $post was posted
-	 *
-	 * @since
-	 *
-	 * @param WP_Post $post
-	 *
-	 * @return String or false on future date
-	 *
+	 * @deprecated
 	 */
 	function getTimeAgo( $post ){
-		$date   = get_post_time( 'G', true, $post );
-		$chunks = array(
-			array( 60 * 60 * 24 * 365, 'year', 'years', ),
-			array( 60 * 60 * 24 * 30, 'month', 'months', ),
-			array( 60 * 60 * 24 * 7, 'week', 'weeks', ),
-			array( 60 * 60 * 24, 'day', 'days', ),
-			array( 60 * 60, 'hour', 'hours', ),
-			array( 60, 'minute', 'minutes', ),
-			array( 1, 'second', 'seconds', )
-		);
-
-		if( !is_numeric( $date ) ){
-			$time_chunks = explode( ':', str_replace( ' ', ':', $date ) );
-			$date_chunks = explode( '-', str_replace( ' ', '-', $date ) );
-			$date        = gmmktime( (int) $time_chunks[ 1 ], (int) $time_chunks[ 2 ], (int) $time_chunks[ 3 ], (int) $date_chunks[ 1 ], (int) $date_chunks[ 2 ], (int) $date_chunks[ 0 ] );
-		}
-
-		$current_time = current_time( 'mysql', $gmt = 0 );
-		$newer_date   = strtotime( $current_time );
-
-		// Difference in seconds
-		$since = $newer_date - $date;
-
-		if( 0 > $since ){
-			return false;
-		}
-
-		for( $i = 0, $j = count( $chunks ); $i < $j; $i ++ ){
-			$seconds = $chunks[ $i ][ 0 ];
-			if( ( $count = floor( $since / $seconds ) ) != 0 ){
-				break;
-			}
-		}
-
-		$output = ( 1 == $count ) ? '1 ' . $chunks[ $i ][ 1 ] : $count . ' ' . $chunks[ $i ][ 2 ];
-		if( !(int) trim( $output ) ){
-			$output = '0 ' . 'seconds';
-		}
-
-		$output .= ' ago';
-
-		return $output;
+		$date = get_post_time('U',false, $post);
+		_deprecated_function( 'getTimeAgo', "1.20.16", "Use WP function human_time_diff" );
+		return human_time_diff( $date );
 	}
 
 
