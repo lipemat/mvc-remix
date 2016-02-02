@@ -117,7 +117,7 @@ class Form {
 					} ).on( 'select', function(){
 						var items = cu.state().get( 'selection' );
 						var attachment = items.models[0].toJSON();
-						jQuery.event.trigger( 'MVCImageUploadReturn', [attachment.url, attachment, attachment] );
+						jQuery( 'document' ).trigger( 'MVCImageUploadReturn', [attachment.url, attachment, attachment] );
 						jQuery( "#" + e.attr( 'rel' ) ).val( attachment.url );
 					} ).open();
 					return false;
