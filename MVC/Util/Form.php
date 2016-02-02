@@ -65,7 +65,7 @@ class Form {
 	 * @param bool   $echo (defaults to true );
 	 *
 	 * @uses  contains and event called 'MVCImageUploadReturn' which is triggered when a new image is returned
-	 *       This may be tapped into via js like so JQuery(document).bind("MVCImageUploadReturn", function( e, url ){});
+	 *       This may be tapped into via js like so JQuery(document).on("MVCImageUploadReturn", function( e, url ){});
 	 *
 	 * @uses  Be sure the ID does not already exist on the dom or this will break
 	 *
@@ -117,7 +117,7 @@ class Form {
 					} ).on( 'select', function(){
 						var items = cu.state().get( 'selection' );
 						var attachment = items.models[0].toJSON();
-						jQuery( 'document' ).trigger( 'MVCImageUploadReturn', [attachment.url, attachment, attachment] );
+						jQuery( document ).trigger( 'MVCImageUploadReturn', [attachment.url, attachment, attachment] );
 						jQuery( "#" + e.attr( 'rel' ) ).val( attachment.url );
 					} ).open();
 					return false;
