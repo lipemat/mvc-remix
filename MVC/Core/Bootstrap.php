@@ -164,20 +164,20 @@ class Bootstrap {
 			}
 		}
 
-		if( is_page() ){
-			if( isset( $GLOBALS[ 'PageController' ] ) ){
-				if( method_exists( $GLOBALS[ 'PageController' ], 'single' ) ){
-					$GLOBALS[ 'PageController' ]->single();
+		if( is_home() || is_front_page() ){
+			if( isset( $GLOBALS[ 'HomeController' ] ) ){
+				if( method_exists( $GLOBALS[ 'HomeController' ], 'single' ) ){
+					$GLOBALS[ 'HomeController' ]->single();
 
 					return;
 				}
 			}
 		}
 
-		if( is_home() || is_front_page() ){
-			if( isset( $GLOBALS[ 'HomeController' ] ) ){
-				if( method_exists( $GLOBALS[ 'HomeController' ], 'single' ) ){
-					$GLOBALS[ 'HomeController' ]->single();
+		if( is_page() ){
+			if( isset( $GLOBALS[ 'PageController' ] ) ){
+				if( method_exists( $GLOBALS[ 'PageController' ], 'single' ) ){
+					$GLOBALS[ 'PageController' ]->single();
 
 					return;
 				}
