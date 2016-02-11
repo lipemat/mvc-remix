@@ -33,19 +33,6 @@ class Script {
 	public $handle = false;
 
 	/**
-	 * folder
-	 *
-	 * Optional location of the js file. If not specified
-	 * this will locate the file in either a "js" dir or
-	 * a "resources/js" dir of any of the mvc locations.
-	 *
-	 * @uses mvc_file()->locate_template()
-	 *
-	 * @var string
-	 */
-	public $folder = false;
-
-	/**
 	 * dependencies
 	 *
 	 * Scripts this depends on.
@@ -94,6 +81,19 @@ class Script {
 	 * @var bool
 	 */
 	public $include_in_frontend = true;
+
+	/**
+	 * folder
+	 *
+	 * A specific folder to find the file in.
+	 * Use only for non standard folder structures
+	 * or conflicting file names.
+	 *
+	 * @notice Should be set to the theme or plugin folder not the js folder
+	 *
+	 * @var
+	 */
+	public $folder;
 
 	/**
 	 * data
@@ -202,7 +202,7 @@ class Script {
 	private function get_handle(){
 		$handle = $this->handle;
 		if( empty( $handle ) ){
-			$handle = 'mvc-script-' . md5( $this );
+			$handle = 'mvc-script-' . md5( json_encode( $this ) );
 		}
 
 		return $handle;
@@ -229,18 +229,18 @@ class Script {
 		$file_name = str_replace( '.js', '', $file_name );
 
 		if( !defined( 'SCRIPT_DEBUG' ) || !SCRIPT_DEBUG ){
-			if( !$file = mvc_file()->locate_template( "js/$file_name.min.js", true ) ){
-				if( !$file = mvc_file()->locate_template( "js/min/$file_name.min.js", true ) ){
-					if( !$file = mvc_file()->locate_template( "resources/js/$file_name.min.js", true ) ){
-						$file = mvc_file()->locate_template( "resources/js/min/$file_name.min.js", true );
+			if( !$file = mvc_file()->locate_template( "js/$file_name.min.js", true, false, $this->folder ) ){
+				if( !$file = mvc_file()->locate_template( "js/min/$file_name.min.js", true, false, $this->folder ) ){
+					if( !$file = mvc_file()->locate_template( "resources/js/$file_name.min.js", true, false, $this->folder ) ){
+						$file = mvc_file()->locate_template( "resources/js/min/$file_name.min.js", true, false, $this->folder );
 					}
 				}
 			}
 		}
 
 		if( empty( $file ) ){
-			if( !$file = mvc_file()->locate_template( "js/$file_name.js", true ) ){
-				$file = mvc_file()->locate_template( "resources/js/$file_name.js", true );
+			if( !$file = mvc_file()->locate_template( "js/$file_name.js", true, false, $this->folder ) ){
+				$file = mvc_file()->locate_template( "resources/js/$file_name.js", true, false, $this->folder );
 			}
 		}
 

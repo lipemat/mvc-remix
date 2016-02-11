@@ -130,9 +130,10 @@ class Styles {
 	 *
 	 * @param string $file       - the file name
 	 * @param bool   $debug_only - set to true to only add the js_file when SCRIPT_DEBUG is true
+	 * @param string [$handle] - optional script handle (defaults to mvc-%file% )
 	 *
 	 */
-	function add_js( $file, $debug_only = false ){
+	function add_js( $file, $debug_only = false, $handle = false ){
 		if( $debug_only ){
 			_deprecated_argument( '\MVC\Styles::add_js->debug_only', "1.19.16", "Use your own conditional if you want to exclude this js");
 			if( !defined( 'SCRIPT_DEBUG' ) || !SCRIPT_DEBUG ){
@@ -157,18 +158,7 @@ class Styles {
 	 * @return void
 	 */
 	function add_css( $file ){
-		$url = $this->locate_css_file( $file );
-
-		if( empty( $url ) ){
-			return;
-		}
-		wp_enqueue_style(
-			'mvc-' . $file,
-			$url,
-			array(),
-			mvc_util()->get_beanstalk_based_version()
-		);
-
+		new Style( $file );
 	}
 
 
@@ -277,28 +267,35 @@ class Styles {
 	 *
 	 */
 	function cue_admin_js_css(){
-		$script         = new Script( 'admin' );
-		$script->handle = 'mvc-admin-js';
-		$script->include_in_admin = true;
-		$script->include_in_frontend = false;
-		$dirs           = array(
-			'IMG'          => MVC_IMAGE_URL,
-			'THEME'        => MVC_THEME_URL,
-			'LOADING_ICON' => MVC_IMAGE_URL . 'loading.gif',
-		);
+		foreach( mvc_file()->get_mvc_dirs() as $key => $_dir ){
+			$script = new Script( 'admin' );
 
-		$script->set_data( 'DIRS', $dirs );
-		foreach( self::$localize_admin as $var => $data ){
-			$script->set_data( $var, $data );
+			$script->include_in_admin    = true;
+			$script->include_in_frontend = false;
+			$script->folder              = $_dir;
+			if( $key == 0 ){
+				$script->handle = 'mvc-admin-js';
+				$dirs           = array(
+					'IMG'          => MVC_IMAGE_URL,
+					'THEME'        => MVC_THEME_URL,
+					'LOADING_ICON' => MVC_IMAGE_URL . 'loading.gif',
+				);
+
+				$script->set_data( 'DIRS', $dirs );
+				foreach( self::$localize_admin as $var => $data ){
+					$script->set_data( $var, $data );
+				}
+			}
+
+			$style                      = new Style( 'admin' );
+			$style->include_in_frontend = false;
+			$style->include_in_admin    = true;
+			$script->folder             = $_dir;
 		}
 
 		//to localize stuff
 		do_action( 'mvc_admin_js', 'mvc-admin-js' );
 
-		$style         = new Style( 'admin' );
-		$style->include_in_frontend = false;
-		$style->include_in_admin = true;
-		$style->handle = 'mvc-admin-styles';
 	}
 
 
@@ -392,23 +389,30 @@ class Styles {
 	 *
 	 */
 	function cue_js_css(){
-		$script         = new Script( 'front-end' );
-		$script->handle = 'mvc-front-end-js';
-		$dirs           = array(
-			'IMG'          => MVC_IMAGE_URL,
-			'THEME'        => MVC_THEME_URL,
-			'LOADING_ICON' => MVC_IMAGE_URL . 'loading.gif',
-			'ADMIN_URL'    => get_admin_url(),
-		);
-		$script->set_data( 'DIRS', $dirs );
-		foreach( self::$localize as $var => $data ){
-			$script->set_data( $var, $data );
+
+		foreach( mvc_file()->get_mvc_dirs() as $key => $_dir ){
+			$script         = new Script( 'front-end' );
+			$script->folder = $_dir;
+			if( $key == 0 ){
+				$script->handle = 'mvc-front-end-js';
+				$dirs           = array(
+					'IMG'          => MVC_IMAGE_URL,
+					'THEME'        => MVC_THEME_URL,
+					'LOADING_ICON' => MVC_IMAGE_URL . 'loading.gif',
+					'ADMIN_URL'    => get_admin_url(),
+				);
+				$script->set_data( 'DIRS', $dirs );
+				foreach( self::$localize as $var => $data ){
+					$script->set_data( $var, $data );
+				}
+			}
+
+			$css         = new Style( 'front-end' );
+			$css->folder = $_dir;
 		}
 
 		//to localize stuff
 		do_action( 'mvc_front-end_js', 'mvc-front-end-js' );
-
-		$style = new Style( 'front-end' );
 	}
 
 }

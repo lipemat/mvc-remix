@@ -33,19 +33,6 @@ class Style {
 	public $handle = false;
 
 	/**
-	 * folder
-	 *
-	 * Optional location of the js file. If not specified
-	 * this will locate the file in either a "js" dir or
-	 * a "resources/js" dir of any of the mvc locations.
-	 *
-	 * @uses mvc_file()->locate_template()
-	 *
-	 * @var string
-	 */
-	public $folder = false;
-
-	/**
 	 * dependencies
 	 *
 	 * Styles this depends on.
@@ -94,6 +81,28 @@ class Style {
 	 * @var bool
 	 */
 	public $include_in_frontend = true;
+
+	/**
+	 * folder
+	 *
+	 * A specific folder to find the file in.
+	 * Use only for non standard folder structures
+	 * or conflicting file names
+	 *
+	 * @notice Should be set to the theme or plugin folder not css folder
+	 *
+	 * @var
+	 */
+	public $folder;
+
+	/**
+	 * located_file
+	 *
+	 * Used internally to keep the handles unique
+	 *
+	 * @var bool
+	 */
+	private $located_file = false;
 
 	public function __construct( $file ){
 		$this->file = $file;
@@ -194,7 +203,7 @@ class Style {
 	private function get_handle(){
 		$handle = $this->handle;
 		if( empty( $handle ) ){
-			$handle = 'mvc-style-' . md5( $this );
+			$handle = 'mvc-style-' . md5( json_encode( $this ) );
 		}
 
 		return $handle;
@@ -220,21 +229,22 @@ class Style {
 		$file_name = str_replace( '.css', '', $file_name );
 
 		if( !defined( 'SCRIPT_DEBUG' ) || !SCRIPT_DEBUG ){
-			if( !$file = mvc_file()->locate_template( "$file_name.min.css", true ) ){
-				if( !$file = mvc_file()->locate_template( "css/$file_name.min.css", true ) ){
-					$file = mvc_file()->locate_template( "resources/css/$file_name.min.css", true );
+			if( !$file = mvc_file()->locate_template( "$file_name.min.css", true, false, $this->folder ) ){
+				if( !$file = mvc_file()->locate_template( "css/$file_name.min.css", true, false, $this->folder ) ){
+					$file = mvc_file()->locate_template( "resources/css/$file_name.min.css", true, false, $this->folder );
 				}
 			}
+
 		}
 
 		if( empty( $file ) ){
-			if( !$file = mvc_file()->locate_template( "$file_name.css", true ) ){
-				if( !$file = mvc_file()->locate_template( "css/$file_name.css", true ) ){
-					$file = mvc_file()->locate_template( "resources/css/$file_name.css", true );
+			if( !$file = mvc_file()->locate_template( "$file_name.css", true, false, $this->folder ) ){
+				if( !$file = mvc_file()->locate_template( "css/$file_name.css", true, false, $this->folder ) ){
+					$file = mvc_file()->locate_template( "resources/css/$file_name.css", true, false, $this->folder );
 				}
 			}
 		}
 
-		return $file;
+		return $this->located_file = $file;
 	}
 }
