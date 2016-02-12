@@ -290,7 +290,7 @@ class Styles {
 			$style                      = new Style( 'admin' );
 			$style->include_in_frontend = false;
 			$style->include_in_admin    = true;
-			$script->folder             = $_dir;
+			$style->folder             = $_dir;
 		}
 
 		//to localize stuff
