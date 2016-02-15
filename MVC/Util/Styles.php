@@ -79,6 +79,22 @@ class Styles {
 	}
 
 
+	/**
+	 * Quick adding of the livereload grunt watch script
+	 * Call before wp_enqueue_scripts fires
+	 *
+	 * @see https://github.com/gruntjs/grunt-contrib-watch#user-content-optionslivereload
+	 *
+	 * @return void
+	 */
+	public function live_reload(){
+		if( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ){
+			add_action( 'wp_enqueue_scripts', function(){
+				wp_enqueue_script( 'livereload', '//localhost:35729/livereload.js' );
+			});
+		}
+	}
+
     /**
      * Quick and Dirty way to enque a js file from any resources folder
      * Handles front-end, admin, and min files for each just by specifying
