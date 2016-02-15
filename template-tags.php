@@ -80,17 +80,19 @@ function mvc_versions(){
 /**
  * Mvc Meta Box
  *
- * @param string [$post_type] - null will add it to all post types
- * @param string $meta_box_class
- * @param array  $args = array(
- *                     'title'   => '',
- *                     'context'   => 'advanced',
- *                     'priority'   => 'default',
- *                     'callback_args'   => NULL,
- *                     'defaults'   => array()
- *               )
+ * @param string|array $post_type - null will add it to all post types
+ * @param array $args          = array{
+ *      Optional arguments to pass to the meta box class.
+ *      @see https://codex.wordpress.org/Function_Reference/add_meta_box for more info
  *
- * @return null|MVC\Meta_Box
+ *      @type string $title         ( defaults to the id of the metabox built by the class ),
+ *      @type string $context       - 'normal', 'advanced', or 'side' ( defaults to 'advanced' )
+ *      @type string $priority      - 'high', 'core', 'default' or 'low' ( defaults to 'default' )
+ *      @type array  $callback_args - will be assigned as $this->callback_args to the meta box class and can be retrieved via $this->get_callback_args(),
+ *      @type array $defaults - can be retrieved using $this->get_defaults() ( @todo uncertain of this purpose, but have to make sure I'm not using it anywhere before deleting )
+ * }
+ *
+ * @return bool|MVC\Meta_Box
  */
 function mvc_meta_box( $post_type = null, $meta_box_class, $args = array() ) {
 	if ( !class_exists( $meta_box_class ) ) {
@@ -102,7 +104,13 @@ function mvc_meta_box( $post_type = null, $meta_box_class, $args = array() ) {
         foreach( get_post_types() as $_post_type ){
             new $meta_box_class( $_post_type, $args );
         }
-        return;
+        return true;
+    }
+    if( is_array( $post_type ) ){
+        foreach( $post_type as $_post_type ){
+            new $meta_box_class( $_post_type, $args );
+        }
+        return true;
     }
 	return new $meta_box_class( $post_type, $args );
 } 
@@ -146,7 +154,7 @@ function mvc_string(){
  */
 function mvc_styles(){
 	if( !current_theme_supports('mvc_styles') ){
-		throwException( 'To use mvc_styles, your theme must declare mvc_styles support!' );
+		throw new \Exception( 'To use mvc_styles, your theme must declare mvc_styles support!' );
 	}
 	return \MVC\Util\Styles::get_instance();
 }
@@ -218,6 +226,24 @@ function mvc_api(){
     return \MVC\Core\Api::get_instance();
 }
 
+/**
+ * Test for a submitted nonce
+ * Assumes your nonce field's name is the same as the
+ * nonce's name.
+ *
+ * Works off of the $_POST[ $nonce_name ]
+ *
+ * @param string $nonce_name
+ *
+ * @return bool
+ */
+function mvc_post_nonce( $nonce_name ){
+    if( !empty( $_POST[ $nonce_name ] ) && wp_verify_nonce( $_POST[ $nonce_name ], $nonce_name ) ){
+        return true;
+    } else {
+        return false;
+    }
+}
 
 /**
  * Registers a sidebar with all the proper args for name usage later on

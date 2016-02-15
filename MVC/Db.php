@@ -13,6 +13,8 @@ namespace MVC;
  * protected $db_option = "auth_db";
  * protected $db_version = 1;
  *
+ * protected $columns = array()
+ *
  * $this->id_field = "ID";
  *
  * private function __construct(){
@@ -210,17 +212,9 @@ abstract class Db {
 			$id_or_wheres = array( $this->id_field => $id_or_wheres );
 		}
 
-		foreach( $id_or_wheres as $column => $value ){
-			if( $column == $this->id_field ){
-				$formats[] = "%d";
-			} elseif( !empty( $this->columns[ $column ] ) ) {
-				$formats[] = $this->columns[ $column ];
-			} else {
-				$formats[] = "%s";
-			}
-		}
+		$formats = $this->get_formats( $id_or_wheres );
 
-		$wpdb->delete( $this->table, $id_or_wheres );
+		$wpdb->delete( $this->table, $id_or_wheres, $formats );
 
 	}
 
@@ -285,7 +279,7 @@ abstract class Db {
 	 *
 	 * Get the sprintf style formats matching an array of columns
 	 *
-	 * @uses $this->fields
+	 * @uses $this->columns
 	 *
 	 * @param $columns
 	 *
@@ -295,8 +289,8 @@ abstract class Db {
 		foreach( $columns as $column => $value ){
 			if( $column == $this->id_field ){
 				$formats[] = "%d";
-			} elseif( !empty( $this->fields[ $column ] ) ) {
-				$formats[] = $this->fields[ $column ];
+			} elseif( !empty( $this->columns[ $column ] ) ) {
+				$formats[] = $this->columns[ $column ];
 			} else {
 				$formats[] = "%s";
 			}

@@ -164,20 +164,20 @@ class Bootstrap {
 			}
 		}
 
-		if( is_page() ){
-			if( isset( $GLOBALS[ 'PageController' ] ) ){
-				if( method_exists( $GLOBALS[ 'PageController' ], 'single' ) ){
-					$GLOBALS[ 'PageController' ]->single();
+		if( is_home() || is_front_page() ){
+			if( isset( $GLOBALS[ 'HomeController' ] ) ){
+				if( method_exists( $GLOBALS[ 'HomeController' ], 'single' ) ){
+					$GLOBALS[ 'HomeController' ]->single();
 
 					return;
 				}
 			}
 		}
 
-		if( is_home() || is_front_page() ){
-			if( isset( $GLOBALS[ 'HomeController' ] ) ){
-				if( method_exists( $GLOBALS[ 'HomeController' ], 'single' ) ){
-					$GLOBALS[ 'HomeController' ]->single();
+		if( is_page() ){
+			if( isset( $GLOBALS[ 'PageController' ] ) ){
+				if( method_exists( $GLOBALS[ 'PageController' ], 'single' ) ){
+					$GLOBALS[ 'PageController' ]->single();
 
 					return;
 				}
@@ -281,7 +281,7 @@ class Bootstrap {
 
 			#-- Bring in the Files and Construct The Classes
 			foreach( scandir( $dir . 'Controller' ) as $file ){
-				if( !in_array( $file, array( '.', '..', 'Controller.php' ) ) ){
+				if( !in_array( $file, array( '.', '..', '.DS_Store', 'Controller.php' ) ) ){
 					//Add the Controller
 					require( $dir . 'Controller/' . $file );
 					$name = str_replace( array( '_Controller', 'Controller', '.php', ), '', $file );

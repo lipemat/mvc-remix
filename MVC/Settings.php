@@ -378,14 +378,16 @@ abstract class Settings {
 
 		foreach( $this->settings as $section => $params ){
 			foreach( $params[ 'fields' ] as $field => $title ){
-
+				$value = false;
 				if( method_exists( $this, $field . "_sanitize" ) ){
 					$value = $this->{$field . "_sanitize"}( $_POST[ $this->get_field_name( $field ) ] );
 
 				} elseif( method_exists( $this, $this->get_field_name( $field ) . "_sanitize" ) ){
 					$value = $this->{$this->get_field_name( $field )."_sanitize"}( $_POST[ $this->get_field_name( $field ) ] );
 				} else {
-					$value = $_POST[ $this->get_field_name( $field ) ];
+					if( isset( $_POST[ $this->get_field_name( $field ) ] ) ){
+						$value = $_POST[ $this->get_field_name( $field ) ];
+					}
 
 				}
 				update_site_option( $this->get_field_name( $field ), $value );
@@ -401,9 +403,6 @@ abstract class Settings {
 
 		wp_redirect( $url );
 		die();
-
-		exit();
-
 	}
 
 

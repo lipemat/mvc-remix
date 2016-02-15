@@ -89,28 +89,19 @@ class Framework {
 
 
 	/**
-	 * Magic function which allows for calling pretty much any class available by name using $this->%name%
 	 *
-	 * @uses  call any helper or whatever using $this->%helperClass%->%method%
-	 * @since 3.5.0
-	 *
-	 * @since 10.2.13
+	 * @deprecated Instantiate the class directly
 	 */
 	function __get( $object ){
 
+		_deprecated_function( "Magic Method within MVC Framework", "12-16-15", "Instantiate the class directly" );
+
 		if( !class_exists( $object ) ){
-			if( file_exists( MVC_THEME_DIR . 'lib/' . $object . '.php' ) ){
-				require_once( MVC_THEME_DIR . 'lib/' . $object . '.php' );
-			} elseif( file_exists( MVC_THEME_DIR . 'lib/helpers/' . $object . '.php' ) ) {
-				require_once( MVC_THEME_DIR . 'lib/helpers/' . $object . '.php' );
-			} elseif( file_exists( MVC_THEME_DIR . 'lib/optional/' . $object . '.php' ) ) {
-				require_once( MVC_THEME_DIR . 'lib/optional/' . $object . '.php' );
-			} else {
-				echo '<pre>';
-				debug_print_backtrace();
-				echo '</pre>';
-				trigger_error( $object . ' Does Not Exist as a Class ', E_USER_ERROR );
-			}
+			echo '<pre>';
+			debug_print_backtrace();
+			echo '</pre>';
+			trigger_error( $object . ' Does Not Exist as a Class ', E_USER_ERROR );
+
 		}
 
 		$this->{$object} = new $object;
