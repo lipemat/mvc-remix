@@ -25,13 +25,7 @@ trait Cpt {
 	 * @var self
 	 */
 	static $current;
-
-	/**
-	 * @var \Mvc\Custom_Post_type $cpt
-	 */
-	private static $cpt;
-
-
+	
 	public function __construct( $id ){
 		$this->post_id = $id;
 		self::$current = $this;
@@ -50,6 +44,13 @@ trait Cpt {
 
 		return $this->post;
 	}
+
+	/********* static *******************/
+
+	/**
+	 * @var \Mvc\Custom_Post_type $cpt
+	 */
+	private static $cpt;
 
 
 	/**
