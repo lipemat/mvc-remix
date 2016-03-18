@@ -55,13 +55,24 @@ class File {
 	 *
 	 * @param array|string $path_relative_to_mvc_dir
 	 * @param bool         $url - return the url ( defaults to false )
+	 * @param bool $load - to include the file (defaults to false)
+	 * @param string $directory - to check in a particular directory only
 	 *
 	 * @example 'View/Product/title.php'
 	 *
+	 * @todo Make this into an object
+	 *
 	 * @return bool|string - full path to file or false on failure to locate
 	 */
-	public function locate_template( $paths_relative_to_mvc_dir, $url = false, $load = false ){
-		foreach( self::get_mvc_dirs() as $dir ){
+	public function locate_template( $paths_relative_to_mvc_dir, $url = false, $load = false, $directory = false ){
+
+		if( $directory ){
+			$directories = (array)$directory;
+		} else {
+			$directories = self::get_mvc_dirs();
+		}
+
+		foreach( $directories as $dir ){
 
 			$dir = untrailingslashit( $dir );
 

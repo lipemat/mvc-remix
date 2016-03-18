@@ -154,7 +154,7 @@ function mvc_string(){
  */
 function mvc_styles(){
 	if( !current_theme_supports('mvc_styles') ){
-		throwException( 'To use mvc_styles, your theme must declare mvc_styles support!' );
+		throw new \Exception( 'To use mvc_styles, your theme must declare mvc_styles support!' );
 	}
 	return \MVC\Util\Styles::get_instance();
 }
