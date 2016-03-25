@@ -48,6 +48,22 @@ class File {
 
 
 	/**
+	 * Get the file contents after being complied by PHP
+	 * Quick and dirty way to get an ob result from a file
+	 *
+	 * @param string $path
+	 *
+	 * @return string mixed
+	 */
+	public function get_file_contents( $path ){
+		ob_start();
+		include( $path );
+
+		return ob_get_clean();
+	}
+
+
+	/**
 	 * locate_template
 	 *
 	 * Check in each mvc_dir for a matching file
