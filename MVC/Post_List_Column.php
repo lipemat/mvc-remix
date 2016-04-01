@@ -56,7 +56,7 @@ abstract class Post_List_Column {
 			add_action( 'parse_query', array( $this, 'maybe_filter_query' ) );
 			foreach( $this->post_types as $post_type ){
 				add_action( "manage_{$post_type}_posts_columns", array( $this, 'add_column' ) );
-				add_action( "manage_{$post_type}_posts_custom_column", array( $this, 'render_column' ), 10, 2 );
+				add_action( "manage_{$post_type}_posts_custom_column", array( $this, 'maybe_render_column' ), 10, 2 );
 
 			}
 		}
@@ -77,6 +77,21 @@ abstract class Post_List_Column {
 
 
 	/**
+	 * Calls $this->render_column() for the current column only
+	 *
+	 * @param string $column
+	 * @param int    $post_id
+	 *
+	 * @return void
+	 */
+	public function maybe_render_column( $column, $post_id ){
+		if( $column == $this->column_slug ){
+			$this->render_column( $column, $post_id );
+		}
+	}
+
+
+	/**
 	 * Add Column to Post List
 	 *
 	 * @internal
@@ -87,10 +102,10 @@ abstract class Post_List_Column {
 	 */
 	public function add_column( $columns ){
 		if( !empty( $this->column_position ) ){
-			$before = array_slice( $columns, 0, $this->column_position );
-			$after = array_slice( $columns, $this->column_position );
+			$before                       = array_slice( $columns, 0, $this->column_position );
+			$after                        = array_slice( $columns, $this->column_position );
 			$before[ $this->column_slug ] = $this->column_label;
-			$columns = array_merge( $before, $after );
+			$columns                      = array_merge( $before, $after );
 
 		} else {
 			$columns[ $this->column_slug ] = $this->column_label;
