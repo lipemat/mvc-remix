@@ -170,7 +170,7 @@ class Pagination {
 				?>
 				<li>
 					<a href="<?php echo get_pagenum_link( $bottom ); ?>"<?php echo $class; ?>>
-						<?php _e( $bottom, 'edspire' ); ?>
+						<?php _e( $bottom ); ?>
 					</a>
 				</li>
 				<?php
@@ -183,7 +183,7 @@ class Pagination {
 			</li>
 			<li>
 				<a href="<?php echo get_pagenum_link( $total ); ?>">
-					<?php _e( $total, 'edspire' ); ?>
+					<?php _e( $total ); ?>
 				</a>
 			</li>
 			<?php
@@ -245,7 +245,7 @@ class Pagination {
 				?>
 				<li>
 					<a data-page="<?php echo $bottom; ?>"<?php echo $class; ?>>
-						<?php _e( $bottom, 'edspire' ); ?>
+						<?php _e( $bottom ); ?>
 					</a>
 				</li>
 				<?php
@@ -258,7 +258,7 @@ class Pagination {
 			</li>
 			<li>
 				<a data-page="<?php echo $total; ?>">
-					<?php _e( $total, 'edspire' ); ?>
+					<?php _e( $total ); ?>
 				</a>
 			</li>
 			<?php

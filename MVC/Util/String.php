@@ -46,7 +46,7 @@ class String {
 			$plural = ucwords( $label . 's' );
 		}
 
-		return __( $plural, 'edspire' );
+		return __( $plural );
 
 	}
 
