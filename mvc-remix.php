@@ -1,11 +1,10 @@
 <?php
 /*
 Plugin Name: Mvc Remix
-Plugin URI: http://matlipe.com 
+Plugin URI: https://github.com/lipemat/mvc-remix
 Description: Turns any Genesis theme into a Model View Controller driven framework.
 Author: Mat Lipe
-Version: 1.0.0
-
+Version: 2.0.0
 Author URI: https://matlipe.com
 */
 
