@@ -1,0 +1,13 @@
+{
+    "name": "lipemat/mvc-remix",
+    "description": "Boilerplate for WP themes or plugins",
+    "license": "GPL",
+    "authors": [
+        {
+            "name": "Mat Lipe",
+            "email": "mat@matlipe.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {}
+}
