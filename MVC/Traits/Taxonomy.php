@@ -43,7 +43,7 @@ trait Taxonomy {
 
 	public function __get( $name ){
 		$term = $this->get_term();
-		if( !empty( $this->term->$name ) ){
+		if( !isset( $this->term->$name ) ){
 			return $this->{$name} = $this->term->$name;
 		}
 
