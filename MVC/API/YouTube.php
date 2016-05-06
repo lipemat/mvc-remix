@@ -58,14 +58,33 @@ class Youtube implements \JsonSerializable {
 	}
 
 
+	/**
+	 * Calls the methods to match the structure of a returned
+	 * oembed object
+	 *
+	 * So $video->thumbnail_url becomes $this->get_thumbnail_url()
+	 *
+	 * @param $field
+	 *
+	 * @return bool
+	 */
+	public function __get( $field ){
+		if( method_exists( $this, "get_$field" ) ){
+			return $this->{"get_$field"}();
+		}
+
+		return false;
+	}
+
 	public function jsonSerialize(){
 		return array(
-			'id'          => $this->get_id(),
-			'url'         => $this->url,
-			'title'       => $this->get_title(),
-			'video'       => $this->get_html(),
-			'thumbnail'   => $this->get_thumbnail(),
-			'description' => $this->get_description(),
+			'id'            => $this->get_id(),
+			'url'           => $this->url,
+			'title'         => $this->get_title(),
+			'video'         => $this->get_html(),
+			'thumbnail_url' => $this->get_thumbnail_url(),
+			'description'   => $this->get_description(),
+			'html'          => $this->get_html(),
 		);
 	}
 
@@ -88,7 +107,7 @@ class Youtube implements \JsonSerializable {
 	}
 
 
-	public function get_thumbnail(){
+	public function get_thumbnail_url(){
 		$thumbnail = '';
 		if( isset( $this->object->thumbnails->high ) ){
 			$thumbnail = $this->object->thumbnails->high->url;
@@ -199,5 +218,15 @@ class Youtube implements \JsonSerializable {
 		}
 
 		return $object;
+	}
+
+
+	/**
+	 * @deprecated
+	 *
+	 * @see \MVC\APIYoutube::get_thumbnail_url();
+	 */
+	public function get_thumbnail(){
+		return $this->get_thumbnail_url();
 	}
 }
