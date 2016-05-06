@@ -44,8 +44,6 @@ class Youtube implements \JsonSerializable {
 
 	private $url;
 
-	private $object;
-
 	public $height = 400;
 
 	public $width = 700;
@@ -54,13 +52,21 @@ class Youtube implements \JsonSerializable {
 	public function __construct( $url, $api_key ){
 		$this->url     = $url;
 		$this->api_key = $api_key;
-		$this->object  = $this->request_from_api();
+	}
+
+
+	public function set_width( $width ){
+		$this->width = $width;
+	}
+
+
+	public function set_height( $height ){
+		$this->height = $height;
 	}
 
 
 	/**
-	 * Calls the methods to match the structure of a returned
-	 * oembed object
+	 * Calls the methods to match the structure of a oembed object
 	 *
 	 * So $video->thumbnail_url becomes $this->get_thumbnail_url()
 	 *
@@ -76,43 +82,38 @@ class Youtube implements \JsonSerializable {
 		return false;
 	}
 
-	public function jsonSerialize(){
-		return array(
-			'id'            => $this->get_id(),
-			'url'           => $this->url,
-			'title'         => $this->get_title(),
-			'video'         => $this->get_html(),
-			'thumbnail_url' => $this->get_thumbnail_url(),
-			'description'   => $this->get_description(),
-			'html'          => $this->get_html(),
-		);
-	}
-
 
 	public function get_id(){
-		return isset( $this->object->id ) ? $this->object->id : "";
+		$object = $this->get_object();
+
+		return isset( $object->id ) ? $object->id : "";
 
 	}
 
 
 	public function get_title(){
-		return isset( $this->object->title ) ? $this->object->title : "";
+		$object = $this->get_object();
+
+		return isset( $object->title ) ? $object->title : "";
 
 	}
 
 
 	public function get_description(){
-		return isset( $this->object->description ) ? $this->object->description : "";
+		$object = $this->get_object();
+
+		return isset( $object->description ) ? $object->description : "";
 
 	}
 
 
 	public function get_thumbnail_url(){
+		$object    = $this->get_object();
 		$thumbnail = '';
-		if( isset( $this->object->thumbnails->high ) ){
-			$thumbnail = $this->object->thumbnails->high->url;
-		} elseif( isset( $this->object->thumbnails->medium ) ) {
-			$thumbnail = $this->object->thumbnails->medium->url;
+		if( isset( $object->thumbnails->high ) ){
+			$thumbnail = $object->thumbnails->high->url;
+		} elseif( isset( $object->thumbnails->medium ) ) {
+			$thumbnail = $object->thumbnails->medium->url;
 		}
 
 		return $thumbnail;
@@ -120,12 +121,13 @@ class Youtube implements \JsonSerializable {
 
 
 	public function get_html(){
-		$frame = "";
-		if( !empty( $this->object->id ) ){
+		$object = $this->get_object();
+		$frame  = "";
+		if( !empty( $object->id ) ){
 			$frame = '<iframe 
 						width="' . $this->width . '" 
 						height="' . $this->height . '"
-						src="http://www.youtube.com/embed/' . $this->object->id . '">
+						src="http://www.youtube.com/embed/' . $object->id . '">
 				</iframe>';
 		}
 
@@ -133,13 +135,13 @@ class Youtube implements \JsonSerializable {
 	}
 
 
-	public function set_width( $width ){
-		$this->width = $width;
-	}
+	public function get_object(){
+		if( isset( $this->object ) ){
+			return $this->object;
+		}
+		$this->object = $this->request_from_api();
 
-
-	public function set_height( $height ){
-		$this->height = $height;
+		return $this->object;
 	}
 
 
@@ -218,6 +220,19 @@ class Youtube implements \JsonSerializable {
 		}
 
 		return $object;
+	}
+
+
+	public function jsonSerialize(){
+		return array(
+			'id'            => $this->get_id(),
+			'url'           => $this->url,
+			'title'         => $this->get_title(),
+			'video'         => $this->get_html(),
+			'thumbnail_url' => $this->get_thumbnail_url(),
+			'description'   => $this->get_description(),
+			'html'          => $this->get_html(),
+		);
 	}
 
 
