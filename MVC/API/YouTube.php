@@ -175,7 +175,7 @@ class Youtube implements \JsonSerializable {
 				$url = str_replace( '{{api_key}}', $this->api_key, $url );
 
 				$response = wp_remote_get( $url );
-				$object   = @json_decode( wp_remote_retrieve_body( $response ) );
+				$object   = json_decode( wp_remote_retrieve_body( $response ) );
 				if( !empty( $object ) ){
 					$video      = array_shift( $object->items );
 					$object     = $video->snippet;
