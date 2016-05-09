@@ -36,9 +36,9 @@ use MVC\Cache;
  * @package MVC\API
  */
 class Youtube implements \JsonSerializable {
-	const API_URL = "https://www.googleapis.com/youtube/v3/videos?id=%id%&key=%api_key%&part=snippet";
+	const API_URL = "https://www.googleapis.com/youtube/v3/videos?id={{id}}&key={{api_key}}&part=snippet";
 
-	const OEMBED_URL = "http://www.youtube.com/oembed?url=%url%&maxwidth=%width%&maxheight=%height%";
+	const OEMBED_URL = "http://www.youtube.com/oembed?url={{url}}&maxwidth={{width}}&maxheight={{height}}";
 
 	private $api_key = false;
 
@@ -127,7 +127,7 @@ class Youtube implements \JsonSerializable {
 			$frame = '<iframe 
 						width="' . $this->width . '" 
 						height="' . $this->height . '"
-						src="http://www.youtube.com/embed/' . $object->id . '">
+						src="https://www.youtube.com/embed/' . $object->id . '">
 				</iframe>';
 		}
 
@@ -169,11 +169,10 @@ class Youtube implements \JsonSerializable {
 
 		$object = Cache::get( $cache_key );
 		if( $object === false ){
-			$url_parts = explode( 'v=', $this->url );
-			$id        = array_pop( $url_parts );
-			if( !empty( $id ) ){
-				$url = str_replace( '%id%', $id, self::API_URL );
-				$url = str_replace( '%api_key%', $this->api_key, $url );
+			parse_str( parse_url( $this->url, PHP_URL_QUERY ), $_args );
+			if( !empty( $_args[ 'v' ] ) ){
+				$url = str_replace( '{{id}}', $_args[ 'v' ], self::API_URL );
+				$url = str_replace( '{{api_key}}', $this->api_key, $url );
 
 				$response = wp_remote_get( $url );
 				$object   = @json_decode( wp_remote_retrieve_body( $response ) );
@@ -210,12 +209,12 @@ class Youtube implements \JsonSerializable {
 
 		$object = Cache::get( $cache_key );
 		if( $object === false ){
-			$url = str_replace( '%url%', urlencode( $this->url ), self::OEMBED_URL );
-			$url = str_replace( '%height%', $this->height, $url );
-			$url = str_replace( '%width%', $this->width, $url );
+			$url = str_replace( '{{url}}', urlencode( $this->url ), self::OEMBED_URL );
+			$url = str_replace( '{{height}}', $this->height, $url );
+			$url = str_replace( '{{width}}', $this->width, $url );
 
 			$response = wp_remote_get( $url );
-			$object   = @json_decode( wp_remote_retrieve_body( $response ) );
+			$object   = json_decode( wp_remote_retrieve_body( $response ) );
 			Cache::set( $cache_key, $object );
 		}
 
