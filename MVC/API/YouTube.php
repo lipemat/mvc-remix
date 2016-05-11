@@ -35,7 +35,7 @@ use MVC\Cache;
  *
  * @package MVC\API
  */
-class Youtube implements \JsonSerializable {
+class YouTube implements \JsonSerializable {
 	const API_URL = "https://www.googleapis.com/youtube/v3/videos?id={{id}}&key={{api_key}}&part=snippet";
 
 	const OEMBED_URL = "http://www.youtube.com/oembed?url={{url}}&maxwidth={{width}}&maxheight={{height}}";
