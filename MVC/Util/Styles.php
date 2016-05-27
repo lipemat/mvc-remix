@@ -291,16 +291,9 @@ class Styles {
 			$script->folder              = $_dir;
 			if( $key == 0 ){
 				$script->handle = 'mvc-admin-js';
-				$dirs           = array(
-					'IMG'          => MVC_IMAGE_URL,
-					'THEME'        => MVC_THEME_URL,
-					'LOADING_ICON' => MVC_IMAGE_URL . 'loading.gif',
-				);
-
-				$script->set_data( 'DIRS', $dirs );
-				foreach( self::$localize_admin as $var => $data ){
-					$script->set_data( $var, $data );
-				}
+			}
+			foreach( self::$localize_admin as $var => $data ){
+				$script->set_data( $var, $data );
 			}
 
 			$style                      = new Style( 'admin' );
@@ -405,22 +398,15 @@ class Styles {
 	 *
 	 */
 	function cue_js_css(){
-
 		foreach( mvc_file()->get_mvc_dirs() as $key => $_dir ){
 			$script         = new Script( 'front-end' );
 			$script->folder = $_dir;
 			if( $key == 0 ){
 				$script->handle = 'mvc-front-end-js';
-				$dirs           = array(
-					'IMG'          => MVC_IMAGE_URL,
-					'THEME'        => MVC_THEME_URL,
-					'LOADING_ICON' => MVC_IMAGE_URL . 'loading.gif',
-					'ADMIN_URL'    => get_admin_url(),
-				);
-				$script->set_data( 'DIRS', $dirs );
-				foreach( self::$localize as $var => $data ){
-					$script->set_data( $var, $data );
-				}
+			}
+
+			foreach( self::$localize as $var => $data ){
+				$script->set_data( $var, $data );
 			}
 
 			$css         = new Style( 'front-end' );
