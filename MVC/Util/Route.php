@@ -11,7 +11,7 @@ namespace MVC\Util;
  * which may be found in the mvc-config.php
  * Or by construction this class manually using ::init() or ::get_instance()
  *
- * @example \MVC\Route::add( 'custom-page', array( 'title' => 'Custom Page', 'template' => get_stylesheet_directory() . '/content/custompage.php' ) );
+ * @example \MVC\Util\Route::add( 'custom-page', array( 'title' => __( 'Custom Page' ), 'template' => get_stylesheet_directory() . '/content/custompage.php' ) );
  *
  * @since     2/24/2015
  *
