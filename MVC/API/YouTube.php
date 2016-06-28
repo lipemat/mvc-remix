@@ -145,6 +145,19 @@ class YouTube implements \JsonSerializable {
 	}
 
 
+	private function get_id_from_url(){
+		$id = false;
+		parse_str( parse_url( $this->url, PHP_URL_QUERY ), $_args );
+		if( !empty( $_args[ 'v' ] ) ){
+			$id = $_args[ 'v' ];
+		} elseif( strpos( $this->url, 'youtu.be' ) ) {
+			$id = trim( parse_url( $this->url, PHP_URL_PATH ),  '/' );
+		}
+
+		return $id;
+	}
+
+
 	/**
 	 * Get the video object from the api
 	 * Contains description and image size which the
@@ -169,9 +182,9 @@ class YouTube implements \JsonSerializable {
 
 		$object = Cache::get( $cache_key );
 		if( $object === false ){
-			parse_str( parse_url( $this->url, PHP_URL_QUERY ), $_args );
-			if( !empty( $_args[ 'v' ] ) ){
-				$url = str_replace( '{{id}}', $_args[ 'v' ], self::API_URL );
+			$id = $this->get_id_from_url();
+			if( !empty( $id ) ){
+				$url = str_replace( '{{id}}', $id, self::API_URL );
 				$url = str_replace( '{{api_key}}', $this->api_key, $url );
 
 				$response = wp_remote_get( $url );
