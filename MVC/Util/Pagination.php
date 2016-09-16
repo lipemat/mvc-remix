@@ -50,6 +50,11 @@ class Pagination {
 			$this->per_page = $per_page;
 			$page = empty( $_REQUEST[ 'page' ] ) ? 1 : $_REQUEST[ 'page' ];
 		}
+		//certain areas of the admin pass page in url
+		if( !is_numeric( $page ) ){
+			$page = 1;
+		}
+
 		$this->page = $page;
 	}
 
