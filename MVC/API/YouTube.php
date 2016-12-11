@@ -5,10 +5,14 @@ namespace MVC\API;
 use MVC\Cache;
 
 /**
- * Youtube
+ * Youtube API
  *
- * To do so I need an api key. This can be obtained by registering a project with Google APIs and giving it YouTube
- * access.
+ * Creates an object from a Youtube video url.
+ * If an api key is not provided this will fall back to oembed with works but
+ * does not contain things like high resolution thumbnails or descriptions.
+ *
+ * An api key may be obtained by registering a project with Google APIs and giving it YouTube access.
+ *
  * # Go to the developer console https://console.developers.google.com/project
  * # Click "Create Project" if some already exist otherwise, use the "Select a Project" drop-down and click "Create a
  * Project"
@@ -33,7 +37,6 @@ use MVC\Cache;
  *
  * @link    https://developers.google.com/youtube/v3/getting-started#Sample_Partial_Requests
  *
- * @package MVC\API
  */
 class YouTube implements \JsonSerializable {
 	const API_URL = "https://www.googleapis.com/youtube/v3/videos?id={{id}}&key={{api_key}}&part=snippet";
@@ -110,10 +113,17 @@ class YouTube implements \JsonSerializable {
 	public function get_thumbnail_url(){
 		$object    = $this->get_object();
 		$thumbnail = '';
-		if( isset( $object->thumbnails->high ) ){
-			$thumbnail = $object->thumbnails->high->url;
-		} elseif( isset( $object->thumbnails->medium ) ) {
-			$thumbnail = $object->thumbnails->medium->url;
+		if( !empty( $object->thumbnails ) ){
+			if( isset( $object->thumbnails->maxres ) ){
+				$thumbnail = $object->thumbnails->maxres->url;
+			} elseif( isset( $object->thumbnails->high ) ) {
+				$thumbnail = $object->thumbnails->high->url;
+			} elseif( isset( $object->thumbnails->medium ) ) {
+				$thumbnail = $object->thumbnails->medium->url;
+			}
+			//fallback to oembed url
+		} elseif( !empty( $object->thumbnail_url ) ){
+			$thumbnail = $object->thumbnail_url;
 		}
 
 		return $thumbnail;
@@ -139,9 +149,26 @@ class YouTube implements \JsonSerializable {
 		if( isset( $this->object ) ){
 			return $this->object;
 		}
-		$this->object = $this->request_from_api();
+		if( empty( $this->api_key ) ){
+			$this->object = $this->get_oembed();
+		} else {
+			$this->object = $this->request_from_api();
+		}
 
 		return $this->object;
+	}
+
+
+	private function get_id_from_url(){
+		$id = false;
+		parse_str( parse_url( $this->url, PHP_URL_QUERY ), $_args );
+		if( !empty( $_args[ 'v' ] ) ){
+			$id = $_args[ 'v' ];
+		} elseif( strpos( $this->url, 'youtu.be' ) ) {
+			$id = trim( parse_url( $this->url, PHP_URL_PATH ),  '/' );
+		}
+
+		return $id;
 	}
 
 
@@ -151,8 +178,7 @@ class YouTube implements \JsonSerializable {
 	 * oembed does not.
 	 * Does not include and html player
 	 *
-	 * @notice If you dont' have an api key like this will be distributed
-	 *         Then use $this->get_oembed()
+	 * @notice If you don't have an api key use $this->get_oembed()
 	 *
 	 * @return mixed
 	 */
@@ -169,9 +195,9 @@ class YouTube implements \JsonSerializable {
 
 		$object = Cache::get( $cache_key );
 		if( $object === false ){
-			parse_str( parse_url( $this->url, PHP_URL_QUERY ), $_args );
-			if( !empty( $_args[ 'v' ] ) ){
-				$url = str_replace( '{{id}}', $_args[ 'v' ], self::API_URL );
+			$id = $this->get_id_from_url();
+			if( !empty( $id ) ){
+				$url = str_replace( '{{id}}', $id, self::API_URL );
 				$url = str_replace( '{{api_key}}', $this->api_key, $url );
 
 				$response = wp_remote_get( $url );
@@ -196,7 +222,6 @@ class YouTube implements \JsonSerializable {
 	 * Also, does not require an api key
 	 *
 	 * @notice if you have an api key this method is pretty much redundant
-	 *         and here for possible future usage
 	 *
 	 * @return object
 	 */

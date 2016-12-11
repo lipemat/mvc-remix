@@ -228,7 +228,7 @@ class Bootstrap {
 			}
 
 			foreach( scandir( $dir . 'widgets' ) as $widget ){
-				if( $widget == '.' || $widget == '..' ){
+				if( $widget == '.' || $widget == '..' || $widget == '.DS_Store' ){
 					continue;
 				}
 				require( $dir . 'widgets/' . $widget );

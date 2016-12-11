@@ -367,3 +367,44 @@ function mvc_dynamic_sidebar($index = 1, $echo = true, $wrap = false) {
     } 
     return $output;
 }
+
+
+/**
+*  mvc_esc_attr
+*
+*  This function will return a render of an array of attributes to be used in markup
+*
+*  @since	9.9.16
+*
+*  @param	array $atts
+*  @return	string
+*/
+function mvc_esc_attr( $atts ) {
+	if( is_string($atts) ) {
+		$atts = trim( $atts );
+		return esc_attr( $atts );
+	}
+
+	if( empty($atts) ) {
+		return '';
+	}
+
+	$e = array();
+	foreach( $atts as $k => $v ) {
+		if( is_array($v) || is_object($v) ) {
+			$v = json_encode($v);
+		} elseif( is_bool($v) ) {
+			$v = $v ? 1 : 0;
+		} elseif( is_string($v) ) {
+			$v = trim($v);
+		}
+		$e[] = $k . '="' . esc_attr( $v ) . '"';
+	}
+
+	return implode(' ', $e);
+}
+
+
+function mvc_esc_attr_e( $atts ) {
+	echo mvc_esc_attr( $atts );
+}

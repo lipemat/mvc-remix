@@ -104,6 +104,11 @@ class Internal_Tax {
 	 * @param mixed int|obj|string $term - the term pretty much any way you want it
 	 * @param int|obj [$post] - defaults to current global $post;
 	 *
+	 *
+	 * @todo Convert over to wp_remove_object_terms() available since 3.6.0
+	 *
+	 * @return bool
+	 *
 	 */
 	function removeTerm( $term, $post = false ) {
 
