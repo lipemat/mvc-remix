@@ -137,10 +137,10 @@ function mvc_internal(){
  * 
  * @example  mvc_string()->theContentLimit();
  * 
- * @return \MVC\Util\String
+ * @return \MVC\Util\String_Utils
  */
 function mvc_string(){
-	return \MVC\Util\String::get_instance();
+	return \MVC\Util\String_Utils::get_instance();
 }
 
 /**
