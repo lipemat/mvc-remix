@@ -4,7 +4,7 @@ Plugin Name: Mvc Remix
 Plugin URI: https://github.com/lipemat/mvc-remix
 Description: Turns any Genesis theme into a Model View Controller driven framework.
 Author: Mat Lipe
-Version: 2.2.2
+Version: 2.2.3
 Author URI: https://matlipe.com
 */
 
