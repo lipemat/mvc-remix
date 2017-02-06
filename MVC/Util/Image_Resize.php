@@ -472,9 +472,15 @@ class Image_Resize {
 			//If using Wp Smushit
 			if( class_exists( 'WpSmush' ) ){
 				global $WpSmush;
-				$max = $WpSmush->is_pro() ? WP_SMUSH_PREMIUM_MAX_BYTES : WP_SMUSH_MAX_BYTES;
-				if( filesize( $new_img_path ) < $max ){
-					$WpSmush->do_smushit( $new_img_path, $new_img );
+				/** @var \WpSmush $WpSmush */
+				if( method_exists( $WpSmush, 'validate_install' ) ){
+					//new version of wp smush
+					$max_size = $WpSmush->validate_install() ? WP_SMUSH_PREMIUM_MAX_BYTES : WP_SMUSH_MAX_BYTES;
+				} else {
+					$max_size = $WpSmush->is_pro() ? WP_SMUSH_PREMIUM_MAX_BYTES : WP_SMUSH_MAX_BYTES;
+				}
+				if( filesize( $new_img_path ) < $max_size ){
+					$WpSmush->do_smushit( $new_img_path );
 				}
 			}
 
