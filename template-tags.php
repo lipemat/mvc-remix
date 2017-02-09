@@ -70,7 +70,7 @@ function mvc_image( $url, $size, $crop = true ){
  * 
  * @example mvc_versions()->add_update( 2.0, 'update_data' );
  * 
- * @return MVC\Versions
+ * @return \MVC\Util\Versions
  * 
  */
 function mvc_versions(){
@@ -78,41 +78,11 @@ function mvc_versions(){
 }
 
 /**
- * Mvc Meta Box
- *
- * @param string|array $post_type - null will add it to all post types
- * @param array $args          = array{
- *      Optional arguments to pass to the meta box class.
- *      @see https://codex.wordpress.org/Function_Reference/add_meta_box for more info
- *
- *      @type string $title         ( defaults to the id of the metabox built by the class ),
- *      @type string $context       - 'normal', 'advanced', or 'side' ( defaults to 'advanced' )
- *      @type string $priority      - 'high', 'core', 'default' or 'low' ( defaults to 'default' )
- *      @type array  $callback_args - will be assigned as $this->callback_args to the meta box class and can be retrieved via $this->get_callback_args(),
- *      @type array $defaults - can be retrieved using $this->get_defaults() ( @todo uncertain of this purpose, but have to make sure I'm not using it anywhere before deleting )
- * }
- *
- * @return bool|MVC\Meta_Box
+ * @see \MVC\Meta_Box::register()
+ * @deprecated  in favor of calling \MVC\Meta_Box::register() directly
  */
-function mvc_meta_box( $post_type = null, $meta_box_class, $args = array() ) {
-	if ( !class_exists( $meta_box_class ) ) {
-        if( !defined( 'WP_DEBUG' ) || !WP_DEBUG ){
-            return FALSE;
-        }
-	}
-    if( $post_type == null ){
-        foreach( get_post_types() as $_post_type ){
-            new $meta_box_class( $_post_type, $args );
-        }
-        return true;
-    }
-    if( is_array( $post_type ) ){
-        foreach( $post_type as $_post_type ){
-            new $meta_box_class( $_post_type, $args );
-        }
-        return true;
-    }
-	return new $meta_box_class( $post_type, $args );
+function mvc_meta_box( $post_type = null, $meta_box_class, $args = [] ) {
+	return call_user_func( [ $meta_box_class, 'register' ], $post_type, $args );
 } 
  
 
