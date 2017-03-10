@@ -16,6 +16,8 @@ trait Singleton {
 	public function __construct(){
 		if( method_exists( $this, 'hooks' ) ){
 			$this->hooks();
+		} elseif( method_exists( $this, 'hook' ) ){
+			$this->hook();
 		}
 	}
 
