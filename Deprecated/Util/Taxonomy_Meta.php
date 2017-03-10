@@ -127,6 +127,7 @@ class Taxonomy_Meta {
 	 * @deprecated as of version 4.4 in WP Core
 	 */
 	public function get_term_taxonomy_id( $term_id, $taxonomy ){
+		_deprecated_function( 'Taxonomy_Meta', "Use standard wp term meta functions" );
 		if( !$term_id ){
 			return 0;
 		}
