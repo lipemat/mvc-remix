@@ -2,13 +2,10 @@
 
 namespace MVC\Core;
 
-/**
- * Boot Strap
- *
- * Pull the Whole Framework Together
- *
- * @author Mat Lipe <mat@matlipe.com>
- */
+use MVC\Rest_Api\AuthTable;
+use MVC\Rest_Api\Login;
+use MVC\Rest_Api\Post;
+use MVC\Rest_Api\Taxonomies;
 
 /** The Config for this Theme **/
 if( $file = mvc_file()->locate_template( 'mvc-config.php' ) ){
@@ -70,7 +67,6 @@ if( current_theme_supports( 'mvc_ajax' ) ){
 //For custom urls
 if( current_theme_supports( 'mvc_route' ) ){
 	\MVC\Util\Route::init();
-	\MVC\Route::init();
 }
 
 //translation adjustments
@@ -82,6 +78,15 @@ if( current_theme_supports( 'mvc_translate' ) ){
 if( current_theme_supports( 'mvc_taxonomy_meta' ) ){
 	\MVC\Util\Taxonomy_Meta::init();
 }
+
+//login via rest token
+if( current_theme_supports( 'mvc_rest_api_login' ) ){
+	Login::init();
+	AuthTable::init();
+}
+Post::init();
+Taxonomies::init();
+
 
 
 

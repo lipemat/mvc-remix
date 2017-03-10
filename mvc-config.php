@@ -25,3 +25,5 @@ add_theme_support( 'mvc_taxonomy_meta' );
 //add_theme_support( 'mvc_route' );
 
 //add_theme_support('mvc_api');
+
+//add_theme_support( 'mvc_rest_api_login' )

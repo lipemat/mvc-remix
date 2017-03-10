@@ -74,7 +74,7 @@ class File {
 	 * @param bool $load - to include the file (defaults to false)
 	 * @param string $directory - to check in a particular directory only
 	 *
-	 * @example 'View/Product/title.php'
+	 * @example 'View/Woo_Product/title.php'
 	 *
 	 * @todo Make this into an object
 	 *
