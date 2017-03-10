@@ -50,6 +50,11 @@ class Pagination {
 			$this->per_page = $per_page;
 			$page = empty( $_REQUEST[ 'page' ] ) ? 1 : $_REQUEST[ 'page' ];
 		}
+		//certain areas of the admin pass page in url
+		if( !is_numeric( $page ) ){
+			$page = 1;
+		}
+
 		$this->page = $page;
 	}
 
@@ -117,7 +122,11 @@ class Pagination {
 		if( $page > ( $total - 3 ) ){
 			$top = $total - 1;
 		} else {
-			$top = $bottom + 4;
+			if( ($bottom + 4 ) > $total ){
+				$top = $total;
+			} else {
+				$top = $bottom + 4;
+			}
 		}
 
 		if( $this->wp_query ){
@@ -142,8 +151,6 @@ class Pagination {
 	 * @return void
 	 */
 	private function link_html( $page, $total, $top, $bottom ){
-
-		get_next_posts_link()
 		?>
 		<ul class="navigation">
 			<?php
@@ -176,17 +183,16 @@ class Pagination {
 				<?php
 				$bottom ++;
 			}
-
-			?>
-			<li>
-				...
-			</li>
-			<li>
-				<a href="<?php echo get_pagenum_link( $total ); ?>">
-					<?php _e( $total ); ?>
-				</a>
-			</li>
-			<?php
+			if( $total > $top ){
+				?>
+				<li> ... </li>
+				<li>
+					<a href="<?php echo get_pagenum_link( $total ); ?>">
+						<?php _e( $total ); ?>
+					</a>
+				</li>
+				<?php
+			}
 			if( $page != $total ){
 				?>
 				<li>
@@ -252,16 +258,19 @@ class Pagination {
 				$bottom ++;
 			}
 
-			?>
-			<li>
-				...
-			</li>
-			<li>
-				<a data-page="<?php echo $total; ?>">
-					<?php _e( $total ); ?>
-				</a>
-			</li>
-			<?php
+			if( $total > $top ){
+				?>
+				<li>
+					...
+				</li>
+				<li>
+					<a data-page="<?php echo $total; ?>">
+						<?php _e( $total ); ?>
+					</a>
+				</li>
+				<?php
+			}
+
 			if( $page != $total ){
 				?>
 				<li>

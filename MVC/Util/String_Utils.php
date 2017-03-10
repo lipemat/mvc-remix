@@ -16,7 +16,7 @@ namespace MVC\Util;
  * @package MVC
  *
  */
-class String {
+class String_Utils {
 	use \MVC\Traits\Singleton;
 
 	/**
