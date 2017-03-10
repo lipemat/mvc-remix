@@ -77,21 +77,18 @@ class Webpack {
 
 
 	public function register(){
-		$use_node = false;
+		$use_node = self::$force_node_server;
 		if( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG == true ){
-			if( !self::$force_node_server ){
+			if( !$use_node ){
 				$node_service = @fsockopen( 'localhost', 3000, $no, $str, 2 );
 				if( false != $node_service ){
 					$use_node = true;
 				}
-			} else {
-				$use_node = true;
 			}
 		}
 		if( !$use_node ){
 			$js_file  = trailingslashit( $this->directory ) . 'dist/master.js';
 			$css_file = trailingslashit( $this->directory ) . 'dist/master.css';
-
 		} else {
 			$js_file = 'http://localhost:3000/dist/master.js';
 		}
