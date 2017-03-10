@@ -69,6 +69,7 @@ if( current_theme_supports( 'mvc_ajax' ) ){
 
 //For custom urls
 if( current_theme_supports( 'mvc_route' ) ){
+	\MVC\Util\Route::init();
 	\MVC\Route::init();
 }
 
