@@ -84,8 +84,12 @@ if( current_theme_supports( 'mvc_rest_api_login' ) ){
 	Login::init();
 	AuthTable::init();
 }
-Post::init();
-Taxonomies::init();
+
+//rest api enhancements
+if( current_theme_supports( 'mvc_rest_api' ) ){
+	Post::init();
+	Taxonomies::init();
+}
 
 
 
