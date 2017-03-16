@@ -2,7 +2,6 @@
 
 namespace MVC\Util;
 
-
 /**
  * Mvc String
  *
@@ -18,6 +17,7 @@ namespace MVC\Util;
  */
 class String_Utils {
 	use \MVC\Traits\Singleton;
+
 
 	/**
 	 * @deprecated use mvc_template()->get_current_url();
@@ -48,6 +48,18 @@ class String_Utils {
 
 		return __( $plural );
 
+	}
+
+
+	/**
+	 * Returns first sentence from a string
+	 *
+	 * @param string $text
+	 *
+	 * @return string
+	 */
+	public function first_sentence( $text ){
+		return preg_replace( '/([^?!.]*.).*/', '\\1', $text );
 	}
 
 
@@ -101,14 +113,14 @@ class String_Utils {
 	 *
 	 * @return string
 	 */
-	public function theContentLimit( $maxChar, $moreLinkText = false, $args = array() ){
+	public function theContentLimit( $maxChar, $moreLinkText = false, $args = [] ){
 		global $post;
 
-		$defaults = array(
+		$defaults = [
 			'strip_tags'   => true,
 			'strip_teaser' => false,
-			'allowed_tags' => '<p><b><strong><em><i><u><del><span style="text-decoration: underline;">'
-		);
+			'allowed_tags' => '<p><b><strong><em><i><u><del><span style="text-decoration: underline;">',
+		];
 		$args     = wp_parse_args( $args, $defaults );
 
 		$content = get_the_content( $moreLinkText, $args[ 'strip_teaser' ] );
@@ -140,12 +152,12 @@ class String_Utils {
 	 *
 	 * @return string
 	 */
-	public function postContentLimit( $post, $maxChar, $moreLinkText = false, $args = array() ){
+	public function postContentLimit( $post, $maxChar, $moreLinkText = false, $args = [] ){
 
-		$defaults = array(
+		$defaults = [
 			'strip_tags'   => true,
 			'allowed_tags' => '<p><b><strong><em><i><u><del><span style="text-decoration: underline;">',
-		);
+		];
 		$args     = wp_parse_args( $args, $defaults );
 
 		if( !is_object( $post ) ){
@@ -166,21 +178,23 @@ class String_Utils {
 	/**
 	 * Limit a string to a number of characters
 	 *
-	 * @param string $content - the content to limit
-	 * @param int $maxChar - the number of characters to max out on
-	 * @param array $args {
-	 *           @type string $allowed_tags - list of html tags allowed  default <p><b><strong><em><i><u><del><span><style="text-decoration: underline>">
-	 *           @type bool   $strip_tags - default true
+	 * @param string $content      - the content to limit
+	 * @param int    $maxChar      - the number of characters to max out on
+	 * @param array  $args         {
+	 *
+	 * @type string  $allowed_tags - list of html tags allowed  default
+	 *       <p><b><strong><em><i><u><del><span><style="text-decoration: underline>">
+	 * @type bool    $strip_tags   - default true
 	 * }
 	 *
 	 * @return string
 	 */
-	public function limitText( $content, $maxChar = 1000, $args = array() ){
+	public function limitText( $content, $maxChar = 1000, $args = [] ){
 
-		$defaults = array(
+		$defaults = [
 			'allowed_tags' => '<p><b><strong><em><i><u><del><span style="text-decoration: underline;">',
-			'strip_tags'   => true
-		);
+			'strip_tags'   => true,
+		];
 		$args     = wp_parse_args( $args, $defaults );
 
 		$content = strip_shortcodes( $content );
@@ -301,13 +315,13 @@ class String_Utils {
 	 *
 	 */
 	function wrapPipesAndDashes( $output ){
-		$output = str_replace( array(
+		$output = str_replace( [
 			'|',
-			'-'
-		), array(
+			'-',
+		], [
 			'<span class="pipe">|</span>',
-			'<span class="dashes">-</span>'
-		), $output );
+			'<span class="dashes">-</span>',
+		], $output );
 
 		return $output;
 
@@ -332,7 +346,7 @@ class String_Utils {
 	 *
 	 */
 	function wrapPipes( $output ){
-		$output = str_replace( array( '|' ), array( '<span class="pipe">|</span>' ), $output );
+		$output = str_replace( [ '|' ], [ '<span class="pipe">|</span>' ], $output );
 
 		return $output;
 	}
@@ -393,6 +407,5 @@ class String_Utils {
 	function findTagContents( $s, $tag ){
 		return $this->find_between( $s, "<$tag>", "</$tag>", true );
 	}
-
 
 }
