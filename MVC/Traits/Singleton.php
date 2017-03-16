@@ -41,13 +41,20 @@ trait Singleton {
 
 
 	/**
-	 * Get (and instantiate, if necessary) the instance of the
-	 * class
-	 *
-	 * @static
-	 * @return $this
+	 * @deprecated in favor of instance()
 	 */
 	public static function get_instance(){
+		return self::instance();
+	}
+
+
+	/**
+	 *
+	 * @static
+	 *
+	 * @return $this
+	 */
+	public static function instance(){
 		if( !is_a( self::$instance, __CLASS__ ) ){
 			self::$instance = new self();
 		}
