@@ -3,6 +3,7 @@
 namespace MVC\Util;
 use MVC\Script;
 use MVC\Style;
+use MVC\Traits\Singleton;
 
 /**
  * MVC Styles
@@ -14,10 +15,8 @@ use MVC\Style;
  * @uses  add_theme_support('mvc_styles');
  *
  */
-
-
 class Styles {
-	use \MVC\Traits\Singleton;
+	use Singleton;
 
 	public static $localize_admin = array();
 
@@ -87,7 +86,7 @@ class Styles {
 	public function live_reload(){
 		if( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ){
 			add_action( 'wp_enqueue_scripts', function(){
-				wp_enqueue_script( 'livereload', '//localhost:35729/livereload.js' );
+				wp_enqueue_script( 'livereload', '//localhost:35729/livereload.js', [], time(), true );
 			});
 		}
 	}
