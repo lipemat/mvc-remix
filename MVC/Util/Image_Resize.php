@@ -2,6 +2,7 @@
 
 namespace MVC\Util;
 
+use MVC\Traits\Singleton;
 
 /**
  * Manage Image resizing on the fly to prevent a bunch of unneeded image sizes for every image uploaded
@@ -17,7 +18,7 @@ namespace MVC\Util;
 
 class Image_Resize {
 
-	use \MVC\Traits\Singleton;
+	use Singleton;
 
 	private $_image_sizes = array(); //Keeps track of all theme and plugins image sizes
 
@@ -377,7 +378,7 @@ class Image_Resize {
 		$file_info = pathinfo( $file_path );
 
 		// check if file exists
-		if( !isset( $file_info[ 'dirname' ] ) && !isset( $file_info[ 'filename' ] ) && !isset( $file_info[ 'extension' ] ) ){
+		if( !isset( $file_info[ 'dirname' ] ) || !isset( $file_info[ 'filename' ] ) || !isset( $file_info[ 'extension' ] ) ){
 			return;
 		}
 
