@@ -7,6 +7,15 @@ use MVC\Traits\Singleton;
 /**
  * Login
  *
+ * @notice on fast cgi install, this must be in the .htaccess for this to work
+ *
+## To allow our rest api authentication to work on fast cgi installs
+<IfModule mod_fcgid.c>
+RewriteCond %{HTTP:Authorization} .
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+</IfModule>
+ *
+ *
  * @see AuthTable
  *
  * @author  Mat Lipe
@@ -66,6 +75,16 @@ class Login {
 	 *
 	 * Authorization : Basic base64_encode( $username . ':' . $password )
 	 *
+	 *
+	 * @notice For fast cgi installs this must be added to .htaccess
+	 *
+	## To allow our rest api authentication to work on fast cgi installs
+	<IfModule mod_fcgid.c>
+	RewriteCond %{HTTP:Authorization} .
+	RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+	</IfModule>
+	 *
+	 *
 	 * @see $this->login_via_token()
 	 *
 	 * @param \WP_REST_Request $request
@@ -73,6 +92,7 @@ class Login {
 	 * @return \WP_Error|\WP_REST_Response|\WP_User
 	 */
 	public function basic_auth_handler( \WP_REST_Request $request ){
+		//!! if this is not set @see this methods php docs for fastcgi !!
 		if( !isset( $_SERVER[ 'PHP_AUTH_USER' ] ) ){
 			return new \WP_Error( 'no_user', __( 'No User Passed', 'wswd' ), [ 'status' => 201 ] );
 		}
