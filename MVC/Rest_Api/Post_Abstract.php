@@ -98,6 +98,7 @@ abstract class Post_Abstract {
 
 	public function render_meta( $object, $field_name, $request ){
 		$meta = get_post_meta( $object[ 'id' ] );
+		ksort( $meta );
 		foreach( $meta as $_key => $_item ){
 			if( is_protected_meta( $_key, 'post' ) ){
 				unset( $meta[ $_key ] );
