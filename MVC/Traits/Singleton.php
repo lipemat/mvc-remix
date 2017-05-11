@@ -36,7 +36,7 @@ trait Singleton {
 	 * @return void
 	 */
 	public static function init(){
-		self::$instance = self::get_instance();
+		self::$instance = self::instance();
 	}
 
 
