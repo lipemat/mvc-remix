@@ -13,6 +13,12 @@ namespace MVC\Traits;
 
 trait Singleton {
 
+	/**
+	 * Singleton constructor.
+	 *
+	 * @todo Deprecate hooks being called from here because we should lazy load classes
+	 *       
+	 */
 	public function __construct(){
 		if( method_exists( $this, 'hooks' ) ){
 			$this->hooks();
@@ -26,7 +32,7 @@ trait Singleton {
 	/**
 	 * Instance of this class for use as singleton
 	 */
-	private static $instance;
+	protected static $instance;
 
 
 	/**
@@ -36,7 +42,7 @@ trait Singleton {
 	 * @return void
 	 */
 	public static function init(){
-		self::$instance = self::instance();
+		static::$instance = static::instance();
 	}
 
 
@@ -44,7 +50,7 @@ trait Singleton {
 	 * @deprecated in favor of instance()
 	 */
 	public static function get_instance(){
-		return self::instance();
+		return static::instance();
 	}
 
 
@@ -55,10 +61,10 @@ trait Singleton {
 	 * @return $this
 	 */
 	public static function instance(){
-		if( !is_a( self::$instance, __CLASS__ ) ){
-			self::$instance = new self();
+		if( !is_a( static::$instance, __CLASS__ ) ){
+			static::$instance = new static();
 		}
 
-		return self::$instance;
+		return static::$instance;
 	}
 } 
