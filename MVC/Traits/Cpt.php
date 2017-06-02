@@ -33,7 +33,6 @@ trait Cpt {
 
 
 	public function __get( $name ){
-		_deprecated_function( '__get', '2.4.1', '$this->get_post()->{key}');
 		return $this->{$name} = $this->get_post()->{$name};
 	}
 
