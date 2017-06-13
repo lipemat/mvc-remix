@@ -1,13 +1,4 @@
 <?php
-/**
- * Singleton.php
- * 
- * @author mat
- * @since 11/5/2014
- *
- * @package edspire-full
- */
-
 namespace MVC\Traits;
 
 
