@@ -134,6 +134,7 @@ abstract class Db {
 
 		if( is_numeric( $id_or_wheres ) ){
 			$id_or_wheres = array( $this->id_field => $id_or_wheres );
+			$count = 1;
 		}
 
 		$sql = "SELECT $columns FROM $this->table";
