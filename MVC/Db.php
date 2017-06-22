@@ -186,14 +186,17 @@ abstract class Db {
 	 *
 	 * @see $this->columns for args
 	 *
-	 * @return bool
+	 * @return int|bool - insert id on success or false
 	 */
 	public function add( $columns ){
 		global $wpdb;
 
 		$columns = $this->sort_columns( $columns );
 
-		return $wpdb->insert( $this->table, $columns, $this->columns );
+		if( $wpdb->insert( $this->table, $columns, $this->columns ) ){
+			return $wpdb->insert_id;
+		}
+		return false;
 	}
 
 
