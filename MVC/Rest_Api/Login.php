@@ -21,7 +21,6 @@ RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
  * @author  Mat Lipe
  * @since   1/17/2017
  *
- * @package WSWD\Rest_Api
  */
 class Login {
 	use Singleton;

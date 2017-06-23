@@ -1,6 +1,6 @@
 <?php
 
-namespace MVC\Rest_Api;
+namespace Lipe\Project\Rest_Api;
 
 
 /**

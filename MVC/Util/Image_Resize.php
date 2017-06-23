@@ -11,7 +11,7 @@ use MVC\Traits\Singleton;
  *
  * @author Mat Lipe <mat@matlipe.com>
  * @uses   Pretty much automatic - use standard WP add_image_size() and this will pick it up
- * @May    be tapped in using the pulbic methods as well - however probably not neccessary
+ * @May    be tapped in using the public methods as well - however probably not necessary
  *
  * @since  11.10.13
  */

@@ -1,11 +1,11 @@
 <?php
 
-namespace WSWD\Rest_Api;
+namespace Lipe\Project\Rest_Api;
 
-use WSWD\Post_Types\Activities;
-use WSWD\Taxonomies\ActivityCategories;
-use WSWD\Taxonomies\AgeRange;
-use WSWD\Taxonomies\Type;
+use Lipe\Project\Post_Types\Activities;
+use Lipe\Project\Taxonomies\ActivityCategories;
+use Lipe\Project\Taxonomies\AgeRange;
+use Lipe\Project\Taxonomies\Type;
 
 /**
  * Activity
@@ -15,9 +15,9 @@ use WSWD\Taxonomies\Type;
  *
  * @package WSWD\Rest_Api
  */
-class Activity extends PostAbstract {
+class Activity extends Post_Abstract {
 
-	const POST_TYPE = \WSWD\Post_Types\Activity::POST_TYPE;
+	const POST_TYPE = Lipe\Project\Post_Types\Activity::NAME;
 
 	protected $taxonomies = [
 		'category',

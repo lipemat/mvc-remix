@@ -18,7 +18,6 @@ use MVC\Traits\Singleton;
  * @author  Mat Lipe
  * @since   3.10.17
  *
- * @package WSWD\Rest_Api
  */
 class Taxonomies {
 	use Singleton;
