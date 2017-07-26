@@ -2,6 +2,7 @@
 
 namespace MVC\Core;
 
+use MVC\Traits\Singleton;
 
 /**
  * Api
@@ -18,16 +19,17 @@ namespace MVC\Core;
  */
 class Api {
 
-	use \MVC\Traits\Singleton;
+	use Singleton;
 
 	const DB_VERSION = 1;
 	const DB_KEY = 'mvc-api-version';
 
 	private $doing_api = false;
 
+
 	protected function hooks(){
-		add_action( 'init', array( $this, 'add_endpoint' ), 10, 0 );
-		add_action( 'parse_request', array( $this, 'handle_request' ), 10, 1 );
+		add_action( 'init', [ $this, 'add_endpoint' ], 10, 0 );
+		add_action( 'parse_request', [ $this, 'handle_request' ], 10, 1 );
 	}
 
 
@@ -55,6 +57,7 @@ class Api {
 
 		$args     = explode( '/', $wp->query_vars[ 'api' ] );
 		$endpoint = array_shift( $args );
+
 		do_action( 'mvc_api_' . $endpoint, $args );
 	}
 
@@ -72,15 +75,20 @@ class Api {
 	/**
 	 * Get the url used to hit the api endpoint
 	 *
-	 * @param string [$action]
+	 * @param string $action
+	 * @param [] $data - params to be added to url
+	 *
+	 * @example get_api_url( 'load_more', [ 'page', 2 ] );
 	 *
 	 * @return string
 	 */
-	public function get_api_url( $action = null ){
-		$url = trailingslashit( trailingslashit( get_home_url() ) . 'api/'. $action );
+	public function get_api_url( $action = null, $data = [] ){
+		$url = trailingslashit( trailingslashit( get_home_url() ) . 'api/' . $action );
+		foreach( $data as $_param ){
+			$url .= $_param . '/';
+		}
+
 		return $url;
 	}
-
-
 
 }

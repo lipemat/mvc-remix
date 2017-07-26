@@ -2,6 +2,7 @@
 
 namespace MVC\Util;
 
+use MVC\Traits\Singleton;
 
 /**
  * Manage Image resizing on the fly to prevent a bunch of unneeded image sizes for every image uploaded
@@ -10,14 +11,14 @@ namespace MVC\Util;
  *
  * @author Mat Lipe <mat@matlipe.com>
  * @uses   Pretty much automatic - use standard WP add_image_size() and this will pick it up
- * @May    be tapped in using the pulbic methods as well - however probably not neccessary
+ * @May    be tapped in using the public methods as well - however probably not necessary
  *
  * @since  11.10.13
  */
 
 class Image_Resize {
 
-	use \MVC\Traits\Singleton;
+	use Singleton;
 
 	private $_image_sizes = array(); //Keeps track of all theme and plugins image sizes
 
@@ -377,7 +378,7 @@ class Image_Resize {
 		$file_info = pathinfo( $file_path );
 
 		// check if file exists
-		if( !isset( $file_info[ 'dirname' ] ) && !isset( $file_info[ 'filename' ] ) && !isset( $file_info[ 'extension' ] ) ){
+		if( !isset( $file_info[ 'dirname' ] ) || !isset( $file_info[ 'filename' ] ) || !isset( $file_info[ 'extension' ] ) ){
 			return;
 		}
 
@@ -472,9 +473,15 @@ class Image_Resize {
 			//If using Wp Smushit
 			if( class_exists( 'WpSmush' ) ){
 				global $WpSmush;
-				$max = $WpSmush->is_pro() ? WP_SMUSH_PREMIUM_MAX_BYTES : WP_SMUSH_MAX_BYTES;
-				if( filesize( $new_img_path ) < $max ){
-					$WpSmush->do_smushit( $new_img_path, $new_img );
+				/** @var \WpSmush $WpSmush */
+				if( method_exists( $WpSmush, 'validate_install' ) ){
+					//new version of wp smush
+					$max_size = $WpSmush->validate_install() ? WP_SMUSH_PREMIUM_MAX_BYTES : WP_SMUSH_MAX_BYTES;
+				} else {
+					$max_size = $WpSmush->is_pro() ? WP_SMUSH_PREMIUM_MAX_BYTES : WP_SMUSH_MAX_BYTES;
+				}
+				if( filesize( $new_img_path ) < $max_size ){
+					$WpSmush->do_smushit( $new_img_path );
 				}
 			}
 

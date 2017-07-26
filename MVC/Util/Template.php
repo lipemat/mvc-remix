@@ -33,7 +33,7 @@ class Template {
 	 * @return void
 	 */
 	public static function init_theme_adjustments(){
-		$class = self::get_instance();
+		$class = self::instance();
 
 		//Add the class 'first-class' to the first post
 		add_filter( 'post_class', array( $class, 'first_post_class' ), 0, 2 );

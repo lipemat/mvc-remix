@@ -4,6 +4,9 @@ namespace MVC;
 /**
  * Settings
  *
+ * @todo integration new 4.7 register settings params
+ * @link https://make.wordpress.org/core/2016/10/26/registering-your-settings-in-wordpress-4-7/
+ *
  * Abstract starting point for a settings page
  * Retrieve option from proper location by using $this->get_option()
  *

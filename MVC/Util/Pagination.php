@@ -12,7 +12,6 @@ namespace MVC\Util;
  * @author  Mat Lipe
  * @since   7/8/2015
  *
- * @package EdSpireDocImporter
  */
 class Pagination {
 

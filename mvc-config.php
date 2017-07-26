@@ -19,9 +19,9 @@ add_theme_support( 'mvc_cache' );
 add_theme_support( 'mvc_image_resize' );
 add_theme_support( 'mvc_internal_tax' );
 add_theme_support( 'mvc_translate' );
-
 add_theme_support( 'mvc_taxonomy_meta' );
 
 //add_theme_support( 'mvc_route' );
-
 //add_theme_support('mvc_api');
+//add_theme_support( 'mvc_rest_api' )
+//add_theme_support( 'mvc_rest_api_login' )

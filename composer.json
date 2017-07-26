@@ -1,13 +1,22 @@
 {
-    "name": "lipemat/mvc-remix",
-    "description": "Boilerplate for WP themes or plugins",
-    "license": "GPL",
-    "authors": [
-        {
-            "name": "Mat Lipe",
-            "email": "mat@matlipe.com"
-        }
-    ],
-    "minimum-stability": "stable",
-    "require": {}
+  "name": "lipemat/mvc-remix",
+  "description": "Boilerplate for WP themes or plugins",
+  "license": "GPL",
+  "config": {
+    "vendor-dir": "vendor",
+    "preferred-install": "dist"
+  },
+  "authors": [
+    {
+      "name": "Mat Lipe",
+      "email": "mat@matlipe.com"
+    }
+  ],
+  "minimum-stability": "stable",
+  "require": {},
+  "autoload": {
+    "files": [
+      "mvc-remix.php"
+    ]
+  }
 }
