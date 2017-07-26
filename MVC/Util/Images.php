@@ -26,8 +26,13 @@ class Images {
 	public function getFirstContentImage( $post_id = false ){
 		global $post;
 
+		$first_img = wp_cache_get( __METHOD__ . ':'  . $post_id, 'default' );
+		if( $first_img !== false ){
+			return $first_img;
+		}
+
 		if( !$post_id && !isset( $post->ID ) ){
-			return;
+			return null;
 		}
 
 		if( $post_id != false && $post_id == $post->ID ){
@@ -37,18 +42,17 @@ class Images {
 		}
 
 		if( is_wp_error( $content ) || empty( $content ) ){
-			return;
+			return null;
 		}
 
-		$first_img = '';
-		ob_start();
-		ob_end_clean();
-		$output = preg_match_all( '/<img.+src=[\'"]([^\'"]+)[\'"].*>/i', $content, $matches );
+		preg_match_all( '/<img.+src=[\'"]([^\'"]+)[\'"].*>/i', $content, $matches );
 		if( !isset( $matches[ 1 ][ 0 ] ) ){
-			return;
+			return null;
 		}
 
 		$first_img = $matches[ 1 ][ 0 ];
+
+		wp_cache_set( __METHOD__ . ':'  . $post_id, $first_img, 'default', DAY_IN_SECONDS );
 
 		return $first_img;
 	}

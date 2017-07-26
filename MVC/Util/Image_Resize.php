@@ -127,11 +127,12 @@ class Image_Resize {
 
 		);
 
-		extract( wp_parse_args( $args, $defaults ) );
+		$args = wp_parse_args( $args, $defaults );
+		extract( $args );
 
 		/* SET VARS FOR OUTPUT */
 
-		// from esplicit thumbnail ID
+		// from explicit thumbnail ID
 		if( !empty( $id ) ){
 			$image_id  = $id;
 			$image_url = wp_get_attachment_url( $id );
@@ -152,9 +153,9 @@ class Image_Resize {
 			$image_url = wp_get_attachment_url( $image_id );
 
 			// get the first image of the post
-		} elseif( $image_scan && function_exists( 'mvc' ) ) {
+		} elseif( $args[ 'image_scan' ] ) {
 			$image_id  = null;
-			$image_url = mvc()->getFirstContentImage( $post_id );
+			$image_url = Images::instance()->getFirstContentImage( $args[ 'post_id' ] );
 
 			// if we are currently on an attachment
 		} elseif( is_attachment() ) {
@@ -168,7 +169,7 @@ class Image_Resize {
 
 		// return null, if any image is defined
 		if( empty( $image_url ) && empty( $image_id ) ){
-			return;
+			return null;
 		}
 
 		// save original image url for the <a> tag
@@ -246,24 +247,24 @@ class Image_Resize {
 
 		// return null, if there isn't $image_url
 		if( empty( $image_url ) ){
-			return;
+			return null;
 		}
 
-		//if we only want an arry or url
-		if( $output == 'url' ){
+		//if we only want an array or url
+		if( $args[ 'output' ] == 'url' ){
 			if( $echo ){
 				echo $image_url;
 			}
 
 			return $image_url;
 
-		} elseif( $output == 'array' ) {
+		} elseif( $args[ 'output' ] == 'array' ) {
 			return array( $image_url, $width, $height );
 		}
 
 		if( !empty( $image_id ) ){
 			$size = empty( $size ) ? $size = array( $width, $height ) : $size;
-			if( $output != 'a' ){
+			if( $args[ 'output' ] != 'a' ){
 				$class .= ' mvc-resized-image';
 			}
 			$html_image = wp_get_attachment_image( $image_id, $size, false, array(
@@ -274,7 +275,7 @@ class Image_Resize {
 
 		} else {
 			$html_image = rtrim( "<img" );
-			if( $output != 'a' ){
+			if( $args[ 'output' ] != 'a' ){
 				$class .= ' mvc-resized-image';
 			}
 			if( !is_array( $size ) && !empty( $size ) ){
@@ -300,7 +301,7 @@ class Image_Resize {
 		}
 
 		// return only image
-		if( $output == 'img' ){
+		if( $args[ 'output' ] == 'img' ){
 			if( $echo ){
 				echo $html_image;
 			}
@@ -308,7 +309,7 @@ class Image_Resize {
 			return $html_image;
 
 			// return the image wrapper in <a> tag
-		} elseif( $output == 'a' ) {
+		} elseif( $args[ 'output' ] == 'a' ) {
 			$html_link = rtrim( "<a" );
 			$link_class .= ' mvc-resized-image';
 			$attr = array(
@@ -366,7 +367,7 @@ class Image_Resize {
 				$file_path = str_replace( $uploads_dir[ 'baseurl' ], $uploads_dir[ 'basedir' ], $img_url );
 			}
 			if( !file_exists( $file_path ) ){
-				return;
+				return null;
 			}
 			$orig_size = getimagesize( $file_path );
 
@@ -379,12 +380,12 @@ class Image_Resize {
 
 		// check if file exists
 		if( !isset( $file_info[ 'dirname' ] ) || !isset( $file_info[ 'filename' ] ) || !isset( $file_info[ 'extension' ] ) ){
-			return;
+			return null;
 		}
 
 		$base_file = $file_info[ 'dirname' ] . '/' . $file_info[ 'filename' ] . '.' . $file_info[ 'extension' ];
 		if( !file_exists( $base_file ) ){
-			return;
+			return null;
 		}
 
 		$extension = '.' . $file_info[ 'extension' ];
