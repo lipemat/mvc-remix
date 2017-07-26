@@ -105,7 +105,7 @@ class Image_Resize {
 	 *                      'link_title' => '',      // the title of <a> tag. If empty, get it from "title" attribute.
 	 *                      );
 	 *
-	 *
+	 * @return string|array|null
 	 */
 	public function image( $args = array(), $echo = true ){
 		$defaults = array(
@@ -152,19 +152,17 @@ class Image_Resize {
 			$image_id  = get_post_thumbnail_id();
 			$image_url = wp_get_attachment_url( $image_id );
 
-			// get the first image of the post
-		} elseif( $args[ 'image_scan' ] ) {
-			$image_id  = null;
-			$image_url = Images::instance()->getFirstContentImage( $args[ 'post_id' ] );
-
 			// if we are currently on an attachment
 		} elseif( is_attachment() ) {
 			global $post;
 			$image_id  = $post->ID;
 			$image_url = wp_get_attachment_url( $image_id );
 
-		} else {
-			return null;
+		}
+
+		if( empty( $image_url ) && $args[ 'image_scan' ] ){
+			$image_id  = null;
+			$image_url = Images::instance()->getFirstContentImage( $args[ 'post_id' ] );
 		}
 
 		// return null, if any image is defined
