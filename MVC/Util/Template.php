@@ -244,11 +244,11 @@ class Template {
 
 		// Holds the final data to return
 		$output = array();
-		if( $sidebar_name ){
+		if( $args[ 'sidebar_name' ] ){
 			// Loop over all of the registered sidebars looking for the one with the same name as $sidebar_name
-			$sibebar_id = false;
+			$sidebar_id = false;
 			foreach( $wp_registered_sidebars as $sidebar ){
-				if( $sidebar[ 'name' ] == $sidebar_name ){
+				if( $sidebar[ 'name' ] == $args[ 'sidebar_name' ] ){
 					// We now have the Sidebar ID, we can stop our loop and continue.
 					$sidebar_id = $sidebar[ 'id' ];
 					break;
@@ -267,7 +267,7 @@ class Template {
 
 			$widget_ids = array();
 			foreach( $sidebars_widgets as $sidebar_id => $widgets ){
-				if( $sidebar_id != 'wp_inactive_widgets' || $inactive_widgets ){
+				if( $sidebar_id != 'wp_inactive_widgets' || $args[ 'inactive_widgets' ] ){
 					$widget_ids = array_merge( $widget_ids, $widgets );
 				}
 			}
@@ -280,14 +280,17 @@ class Template {
 
 		// Loop over each widget_id so we can fetch the data out of the wp_options table.
 		foreach( $widget_ids as $id ){
-			if( $widget_name && $wp_registered_widgets[ $id ][ 'name' ] != $widget_name ){
+			if( empty( $wp_registered_widgets[ $id ][ 'name' ]  ) ){
+				continue;
+			}
+			if( $args[ 'widget_name' ] && ( $wp_registered_widgets[ $id ][ 'name' ] != $args[ 'widget_name' ] ) ){
 				continue;
 			}
 			// The name of the option in the database is the name of the widget class.
 			$option_name = $wp_registered_widgets[ $id ][ 'callback' ][ 0 ]->option_name;
 
 			//If selected to include the output of the widget
-			if( $include_output ){
+			if( $args[ 'include_output' ] ){
 				$params = array_merge( array(
 					array_merge( $sidebar,
 						array(
@@ -326,7 +329,7 @@ class Template {
 			$widget_data             = get_option( $option_name );
 			$output[ $id ][ 'data' ] = (object) $widget_data[ $key ];
 			$output[ $id ][ 'name' ] = $wp_registered_widgets[ $id ][ 'name' ];
-			if( $object_data ){
+			if( $args[ 'object_data' ] ){
 				$output[ $id ][ 'object_data' ] = $wp_registered_widgets[ $id ];
 			}
 
