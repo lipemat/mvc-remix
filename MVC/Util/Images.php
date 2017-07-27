@@ -2,6 +2,7 @@
 
 namespace MVC\Util;
 
+use MVC\Traits\Singleton;
 
 /**
  * Images
@@ -12,7 +13,7 @@ namespace MVC\Util;
  * @package MVC\Util
  */
 class Images {
-	use \MVC\Traits\Singleton;
+	use Singleton;
 
 	/**
 	 * Get the first image of the post's content
@@ -21,38 +22,38 @@ class Images {
 	 *
 	 * @since 9.13.13
 	 *
+	 * @return string|null
 	 *
 	 * */
-	public function getFirstContentImage( $post_id = false ){
-		global $post;
+	public function getFirstContentImage( $post_id = 0 ){
+		if( empty( $post_id ) ){
+			$post_id = get_the_ID();
+			if( empty( $post_id ) ){
+				return null;
+			}
+		}
 
-		$first_img = wp_cache_get( __METHOD__ . ':'  . $post_id, 'default' );
+		$first_img = wp_cache_get( __METHOD__ . ':' . $post_id, 'default' );
 		if( $first_img !== false ){
 			return $first_img;
 		}
 
-		if( !$post_id && !isset( $post->ID ) ){
-			return null;
-		}
-
-		if( $post_id != false && $post_id == $post->ID ){
-			$content = $post->post_content;
-		} else {
-			$content = get_post_field( 'post_content', $post_id );
-		}
+		$content = get_post_field( 'post_content', $post_id );
 
 		if( is_wp_error( $content ) || empty( $content ) ){
-			return null;
+			$first_img = null;
+
+		} else {
+
+			preg_match_all( '/<img.+src=[\'"]([^\'"]+)[\'"].*>/i', $content, $matches );
+			if( isset( $matches[ 1 ][ 0 ] ) ){
+				$first_img = $matches[ 1 ][ 0 ];
+			} else {
+				$first_img = null;
+			}
 		}
 
-		preg_match_all( '/<img.+src=[\'"]([^\'"]+)[\'"].*>/i', $content, $matches );
-		if( !isset( $matches[ 1 ][ 0 ] ) ){
-			return null;
-		}
-
-		$first_img = $matches[ 1 ][ 0 ];
-
-		wp_cache_set( __METHOD__ . ':'  . $post_id, $first_img, 'default', DAY_IN_SECONDS );
+		wp_cache_set( __METHOD__ . ':' . $post_id, $first_img, 'default', DAY_IN_SECONDS );
 
 		return $first_img;
 	}
