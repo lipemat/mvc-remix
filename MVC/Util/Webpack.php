@@ -90,7 +90,7 @@ class Webpack {
 			$js_file  = trailingslashit( $this->directory ) . 'dist/master.js';
 			$css_file = trailingslashit( $this->directory ) . 'dist/master.css';
 		} else {
-			$js_file = 'http://localhost:3000/dist/master.js';
+			$js_file = '//localhost:3000/dist/master.js';
 		}
 
 		wp_enqueue_script( $this->handle, $js_file, array(), mvc_util()->get_beanstalk_based_version(), true );
