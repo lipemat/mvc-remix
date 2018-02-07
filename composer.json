@@ -1,7 +1,7 @@
 {
   "name": "lipemat/mvc-remix",
   "description": "Boilerplate for WP themes or plugins",
-  "license": "GPL",
+  "license": "MIT",
   "config": {
     "vendor-dir": "vendor",
     "preferred-install": "dist"
